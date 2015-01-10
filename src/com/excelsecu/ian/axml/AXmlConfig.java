@@ -1,4 +1,4 @@
-package com.excelsecu.ian.xml;
+package com.excelsecu.ian.axml;
 
 public class AXmlConfig {
     public static enum XmlType {
