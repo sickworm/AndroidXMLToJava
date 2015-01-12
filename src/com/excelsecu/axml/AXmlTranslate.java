@@ -1,18 +1,33 @@
 package com.excelsecu.axml;
 
+import java.util.HashMap;
+
+import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
+
 /**
  * Translate a XML attritube to a java method.
  * @author ch
  *
  */
 public class AXmlTranslate {
-	public static void main(String argv) {
-		System.out.println(translate("android:id", "abc"));
+    private static HashMap<String, String> map;
+    
+	public static void main(String[] argv) {
+	    String attrName = "android:id";
+        String attrValue = "abc";
+        String method;
+        try {
+            method = translate(attrName, attrValue);
+        } catch (AXmlException e) {
+            method = "//" + attrName + "=\"" + attrValue + "\"";
+        }
+		System.out.println(method);
 	}
 	
 	public static String translate(String attrName , String... attrValue) {
-		String methodName = transAttrToMethod(attrName);
-		return methodName + "(" + attrValue + ")";
+        map = AndroidDocConverter.getMap();
+        String methodName = transAttrToMethod(attrName);
+		return methodName + "(" + attrValue[0] + ")";
 	}
 	
 	/**
@@ -26,11 +41,20 @@ public class AXmlTranslate {
 	}
 	
 	private static String matchList(String attrName) {
-		return AXmlDatabase.find("");
+        //current version don't have database, use HashMap instead
+        //return AXmlDatabase.find("");
+	    if (!map.containsKey(attrName)) {
+	        throw new AXmlException(AXmlException.METHOD_NOT_FOUND);
+	    }
+	    String methodName = map.get(attrName);
+	    if (methodName.equals("") || methodName.equals(null)) {
+            throw new AXmlException(AXmlException.METHOD_NOT_FOUND);
+	    }
+	    return methodName;
 	}
 	
 	/**
-	 * Remove the method param, keep the method name
+	 * Remove the method paramaters, keep the method name
 	 * @param method
 	 * @return
 	 */

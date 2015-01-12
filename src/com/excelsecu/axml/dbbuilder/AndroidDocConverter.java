@@ -36,7 +36,6 @@ public class AndroidDocConverter {
 	    if (attrToMethodMap.size() == 0) {
 	        List<String> listPage = listPage();
 	        for (String path: listPage) {
-	            System.out.println(path);
 	            HashMap<String, String> sublist = AndroidDocFilter.filterDoc(path);
 	            attrToMethodMap.putAll(sublist);
 	        }
