@@ -1,13 +1,18 @@
-package com.excelsecu.ian.axml;
+package com.excelsecu.axml;
 
+/**
+ * Translate a XML attritube to a java method.
+ * @author ch
+ *
+ */
 public class AXmlTranslate {
 	public static void main(String argv) {
-		System.out.println(translate("id", "abc"));
+		System.out.println(translate("android:id", "abc"));
 	}
 	
-	public static String translate(String attrName , String attributeValue) {
+	public static String translate(String attrName , String... attrValue) {
 		String methodName = transAttrToMethod(attrName);
-		return methodName + "(" + attributeValue + ")";
+		return methodName + "(" + attrValue + ")";
 	}
 	
 	/**
@@ -24,6 +29,11 @@ public class AXmlTranslate {
 		return AXmlDatabase.find("");
 	}
 	
+	/**
+	 * Remove the method param, keep the method name
+	 * @param method
+	 * @return
+	 */
 	public static String trimTheParam(String method) {
 		return method.substring(0, method.indexOf("("));
 	}

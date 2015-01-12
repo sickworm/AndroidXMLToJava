@@ -1,4 +1,4 @@
-package com.excelsecu.ian.axml.dbbuilder;
+package com.excelsecu.axml.dbbuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 /**
  * In current test version, this program will run everytime to generate the table.
- * @author lenovo
+ * @author ch
  *
  */
 public class AndroidDocConverter {

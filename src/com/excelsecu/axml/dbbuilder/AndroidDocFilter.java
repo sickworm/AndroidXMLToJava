@@ -1,4 +1,4 @@
-package com.excelsecu.ian.axml.dbbuilder;
+package com.excelsecu.axml.dbbuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -77,10 +77,11 @@ public class AndroidDocFilter {
         try {
         	HashMap<String, String> attrMap = new HashMap<String, String>();
             Parser parser = Parser.createParser(content, AndroidDocConfig.ENCODE);
-            AndFilter andFilter1 =   
-                    new AndFilter(new TagNameFilter("tr"),new HasAttributeFilter("class","alt-color api apilevel-"));
-            AndFilter andFilter2 =   
-                    new AndFilter(new TagNameFilter("tr"),new HasAttributeFilter("class","api apilevel-"));
+            AndFilter andFilter1 =
+                    new AndFilter(new TagNameFilter("tr"), new HasAttributeFilter("class","alt-color api apilevel-"));
+            AndFilter andFilter2 =
+                    //kill me, the " api apilevel-" has a space at the start
+                    new AndFilter(new TagNameFilter("tr"), new HasAttributeFilter("class"," api apilevel-"));
             OrFilter orFilter = new OrFilter(andFilter1, andFilter2);
             NodeList tableNodeList = parser.parse(orFilter);
             NodeIterator tableIt = tableNodeList.elements();

@@ -1,4 +1,4 @@
-package com.excelsecu.ian.axml.dbbuilder;
+package com.excelsecu.axml.dbbuilder;
 
 public class AndroidDocException extends RuntimeException{
 	private static final long serialVersionUID = -611799962850239497L;

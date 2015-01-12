@@ -1,4 +1,4 @@
-package com.excelsecu.ian.axml;
+package com.excelsecu.axml;
 
 public class AXmlException extends RuntimeException {
     private int errorCode = NO_ERROR;

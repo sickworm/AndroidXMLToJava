@@ -1,4 +1,4 @@
-package com.excelsecu.ian.axml;
+package com.excelsecu.axml;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class AXmlParse {
     
     public static void main(String[] argv) {
         System.out.println("--------XmlParse start-------");
-        new AXmlParse("1.xml").parse();
+        new AXmlParse("test.xml").parse();
         System.out.println("--------XmlParse end---------");
     }
     
@@ -24,8 +24,7 @@ public class AXmlParse {
     private void parse() {
         Document document;
         try {
-            document = new SAXReader().read("test.xml").getDocument();
-            int i = 1;
+            document = new SAXReader().read(path).getDocument();
             getElements(document.getRootElement(), 0);
         } catch (DocumentException e) {
             e.printStackTrace();
