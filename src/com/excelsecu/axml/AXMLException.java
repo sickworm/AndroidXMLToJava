@@ -1,6 +1,6 @@
 package com.excelsecu.axml;
 
-public class AXmlException extends RuntimeException {
+public class AXMLException extends RuntimeException {
     private int errorCode = NO_ERROR;
     private static final long serialVersionUID = 4451465808378003847L;
     /**succeed**/
@@ -10,7 +10,7 @@ public class AXmlException extends RuntimeException {
     /**can not find the method relative to the attribute**/
     public static final int METHOD_NOT_FOUND = 0x00000001;
     
-    public AXmlException(int errorCode) {
+    public AXMLException(int errorCode) {
         this.errorCode = errorCode;
     }
     

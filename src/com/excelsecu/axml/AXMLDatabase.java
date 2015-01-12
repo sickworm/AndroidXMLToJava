@@ -1,6 +1,6 @@
 package com.excelsecu.axml;
 
-public class AXmlDatabase {
+public class AXMLDatabase {
 	public static String find(String attrName) {
 		return "";
 	}

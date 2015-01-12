@@ -9,7 +9,7 @@ import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
  * @author ch
  *
  */
-public class AXmlTranslate {
+public class AXMLTranslate {
     private static HashMap<String, String> map;
     
 	public static void main(String[] argv) {
@@ -18,7 +18,7 @@ public class AXmlTranslate {
         String method;
         try {
             method = translate(attrName, attrValue);
-        } catch (AXmlException e) {
+        } catch (AXMLException e) {
             method = "//" + attrName + "=\"" + attrValue + "\"";
         }
 		System.out.println(method);
@@ -42,13 +42,13 @@ public class AXmlTranslate {
 	
 	private static String matchList(String attrName) {
         //current version don't have database, use HashMap instead
-        //return AXmlDatabase.find("");
+        //return AXMLDatabase.find("");
 	    if (!map.containsKey(attrName)) {
-	        throw new AXmlException(AXmlException.METHOD_NOT_FOUND);
+	        throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
 	    }
 	    String methodName = map.get(attrName);
 	    if (methodName.equals("") || methodName.equals(null)) {
-            throw new AXmlException(AXmlException.METHOD_NOT_FOUND);
+            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
 	    }
 	    return methodName;
 	}

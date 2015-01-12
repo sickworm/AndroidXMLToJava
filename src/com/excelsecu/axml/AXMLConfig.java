@@ -1,4 +1,4 @@
 package com.excelsecu.axml;
 
-public class AXmlConfig {
+public class AXMLConfig {
 }

@@ -8,16 +8,16 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 
-public class AXmlParse {
+public class AXMLParse {
     private final String path;
     
     public static void main(String[] argv) {
-        System.out.println("--------XmlParse start-------");
-        new AXmlParse("test.xml").parse();
-        System.out.println("--------XmlParse end---------");
+        System.out.println("--------XMLParse start-------");
+        new AXMLParse("test.xml").parse();
+        System.out.println("--------XMLParse end---------");
     }
     
-    public AXmlParse(String path) {
+    public AXMLParse(String path) {
         this.path = path;
     }
     
@@ -28,7 +28,7 @@ public class AXmlParse {
             getElements(document.getRootElement(), 0);
         } catch (DocumentException e) {
             e.printStackTrace();
-            throw new AXmlException(AXmlException.FILE_NOT_FOUND);
+            throw new AXMLException(AXMLException.FILE_NOT_FOUND);
         }
     }
     
