@@ -3,10 +3,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="libs/filterbuilder.jar"/>
-	<classpathentry kind="lib" path="libs/htmllexer.jar"/>
-	<classpathentry kind="lib" path="libs/htmlparser.jar"/>
-	<classpathentry kind="lib" path="libs/sitecapturer.jar"/>
-	<classpathentry kind="lib" path="libs/thumbelina.jar"/>
+	<classpathentry kind="lib" path="libs/android.jar"/>
+	<classpathentry kind="lib" path="libs/htmlparser/filterbuilder.jar"/>
+	<classpathentry kind="lib" path="libs/htmlparser/htmllexer.jar"/>
+	<classpathentry kind="lib" path="libs/htmlparser/htmlparser.jar"/>
+	<classpathentry kind="lib" path="libs/htmlparser/sitecapturer.jar"/>
+	<classpathentry kind="lib" path="libs/htmlparser/thumbelina.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

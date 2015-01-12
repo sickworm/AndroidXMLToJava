@@ -1,4 +1,4 @@
-package com.excelsecu.ian.dbbuilder;
+package com.excelsecu.ian.axml.dbbuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,27 +18,30 @@ import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-import org.htmlparser.util.SimpleNodeIterator;
 
 public class AndroidDocFilter {
-	private static String ENCODE = "UTF8";
 	
 	public static void main(String[] argc) {
-		String path = "D:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/android/view/View.html";
-		String docContent = readDoc(path);
-		HashMap<String, String> attrList = filter(docContent);
-		Iterator<Entry<String, String>> iter = attrList.entrySet().iterator(); 
+		String path = AndroidDocConfig.VIEW_PATH;
+		HashMap<String, String> attrToMethodList = filterDoc(path);
+		Iterator<Entry<String, String>> iter = attrToMethodList.entrySet().iterator();
 		while (iter.hasNext()) {
-		    Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next(); 
-		    String key = (String) entry.getKey(); 
-		    Object value = (String) entry.getValue(); 
+		    Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
+		    String key = (String) entry.getKey();
+		    Object value = (String) entry.getValue();
 		    System.out.println(key + "\n\t" + value + "\n");
 		}
 	}
 	
+	public static HashMap<String, String> filterDoc(String fileName) {
+        String docContent = readDoc(fileName);
+        HashMap<String, String> attrToMethodList = filter(docContent);
+        return attrToMethodList;
+	}
+	
     public static String readDoc(String fileName) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), ENCODE));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), AndroidDocConfig.ENCODE));
             String content = "";
             String buf;
             
@@ -54,7 +57,7 @@ public class AndroidDocFilter {
                 	if (buf.isEmpty())
                 		continue;
                 	//XML Attributes table end, stupid Android doc source HTML don't have </table> here
-            		if (buf.contains("<table id=\"constants\"")) {
+            		if (buf.contains("<table") && !content.equals("")) {      //avoid "<table id=\"lattrs\""
                     	//System.out.println(content);
             			break;
             		}
@@ -73,7 +76,7 @@ public class AndroidDocFilter {
 	public static HashMap<String, String> filter(String content) {
         try {
         	HashMap<String, String> attrMap = new HashMap<String, String>();
-            Parser parser = Parser.createParser(content, ENCODE);
+            Parser parser = Parser.createParser(content, AndroidDocConfig.ENCODE);
             AndFilter andFilter1 =   
                     new AndFilter(new TagNameFilter("tr"),new HasAttributeFilter("class","alt-color api apilevel-"));
             AndFilter andFilter2 =   
