@@ -50,11 +50,10 @@ public class AndroidDocConverter {
 	public static List<String> listPage() {
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
-		    String str = AndroidDocConfig.CLASSES_LIST[i].toString();
-		    str = str.replace("class ", "");
-		    str = str.replace('.', '/');
-		    str = AndroidDocConfig.BASE_PATH + str + ".html";
-	        list.add(str);
+		    String name = AndroidDocConfig.CLASSES_LIST[i].getName();
+		    name = name.replace('.', '/');
+		    name = AndroidDocConfig.BASE_PATH + name + ".html";
+	        list.add(name);
 		}
 		return list;
 	}

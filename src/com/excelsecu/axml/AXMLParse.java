@@ -25,27 +25,32 @@ public class AXMLParse {
         Document document;
         try {
             document = new SAXReader().read(path).getDocument();
-            getElements(document.getRootElement(), 0);
+            getElements(null, document.getRootElement(), 0);
         } catch (DocumentException e) {
             e.printStackTrace();
             throw new AXMLException(AXMLException.FILE_NOT_FOUND);
         }
     }
     
-    private void getElements(Element rootElement, int layer) {
+    private void getElements(AXMLNode rootNode, Element rootElement, int layer) {
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
         if (list == null || list.size() == 0) {
             return;
         }
-        String tab = "";
-        for (int i = 0; i < layer; i++) {
-            tab += "\t";
-        }
-            
         for(Element e : list){
-            System.out.println(tab + e.getName());
-            getElements(e, layer + 1);
+            AXMLNode node = new AXMLNode(rootNode, e);
+            getElements(node, e, layer + 1);
         }
+        //print the element
+//        String tab = "";
+//        for (int i = 0; i < layer; i++) {
+//            tab += "\t";
+//        }
+//            
+//        for(Element e : list){
+//            System.out.println(tab + e.getName());
+//            getElements(e, layer + 1);
+//        }
     }
 }

@@ -2,12 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="libs/android.jar"/>
+	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar" sourcepath="H:/BaiduYunDownload/dom4j-1.6.1.zip"/>
 	<classpathentry kind="lib" path="libs/htmlparser/filterbuilder.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/htmllexer.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/htmlparser.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/thumbelina.jar"/>
+	<classpathentry kind="lib" path="libs/android/android-support-v7-gridlayout.jar"/>
+	<classpathentry kind="lib" path="libs/android/android.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
