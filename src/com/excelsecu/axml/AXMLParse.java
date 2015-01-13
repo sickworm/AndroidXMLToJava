@@ -8,7 +8,11 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-
+/**
+ * Single Android XML file parse, export the root of AXMLNode.
+ * @author ch
+ *
+ */
 public class AXMLParse {
     private final String path;
     
@@ -23,6 +27,10 @@ public class AXMLParse {
         this.path = path;
     }
     
+    /**
+     * Parse Android XML file info AXMLNode structure.
+     * @return the root of AXMLNode
+     */
     private AXMLNode parse() {
         AXMLNode rootNode = null;
         try {
@@ -36,8 +44,15 @@ public class AXMLParse {
         return rootNode;
     }
     
-    private AXMLNode parseElements(AXMLNode rootNode, Element rootElement, int layer) {
-        AXMLNode node = new AXMLNode(rootNode, rootElement, layer);
+    /**
+     * Recursion to iterate the Android XML elements.
+     * @param parent the parent of the return node, null if it has no parent
+     * @param rootElement the root elements in this function
+     * @param layer the layer of this node to be created
+     * @return the AXMLNode of the {@param rootElement}, the child of {@param rootElement}
+     */
+    private AXMLNode parseElements(AXMLNode parent, Element rootElement, int layer) {
+        AXMLNode node = new AXMLNode(parent, rootElement, layer);
         
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
@@ -50,6 +65,11 @@ public class AXMLParse {
         return node;
     }
     
+    /**
+     * Print the Android XML tree structure.
+     * @param rootNode the root in this function, the real root elements in the first time
+     * @param layer
+     */
     private static void printNode(AXMLNode rootNode, int layer) {
         if (rootNode == null) {
             return;

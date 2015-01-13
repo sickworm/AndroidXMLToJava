@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
 
 /**
- * Translate a XML attritube to a java method.
+ * Translate a XML attritube to a Java method.
  * @author ch
  *
  */
@@ -24,6 +24,12 @@ public class AXMLTranslate {
 		System.out.println(method);
 	}
 	
+	/**
+	 * Translate a XML attritube to a Java method.
+	 * @param attrName the name of attribute
+	 * @param attrValue the value of attribute
+	 * @return
+	 */
 	public static String translate(String attrName , String... attrValue) {
         map = AndroidDocConverter.getMap();
         String methodName = transAttrToMethod(attrName);
@@ -36,11 +42,16 @@ public class AXMLTranslate {
 	 * @return Android method matches the attribute without parameters.
 	 */
 	public static String transAttrToMethod(String attrName) {
-		String method = matchList(attrName);
+		String method = matchMap(attrName);
 		return trimTheParam(method);
 	}
 	
-	private static String matchList(String attrName) {
+	/**
+	 * Find the conversion between XML attribute and Java method in the match map.
+	 * @param attrName
+	 * @return
+	 */
+	private static String matchMap(String attrName) {
         //current version don't have database, use HashMap instead
         //return AXMLDatabase.find("");
 	    if (!map.containsKey(attrName)) {
