@@ -10,15 +10,27 @@ import com.excelsecu.axml.dbbuilder.AndroidDocConfig;
 
 public class AXMLNode implements Cloneable {
     private AXMLNode parent;
+    private List<AXMLNode> children;
+    /**the layer of AXMLNode tree, start with 0**/
+    private int layer;
     private Element e;
     private List<Attribute> attrList;
     private Class<?> type;
     
-    public AXMLNode(AXMLNode parent, Element e) {
+    public AXMLNode(AXMLNode parent, Element e, int layer) {
         this.parent = parent;
-        this.e = e;
-        String name = this.getName();
-        this.type = matchClass(name);
+        this.layer = layer;
+        this.children = new ArrayList<AXMLNode>();
+        //Add it to this parent's chilren list
+        if (parent != null) {
+            parent.addChild(this);
+        }
+        if (e == null) {
+            throw new AXMLException(AXMLException.PARAMETER_NOT_INITIALIZE);
+        } else {
+            this.e = e;
+        }
+        this.type = matchClass();
         if (this.type == null) {
             throw new AXMLException(AXMLException.CLASS_NOT_FOUND);
         }
@@ -28,7 +40,12 @@ public class AXMLNode implements Cloneable {
         }
     }
     
-    private Class<?> matchClass(String name) {
+    public void addChild(AXMLNode child) {
+        children.add(child);
+    }
+    
+    private Class<?> matchClass() {
+        String name = e.getName();
         for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
             if (name.contains("support")) {
                 name = name.substring(0, name.lastIndexOf('.'));
@@ -46,6 +63,10 @@ public class AXMLNode implements Cloneable {
         return parent;
     }
     
+    public List<AXMLNode> getChildren() {
+        return children;
+    }
+    
     public Class<?> getType() {
         return type;
     }
@@ -54,7 +75,15 @@ public class AXMLNode implements Cloneable {
         return e.getName();
     }
     
+    public List<Attribute> getAttributes() {
+        return attrList;
+    }
+    
+    public int getLayer() {
+        return layer;
+    }
+    
     protected AXMLNode clone() {
-        return new AXMLNode(this.parent, this.e);
+        return new AXMLNode(this.parent, this.e, this.layer);
     }
 }

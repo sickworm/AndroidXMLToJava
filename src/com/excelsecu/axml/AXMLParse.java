@@ -2,6 +2,7 @@ package com.excelsecu.axml;
 
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -13,7 +14,8 @@ public class AXMLParse {
     
     public static void main(String[] argv) {
         System.out.println("--------XMLParse start-------");
-        new AXMLParse("test.xml").parse();
+        AXMLNode rootNode = new AXMLParse("test.xml").parse();
+        printNode(rootNode, 0);
         System.out.println("--------XMLParse end---------");
     }
     
@@ -21,36 +23,52 @@ public class AXMLParse {
         this.path = path;
     }
     
-    private void parse() {
-        Document document;
+    private AXMLNode parse() {
+        AXMLNode rootNode = null;
         try {
+            Document document;
             document = new SAXReader().read(path).getDocument();
-            getElements(null, document.getRootElement(), 0);
+            rootNode = parseElements(null, document.getRootElement(), 0);
         } catch (DocumentException e) {
             e.printStackTrace();
-            throw new AXMLException(AXMLException.FILE_NOT_FOUND);
+            throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
         }
+        return rootNode;
     }
     
-    private void getElements(AXMLNode rootNode, Element rootElement, int layer) {
+    private AXMLNode parseElements(AXMLNode rootNode, Element rootElement, int layer) {
+        AXMLNode node = new AXMLNode(rootNode, rootElement, layer);
+        
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
         if (list == null || list.size() == 0) {
-            return;
+            return null;
         }
         for(Element e : list){
-            AXMLNode node = new AXMLNode(rootNode, e);
-            getElements(node, e, layer + 1);
+            parseElements(node, e, layer + 1);
         }
-        //print the element
-//        String tab = "";
-//        for (int i = 0; i < layer; i++) {
-//            tab += "\t";
-//        }
-//            
-//        for(Element e : list){
-//            System.out.println(tab + e.getName());
-//            getElements(e, layer + 1);
-//        }
+        return node;
+    }
+    
+    private static void printNode(AXMLNode rootNode, int layer) {
+        if (rootNode == null) {
+            return;
+        }
+        String tab = "";
+        int i = layer;
+        while(i > 0) {
+            tab += "\t";
+            i--;
+        }
+        System.out.println(tab + "<" + rootNode.getName() + ">");
+        List<Attribute> attrList = rootNode.getAttributes();
+        for (Attribute a : attrList) {
+            System.out.println(tab + "\t" + a.getQualifiedName() + " = " + a.getValue());
+        }
+        
+        List<AXMLNode> children = rootNode.getChildren();
+        for (AXMLNode n : children) {
+            printNode(n, layer + 1);
+        }
     }
 }
