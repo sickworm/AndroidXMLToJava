@@ -1,9 +1,7 @@
 package com.excelsecu.axml.dbbuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,15 +14,16 @@ public class AndroidDocConverter {
     public static HashMap<String, String> attrToMethodMap = new HashMap<String, String>();
     
 	public static void main(String[] argv) {
-		List<String> listPage = listPage();
-		for (String path: listPage) {
-		    System.out.println(path);
-		    HashMap<String, String> sublist = AndroidDocFilter.filterDoc(path);
+		String[] listPage = listPage();
+        for (int i = 0; i < listPage.length; i++) {
+            String path = listPage[i];
+		    System.out.println(path + "\n");
+		    HashMap<String, String> sublist = new AndroidDocFilter(AndroidDocConfig.CLASSES_LIST[i]).filterDoc(path);
 		    Iterator<Entry<String, String>> iter = sublist.entrySet().iterator(); 
 	            while (iter.hasNext()) {
 	                Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
 	                String key = (String) entry.getKey();
-	                Object value = (String) entry.getValue();
+	                String value = (String) entry.getValue();
 	                System.out.println(key + "\n\t" + value + "\n");
 	            }
             System.out.println("");
@@ -34,9 +33,10 @@ public class AndroidDocConverter {
 	
 	public static HashMap<String, String> getMap() {
 	    if (attrToMethodMap.size() == 0) {
-	        List<String> listPage = listPage();
-	        for (String path: listPage) {
-	            HashMap<String, String> sublist = AndroidDocFilter.filterDoc(path);
+	        String[] listPage = listPage();
+	        for (int i = 0; i < listPage.length; i++) {
+	            String path = listPage[i];
+	            HashMap<String, String> sublist = new AndroidDocFilter(AndroidDocConfig.CLASSES_LIST[i]).filterDoc(path);
 	            attrToMethodMap.putAll(sublist);
 	        }
 	    }
@@ -47,13 +47,13 @@ public class AndroidDocConverter {
 	 * Include all the html path which has xml attribute to java method table.
 	 * @return The list of XML attribute to Java method table.
 	 */
-	public static List<String> listPage() {
-		List<String> list = new ArrayList<String>();
+	public static String[] listPage() {
+	    String[] list = new String[AndroidDocConfig.CLASSES_LIST.length];
 		for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
 		    String name = AndroidDocConfig.CLASSES_LIST[i].getName();
 		    name = name.replace('.', '/');
 		    name = AndroidDocConfig.BASE_PATH + name + ".html";
-	        list.add(name);
+	        list[i] = name;
 		}
 		return list;
 	}

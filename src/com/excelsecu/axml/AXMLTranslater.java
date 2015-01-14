@@ -43,15 +43,18 @@ public class AXMLTranslater {
 	public String translate(AXMLNode node) {
 	    String nodeName = AXMLUtil.classToObject(node.getName()) + num;
         String javaBlock = "";
-        String newMethod = nodeName + " " + nodeName + " = new " + nodeName + "();\n";
+        String newMethod = node.getName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node);
         for (Attribute a : node.getAttributes()) {
+            if (a.getQualifiedName().equals("android:orientation")) {
+                num++;
+            }
             String attrMethod = "";
             String attrName = a.getQualifiedName();
             String attrValue = a.getValue();
             try {
-                String methodName = transAttrToMethod(attrName);
+                String methodName = transAttrToMethod(attrName, node.getName());
                 String methodValue = translateValue(attrValue);
                 attrMethod = methodName + "(" + methodValue + ")";
                 attrMethod = nodeName + "." + attrMethod + ";\n";
@@ -78,13 +81,14 @@ public class AXMLTranslater {
 	 * @param attrName	The name of attribute.
 	 * @return Android method matches the attribute without parameters.
 	 */
-	private String transAttrToMethod(String attrName) {
+	private String transAttrToMethod(String attrName, String className) {
 	    //find the conversion between XML attribute and Java method in the match map.
-        if (!map.containsKey(attrName)) {
+	    String key = className + "$" + attrName;
+        if (!map.containsKey(key)) {
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
         }
-        String methodName = map.get(attrName);
-        if (methodName.equals("") || methodName.equals(null)) {
+        String methodName = map.get(key);
+        if (methodName.equals(null) || methodName.equals("")) {
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
         }
         methodName = methodName.substring(0, methodName.indexOf("("));
@@ -132,7 +136,7 @@ public class AXMLTranslater {
             }
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {
-            importList.add(android.view.ViewGroup.LayoutParams.class);
+            addImport(android.view.ViewGroup.LayoutParams.class);
         } else if (attrValue.contains("@+id/")) {
             idList.add(attrValue.substring(attrValue.indexOf('/') + 1));
         }

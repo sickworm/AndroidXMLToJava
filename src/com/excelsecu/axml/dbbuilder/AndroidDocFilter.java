@@ -20,10 +20,12 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 public class AndroidDocFilter {
-	
+    private Class<?> type;
+    
 	public static void main(String[] argc) {
 		String path = AndroidDocConfig.VIEW_PATH;
-		HashMap<String, String> attrToMethodList = filterDoc(path);
+		AndroidDocFilter docFilter = new AndroidDocFilter(android.view.View.class);
+		HashMap<String, String> attrToMethodList = docFilter.filterDoc(path);
 		Iterator<Entry<String, String>> iter = attrToMethodList.entrySet().iterator();
 		while (iter.hasNext()) {
 		    Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
@@ -33,13 +35,17 @@ public class AndroidDocFilter {
 		}
 	}
 	
-	public static HashMap<String, String> filterDoc(String fileName) {
+	public AndroidDocFilter(Class<?> type) {
+	    this.type = type;
+	}
+	
+	public HashMap<String, String> filterDoc(String fileName) {
         String docContent = readDoc(fileName);
         HashMap<String, String> attrToMethodList = filter(docContent);
         return attrToMethodList;
 	}
 	
-    public static String readDoc(String fileName) {
+    private String readDoc(String fileName) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), AndroidDocConfig.ENCODE));
             String content = "";
@@ -73,7 +79,7 @@ public class AndroidDocFilter {
         }
     }
 	
-	public static HashMap<String, String> filter(String content) {
+    private HashMap<String, String> filter(String content) {
         try {
         	HashMap<String, String> attrMap = new HashMap<String, String>();
             Parser parser = Parser.createParser(content, AndroidDocConfig.ENCODE);
@@ -111,11 +117,12 @@ public class AndroidDocFilter {
                 if (trNodeList.size() != 7) {
                 	throw new AndroidDocException(AndroidDocException.ATM_FORMAT_ERROR);
                 }
+                String className = type.getSimpleName();
                 String attr = trNodeList.elementAt(1).toPlainTextString();
                 attr = attr.replace("\n", "");
                 String method = trNodeList.elementAt(3).toPlainTextString();
                 method = method.replace("\n", "");
-                attrMap.put(attr, method);
+                attrMap.put(className + "$" + attr, method);
                 //System.out.println(attr + " " + method);
             }
 			return attrMap;
