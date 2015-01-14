@@ -27,14 +27,14 @@ public class AndroidDocConfig {
         
         /** Layouts **/
         //<include> not a class
-        //android.support.v7.widget.GridLayout.class,   handle as GridLayout
+        android.support.v7.widget.GridLayout.class,
         android.widget.GridLayout.class,
         android.widget.RelativeLayout.class,
         android.widget.LinearLayout.class,
         android.widget.FrameLayout.class,
         android.widget.TableLayout.class,
         android.widget.TableRow.class,
-        //android.support.v7.widget.Space.class,        handle as Space
+        android.support.v7.widget.Space.class,
         android.widget.Space.class,
     	android.app.Fragment.class,
     	

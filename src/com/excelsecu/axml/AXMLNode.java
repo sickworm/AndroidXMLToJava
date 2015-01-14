@@ -47,11 +47,12 @@ public class AXMLNode implements Cloneable {
     private Class<?> matchClass() {
         String name = e.getName();
         for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
+            String className = "";
             if (name.contains("support")) {
-                name = name.substring(0, name.lastIndexOf('.'));
-                name = name.substring(name.lastIndexOf('.'));
+                className = AndroidDocConfig.CLASSES_LIST[i].getName();
+            } else {
+                className = AndroidDocConfig.CLASSES_LIST[i].getSimpleName();
             }
-            String className = AndroidDocConfig.CLASSES_LIST[i].getSimpleName();
             if (className.equals(name)) {
                 return AndroidDocConfig.CLASSES_LIST[i];
             }

@@ -10,8 +10,10 @@ public class AXMLException extends RuntimeException {
     public static final int METHOD_NOT_FOUND = 0x00000002;
     /**can not find the class relative to the XML label**/
     public static final int CLASS_NOT_FOUND = 0x00000003;
+    /**can not find the attribute in the XML node**/
+    public static final int ATTRIBUTE_NOT_FOUND = 0x00000004;
     /**the parameter haven't initialize**/
-    public static final int PARAMETER_NOT_INITIALIZE = 0x00000004;
+    public static final int PARAMETER_NOT_INITIALIZE = 0x00000005;
 
     private int errorCode = NO_ERROR;
     

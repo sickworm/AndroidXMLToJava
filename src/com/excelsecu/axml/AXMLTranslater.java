@@ -4,35 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.dom4j.Attribute;
+
 import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
 
 /**
- * Translate a XML attritube to a Java method.
+ * Translate a Android XML Node to a Java method block.
  * @author ch
  *
  */
 public class AXMLTranslater {
     private static AXMLTranslater translater = null;
     private HashMap<String, String> map = null;
-    /** record of {@link AXMLTranslater#extraMethod(String attrName , String attrValue)} **/
-    private boolean scale = false;
-    private String extraMethod = "";
-    private List<String> idList = new ArrayList<String>();
+    private static String extraMethod = "";
+    private static List<String> idList = new ArrayList<String>();
+    private static List<Class<?>> importList = new ArrayList<Class<?>>();
+    private int num = 1;
+    /** record of {@link AXMLTranslater#extraHandle(String attrName , String attrValue)} **/
+    private static boolean scale = false;
     
-	public static void main(String[] argv) {
-	    String attrName = "android:id";
-        String attrValue = "abc";
-        String method;
-        method = AXMLTranslater.getInstance().translate(attrName, attrValue);
-		System.out.println(method);
+	public AXMLTranslater() {
+        map = AndroidDocConverter.getMap();
 	}
 	
-	public AXMLTranslater() {
-	    if (map == null) {
-	        map = AndroidDocConverter.getMap();
-	    }
-	}
-	//AXMLConverter works. But too many attributes don't have related methods.
 	public static AXMLTranslater getInstance() {
 	    if (translater == null) {
 	        translater = new AXMLTranslater();
@@ -46,17 +40,37 @@ public class AXMLTranslater {
 	 * @param attrValue the value of attribute
 	 * @return
 	 */
-	public String translate(String attrName , String attrValue) {
-        String method = "";
-        try {
-            String methodName = transAttrToMethod(attrName);
-            String methodValue = translateValue(attrValue);
-            extraMethod(attrName, attrValue);
-            method = methodName + "(" + methodValue + ")";
-        } catch (AXMLException e) {
-            return "//" + attrName + "=\"" + attrValue + "\"";
+	public String translate(AXMLNode node) {
+	    String nodeName = AXMLUtil.classToObject(node.getName()) + num;
+        String javaBlock = "";
+        String newMethod = nodeName + " " + nodeName + " = new " + nodeName + "();\n";
+        javaBlock += newMethod;
+        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node);
+        for (Attribute a : node.getAttributes()) {
+            String attrMethod = "";
+            String attrName = a.getQualifiedName();
+            String attrValue = a.getValue();
+            try {
+                String methodName = transAttrToMethod(attrName);
+                String methodValue = translateValue(attrValue);
+                attrMethod = methodName + "(" + methodValue + ")";
+                attrMethod = nodeName + "." + attrMethod + ";\n";
+                addImport(node.getType());
+            } catch (AXMLException e) {
+                try {
+                    //deal with the attributes that doesn't match the XML attributes table
+                    attrMethod = specialTranslater.translate(a);
+                } catch (AXMLException e1) {
+                    //translater can not translate this attribute
+                    attrMethod = "//" + attrName + "=\"" + attrValue + "\";\n";
+                }
+            }
+            javaBlock += attrMethod;
         }
-        return method;
+        javaBlock += "\n";
+        num++;
+        
+        return javaBlock;
 	}
 	
 	/**
@@ -65,38 +79,20 @@ public class AXMLTranslater {
 	 * @return Android method matches the attribute without parameters.
 	 */
 	private String transAttrToMethod(String attrName) {
-		String method = matchMap(attrName);
-		return trimTheParam(method);
-	}
-	
-	/**
-	 * Find the conversion between XML attribute and Java method in the match map.
-	 * @param attrName
-	 * @return the method matches attribute or throws AXMLException
-	 */
-	private String matchMap(String attrName) {
-        //current version don't support database, use HashMap instead
-        //return AXMLDatabase.find("");
-	    if (!map.containsKey(attrName)) {
-	        throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
-	    }
-	    String methodName = map.get(attrName);
-	    if (methodName.equals("") || methodName.equals(null)) {
+	    //find the conversion between XML attribute and Java method in the match map.
+        if (!map.containsKey(attrName)) {
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
-	    }
-	    return methodName;
+        }
+        String methodName = map.get(attrName);
+        if (methodName.equals("") || methodName.equals(null)) {
+            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+        }
+        methodName = methodName.substring(0, methodName.indexOf("("));
+        return methodName;
 	}
 	
-	/**
-	 * Remove the method paramaters, keep the method name
-	 * @param method
-	 * @return
-	 */
-	private String trimTheParam(String method) {
-		return method.substring(0, method.indexOf("("));
-	}
-	
-	private String translateValue(String value) {
+	protected static String translateValue(String value) {
+        extraHandle(value);
 	    //dp, px, sp
 	    //not strict enough, should check attrName both
 	    if (value.matches("[0-9]+dp")) {
@@ -106,7 +102,11 @@ public class AXMLTranslater {
 	        value = value.substring(0, value.length() - 2);
 	    } else if (value.matches("[0-9]+px")) {
             value = value.substring(0, value.length() - 2);
-	    }
+        } else if (value.equals("fill_parent") || value.equals("match_parent")) {
+            value = "ViewGroup.LayoutParams.MATCH_PARENT";
+        } else if (value.equals("wrap_content")) {
+            value = "ViewGroup.LayoutParams.WRAP_CONTENT";
+        }
 	    
 	    if (value.contains("@+id/") || value.contains("@id/")) {
 	        value = value.substring(value.indexOf('/') + 1);
@@ -120,20 +120,33 @@ public class AXMLTranslater {
 	}
 	
 	/**
-	 * Find out what extra Java method have to add.
+	 * Find out what extra settings or buildings need to be added.
 	 * @param attrName
 	 * @param attrValue
 	 */
-	private void extraMethod(String attrName , String attrValue) {
-        if (attrValue.contains("dp")) {
+	private static void extraHandle(String attrValue) {
+        if (attrValue.matches("[0-9]+dp")) {
             if (!scale) {
                 scale = true;
-                extraMethod += "final float scale = context.getResources().getDisplayMetrics().density;\n";
+                extraMethod += "final float scale = this.getResources().getDisplayMetrics().density;\n";
             }
+        } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
+                || attrValue.equals("wrap_content")) {
+            importList.add(android.view.ViewGroup.LayoutParams.class);
         } else if (attrValue.contains("@+id/")) {
             idList.add(attrValue.substring(attrValue.indexOf('/') + 1));
         }
 	}
+    
+	/**
+	 *  Add the class to the import list. If already exists, ignore. 
+	 *  @param className the class try to be added in import list
+	 */
+    protected static void addImport(Class<?> className) {
+        if (!importList.contains(className)) {
+            importList.add(className);
+        }
+    }
     
     public String getExtraMethod() {
         return extraMethod;
@@ -141,5 +154,9 @@ public class AXMLTranslater {
     
     public List<String> getIdList() {
         return idList;
+    }
+    
+    public List<Class<?>> getImportList() {
+        return importList;
     }
 }
