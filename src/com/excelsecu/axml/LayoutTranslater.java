@@ -15,16 +15,16 @@ import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
  * @author ch
  *
  */
-public class AXMLTranslater {
+public class LayoutTranslater {
     private HashMap<String, String> map = null;
     private String extraMethod = "";
     private List<String> idList = new ArrayList<String>();
     private List<Class<?>> importList = new ArrayList<Class<?>>();
     private int num = 1;
-    /** record of {@link AXMLTranslater#extraHandle(String attrName , String attrValue)} **/
+    /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
     private static boolean scale = false;
     
-	public AXMLTranslater() {
+	public LayoutTranslater() {
         map = AndroidDocConverter.getMap();
 	}
 	
@@ -35,7 +35,7 @@ public class AXMLTranslater {
 	 * @return
 	 */
 	public String translate(AXMLNode node) {
-	    String nodeName = AXMLUtil.classToObject(node.getName()) + num;
+	    String nodeName = Util.classToObject(node.getName()) + num;
         String javaBlock = "";
         String newMethod = node.getName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
@@ -77,7 +77,7 @@ public class AXMLTranslater {
 	    String key = type.getSimpleName() + "$" + attrName;
         if (!map.containsKey(key)) {
             //find the conversion from its super class
-            while (AXMLUtil.isSupportClass(type.getSuperclass())) {
+            while (Util.isSupportClass(type.getSuperclass())) {
                 type = type.getSuperclass();
                 key = type.getSimpleName() + "$" + attrName;
                 if (map.containsKey(key))
@@ -184,7 +184,7 @@ public class AXMLTranslater {
             String javaBlock = "";
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 if (!widthAndHeight) {
-                    String paramName = AXMLUtil.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String paramName = Util.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
                     String width = findValueByName("android:layout_width");
                     String height = findValueByName("android:layout_height");
                     width = translateValue(width);

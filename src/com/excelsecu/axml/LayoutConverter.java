@@ -7,15 +7,15 @@ import java.util.List;
  * @author ch
  *
  */
-public class AXMLConverter {
+public class LayoutConverter {
     private String path;
-    private AXMLParser parser;
+    private Parser parser;
     private AXMLNode root;
-    private AXMLTranslater translater;
+    private LayoutTranslater translater;
     
     public static void main(String[] argv) {
         String path = "test.xml";
-        AXMLConverter converter = new AXMLConverter(path);
+        LayoutConverter converter = new LayoutConverter(path);
         String javaBlock = converter.convertAsString();
         String extraMethod = converter.getExtraMethod();
         System.out.println(extraMethod);
@@ -38,10 +38,10 @@ public class AXMLConverter {
         System.out.println("-----import end------");
     }
     
-    public AXMLConverter(String path) {
+    public LayoutConverter(String path) {
         this.path = path;
-        this.parser = new AXMLParser(path);
-        this.translater = new AXMLTranslater();
+        this.parser = new Parser(path);
+        this.translater = new LayoutTranslater();
         root = parser.parse();
     }
     

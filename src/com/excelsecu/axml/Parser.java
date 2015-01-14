@@ -13,17 +13,17 @@ import org.dom4j.io.SAXReader;
  * @author ch
  *
  */
-public class AXMLParser {
+public class Parser {
     private final String path;
     
     public static void main(String[] argv) {
         System.out.println("--------XMLParse start-------");
-        AXMLNode rootNode = new AXMLParser("test.xml").parse();
+        AXMLNode rootNode = new Parser("test.xml").parse();
         printNode(rootNode, 0);
         System.out.println("--------XMLParse end---------");
     }
     
-    public AXMLParser(String path) {
+    public Parser(String path) {
         this.path = path;
     }
     

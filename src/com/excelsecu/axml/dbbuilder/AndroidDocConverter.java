@@ -21,7 +21,7 @@ public class AndroidDocConverter {
         for (int i = 0; i < listPage.length; i++) {
             String path = listPage[i];
 		    System.out.println(path + "\n");
-		    HashMap<String, String> sublist = new AndroidDocFilter(AndroidDocConfig.CLASSES_LIST[i]).filterDoc(path);
+		    HashMap<String, String> sublist = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
 		    Iterator<Entry<String, String>> iter = sublist.entrySet().iterator(); 
 	            while (iter.hasNext()) {
 	                Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
@@ -33,8 +33,8 @@ public class AndroidDocConverter {
             attrToMethodMap.putAll(sublist);
 		}
         
-        attrToMethodMap.putAll(AndroidDocConfig.ADDITION_MAP);
-        Iterator<Entry<String, String>> iter = AndroidDocConfig.ADDITION_MAP.entrySet().iterator(); 
+        attrToMethodMap.putAll(Config.ADDITION_MAP);
+        Iterator<Entry<String, String>> iter = Config.ADDITION_MAP.entrySet().iterator(); 
         System.out.println("Additional\n");
         while (iter.hasNext()) {
             Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
@@ -49,12 +49,12 @@ public class AndroidDocConverter {
 	        String[] listPage = listPage();
 	        for (int i = 0; i < listPage.length; i++) {
 	            String path = listPage[i];
-	            HashMap<String, String> sublist = new AndroidDocFilter(AndroidDocConfig.CLASSES_LIST[i]).filterDoc(path);
+	            HashMap<String, String> sublist = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
 	            attrToMethodMap.putAll(sublist);
 	        }
 	    }
         //some attributes aren't shown in Android doc, add them in here.
-        attrToMethodMap.putAll(AndroidDocConfig.ADDITION_MAP);
+        attrToMethodMap.putAll(Config.ADDITION_MAP);
         return attrToMethodMap;
     }
 	
@@ -63,11 +63,11 @@ public class AndroidDocConverter {
 	 * @return The list of XML attribute to Java method table.
 	 */
 	public static String[] listPage() {
-	    String[] list = new String[AndroidDocConfig.CLASSES_LIST.length];
-		for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
-		    String name = AndroidDocConfig.CLASSES_LIST[i].getName();
+	    String[] list = new String[Config.CLASSES_LIST.length];
+		for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
+		    String name = Config.CLASSES_LIST[i].getName();
 		    name = name.replace('.', '/');
-		    name = AndroidDocConfig.BASE_PATH + name + ".html";
+		    name = Config.BASE_PATH + name + ".html";
 	        list[i] = name;
 		}
 		return list;

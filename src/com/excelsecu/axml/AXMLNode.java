@@ -6,7 +6,7 @@ import java.util.List;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
-import com.excelsecu.axml.dbbuilder.AndroidDocConfig;
+import com.excelsecu.axml.dbbuilder.Config;
 
 public class AXMLNode implements Cloneable {
     private AXMLNode parent;
@@ -46,15 +46,15 @@ public class AXMLNode implements Cloneable {
     
     private Class<?> matchClass() {
         String name = e.getName();
-        for (int i = 0; i < AndroidDocConfig.CLASSES_LIST.length; i++) {
+        for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
             String className = "";
             if (name.contains("support")) {
-                className = AndroidDocConfig.CLASSES_LIST[i].getName();
+                className = Config.CLASSES_LIST[i].getName();
             } else {
-                className = AndroidDocConfig.CLASSES_LIST[i].getSimpleName();
+                className = Config.CLASSES_LIST[i].getSimpleName();
             }
             if (className.equals(name)) {
-                return AndroidDocConfig.CLASSES_LIST[i];
+                return Config.CLASSES_LIST[i];
             }
         }
         return null;

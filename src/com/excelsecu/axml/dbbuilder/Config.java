@@ -2,7 +2,7 @@ package com.excelsecu.axml.dbbuilder;
 
 import java.util.HashMap;
 
-public class AndroidDocConfig {
+public class Config {
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {
     	/** Super **/

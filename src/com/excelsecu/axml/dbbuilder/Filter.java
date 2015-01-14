@@ -19,12 +19,12 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-public class AndroidDocFilter {
+public class Filter {
     private Class<?> type;
     
 	public static void main(String[] argc) {
-		String path = AndroidDocConfig.VIEW_PATH;
-		AndroidDocFilter docFilter = new AndroidDocFilter(android.view.View.class);
+		String path = Config.VIEW_PATH;
+		Filter docFilter = new Filter(android.view.View.class);
 		HashMap<String, String> attrToMethodList = docFilter.filterDoc(path);
 		Iterator<Entry<String, String>> iter = attrToMethodList.entrySet().iterator();
 		while (iter.hasNext()) {
@@ -35,7 +35,7 @@ public class AndroidDocFilter {
 		}
 	}
 	
-	public AndroidDocFilter(Class<?> type) {
+	public Filter(Class<?> type) {
 	    this.type = type;
 	}
 	
@@ -47,7 +47,7 @@ public class AndroidDocFilter {
 	
     private String readDoc(String fileName) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), AndroidDocConfig.ENCODE));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), Config.ENCODE));
             String content = "";
             String buf;
             
@@ -82,7 +82,7 @@ public class AndroidDocFilter {
     private HashMap<String, String> filter(String content) {
         try {
         	HashMap<String, String> attrMap = new HashMap<String, String>();
-            Parser parser = Parser.createParser(content, AndroidDocConfig.ENCODE);
+            Parser parser = Parser.createParser(content, Config.ENCODE);
             AndFilter andFilter1 =
                     new AndFilter(new TagNameFilter("tr"), new HasAttributeFilter("class","alt-color api apilevel-"));
             AndFilter andFilter2 =
