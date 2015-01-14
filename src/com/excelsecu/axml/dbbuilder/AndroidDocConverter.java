@@ -6,12 +6,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * In current test version, this program will run everytime to generate the table.
+ * Convert Offline Androd Doc in SDK manager to the conversion table(HashMap<String, String>).
+ * In current test version, this program will run everytime to generate the HashMap.<p>
+ * The table will storage like "View$set.orientation=setOrientation(int)".
+ * 
  * @author ch
  *
  */
 public class AndroidDocConverter {
-    public static HashMap<String, String> attrToMethodMap = new HashMap<String, String>();
+    private static HashMap<String, String> attrToMethodMap = new HashMap<String, String>();
     
 	public static void main(String[] argv) {
 		String[] listPage = listPage();

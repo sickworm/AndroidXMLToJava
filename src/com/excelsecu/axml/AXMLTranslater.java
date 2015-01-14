@@ -47,14 +47,11 @@ public class AXMLTranslater {
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node);
         for (Attribute a : node.getAttributes()) {
-            if (a.getQualifiedName().equals("android:orientation")) {
-                num++;
-            }
             String attrMethod = "";
             String attrName = a.getQualifiedName();
             String attrValue = a.getValue();
             try {
-                String methodName = transAttrToMethod(attrName, node.getName());
+                String methodName = transAttrToMethod(attrName, node.getType());
                 String methodValue = translateValue(attrValue);
                 attrMethod = methodName + "(" + methodValue + ")";
                 attrMethod = nodeName + "." + attrMethod + ";\n";
@@ -81,11 +78,19 @@ public class AXMLTranslater {
 	 * @param attrName	The name of attribute.
 	 * @return Android method matches the attribute without parameters.
 	 */
-	private String transAttrToMethod(String attrName, String className) {
+	private String transAttrToMethod(String attrName, Class<?> type) {
 	    //find the conversion between XML attribute and Java method in the match map.
-	    String key = className + "$" + attrName;
+	    String key = type.getSimpleName() + "$" + attrName;
         if (!map.containsKey(key)) {
-            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+            //find the conversion from its super class
+            while (AXMLUtil.isSupportClass(type.getSuperclass())) {
+                type = type.getSuperclass();
+                key = type.getSimpleName() + "$" + attrName;
+                if (map.containsKey(key))
+                    break;
+            }
+            if (!map.containsKey(key))
+                throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
         }
         String methodName = map.get(key);
         if (methodName.equals(null) || methodName.equals("")) {
