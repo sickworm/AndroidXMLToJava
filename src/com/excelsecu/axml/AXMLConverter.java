@@ -22,15 +22,14 @@ public class AXMLConverter {
         System.out.println(javaBlock);
 
         System.out.println("-----id start-----");
-        AXMLTranslater trans = AXMLTranslater.getInstance();
-        List<String> idList = trans.getIdList();
+        List<String> idList = converter.getIdList();
         for (String id : idList) {
             System.out.println("R.id." + id);
         }
         System.out.println("-----id end------");
         System.out.println("");
         System.out.println("-----import start-----");
-        List<Class<?>> classList = trans.getImportList();
+        List<Class<?>> classList = converter.getImportList();
         for (Class<?> c : classList) {
             String className = c.getName();
             className = className.replace('$', '.');
@@ -42,7 +41,7 @@ public class AXMLConverter {
     public AXMLConverter(String path) {
         this.path = path;
         this.parser = new AXMLParser(path);
-        this.translater = AXMLTranslater.getInstance();
+        this.translater = new AXMLTranslater();
         root = parser.parse();
     }
     

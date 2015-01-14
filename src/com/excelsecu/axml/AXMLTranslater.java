@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
+import android.view.ViewGroup;
+
 import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
 
 /**
@@ -14,24 +16,16 @@ import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
  *
  */
 public class AXMLTranslater {
-    private static AXMLTranslater translater = null;
     private HashMap<String, String> map = null;
-    private static String extraMethod = "";
-    private static List<String> idList = new ArrayList<String>();
-    private static List<Class<?>> importList = new ArrayList<Class<?>>();
+    private String extraMethod = "";
+    private List<String> idList = new ArrayList<String>();
+    private List<Class<?>> importList = new ArrayList<Class<?>>();
     private int num = 1;
     /** record of {@link AXMLTranslater#extraHandle(String attrName , String attrValue)} **/
     private static boolean scale = false;
     
 	public AXMLTranslater() {
         map = AndroidDocConverter.getMap();
-	}
-	
-	public static AXMLTranslater getInstance() {
-	    if (translater == null) {
-	        translater = new AXMLTranslater();
-	    }
-	    return translater;
 	}
 	
 	/**
@@ -100,7 +94,7 @@ public class AXMLTranslater {
         return methodName;
 	}
 	
-	protected static String translateValue(String value) {
+	protected String translateValue(String value) {
         extraHandle(value);
 	    //dp, px, sp
 	    //not strict enough, should check attrName both
@@ -133,7 +127,7 @@ public class AXMLTranslater {
 	 * @param attrName
 	 * @param attrValue
 	 */
-	private static void extraHandle(String attrValue) {
+	private void extraHandle(String attrValue) {
         if (attrValue.matches("[0-9]+dp")) {
             if (!scale) {
                 scale = true;
@@ -151,7 +145,7 @@ public class AXMLTranslater {
 	 *  Add the class to the import list. If already exists, ignore. 
 	 *  @param className the class try to be added in import list
 	 */
-    protected static void addImport(Class<?> className) {
+    protected void addImport(Class<?> className) {
         if (!importList.contains(className)) {
             importList.add(className);
         }
@@ -167,5 +161,50 @@ public class AXMLTranslater {
     
     public List<Class<?>> getImportList() {
         return importList;
+    }
+    
+    public class AXMLSpecialTranslater {
+        private int num;
+        private String nodeName;
+        @SuppressWarnings("unused")
+        private AXMLNode node;
+        List<Attribute> attrList;
+        /** set up width and height just need one setting **/
+        private boolean widthAndHeight = false;
+        
+        public AXMLSpecialTranslater(String nodeName, AXMLNode node, int num) {
+            this.nodeName = nodeName;
+            this.node = node;
+            this.num = num;
+            attrList = node.getAttributes();
+        }
+        
+        public String translate(Attribute attr) throws AXMLException {
+            String attrName = attr.getQualifiedName();
+            String javaBlock = "";
+            if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
+                if (!widthAndHeight) {
+                    String paramName = AXMLUtil.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String width = findValueByName("android:layout_width");
+                    String height = findValueByName("android:layout_height");
+                    width = translateValue(width);
+                    height = translateValue(height);
+                    javaBlock = "ViewGroup.LayoutParams " + paramName + " = new ViewGroup.LayoutParams(" +width + ", " + height + ");\n";
+                    javaBlock += nodeName + ".setLayoutParams(" + paramName + ");\n";
+                    widthAndHeight = true;
+                }
+                return javaBlock;
+            }
+            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+        }
+        
+        private String findValueByName(String attrName) {
+            for (Attribute a : attrList) {
+                if (a.getQualifiedName().equals(attrName)) {
+                    return a.getValue();
+                }
+            }
+            throw new AXMLException(AXMLException.ATTRIBUTE_NOT_FOUND);
+        }
     }
 }
