@@ -7,7 +7,7 @@ import org.dom4j.Attribute;
 import android.view.ViewGroup;
 
 public class AXMLSpecialTranslater {
-    int num = 1;
+    private int num;
     private String nodeName;
     @SuppressWarnings("unused")
     private AXMLNode node;
@@ -15,9 +15,10 @@ public class AXMLSpecialTranslater {
     /** set up width and height just need one setting **/
     private boolean widthAndHeight = false;
     
-    public AXMLSpecialTranslater(String nodeName, AXMLNode node) {
+    public AXMLSpecialTranslater(String nodeName, AXMLNode node, int num) {
         this.nodeName = nodeName;
         this.node = node;
+        this.num = num;
         attrList = node.getAttributes();
     }
     

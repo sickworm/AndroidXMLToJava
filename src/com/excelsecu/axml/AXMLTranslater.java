@@ -45,7 +45,7 @@ public class AXMLTranslater {
         String javaBlock = "";
         String newMethod = node.getName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
-        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node);
+        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
         for (Attribute a : node.getAttributes()) {
             String attrMethod = "";
             String attrName = a.getQualifiedName();

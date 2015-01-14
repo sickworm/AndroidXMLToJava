@@ -1,5 +1,7 @@
 package com.excelsecu.axml.dbbuilder;
 
+import java.util.HashMap;
+
 public class AndroidDocConfig {
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {
@@ -87,6 +89,14 @@ public class AndroidDocConfig {
         android.widget.TextClock.class,
         android.widget.Toolbar.class,
     };
+
+    /**
+     * some attributes aren't shown in Android doc, add them in here
+     */
+    public static final HashMap<String, String> ADDITION_MAP = new HashMap<String, String>();
+    static {
+        ADDITION_MAP.put("View$android:enabled", "setEnabled(boolean)");
+    }
     
     /**the local Android doc path from SDK Manager**/
     public static final String BASE_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";

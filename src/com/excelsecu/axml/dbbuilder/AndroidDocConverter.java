@@ -32,6 +32,16 @@ public class AndroidDocConverter {
             System.out.println("");
             attrToMethodMap.putAll(sublist);
 		}
+        
+        attrToMethodMap.putAll(AndroidDocConfig.ADDITION_MAP);
+        Iterator<Entry<String, String>> iter = AndroidDocConfig.ADDITION_MAP.entrySet().iterator(); 
+        System.out.println("Additional\n");
+        while (iter.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            System.out.println(key + "\n\t" + value + "\n");
+        }
 	}
 	
 	public static HashMap<String, String> getMap() {
@@ -43,6 +53,8 @@ public class AndroidDocConverter {
 	            attrToMethodMap.putAll(sublist);
 	        }
 	    }
+        //some attributes aren't shown in Android doc, add them in here.
+        attrToMethodMap.putAll(AndroidDocConfig.ADDITION_MAP);
         return attrToMethodMap;
     }
 	

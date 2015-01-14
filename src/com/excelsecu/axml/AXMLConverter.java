@@ -3,7 +3,7 @@ package com.excelsecu.axml;
 import java.util.List;
 
 /**
- * Convert Android XML file to Java method block
+ * Convert an Android XML file to Java method block
  * @author ch
  *
  */
