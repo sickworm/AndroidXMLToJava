@@ -41,6 +41,8 @@ public class Config {
     	android.app.Fragment.class,
     	
     	/** Composite **/
+        android.widget.ListView.class,
+        android.widget.ExpandableListView.class,
         android.widget.GridView.class,
         android.widget.ScrollView.class,
         android.widget.HorizontalScrollView.class,

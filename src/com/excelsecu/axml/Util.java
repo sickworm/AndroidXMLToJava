@@ -1,8 +1,11 @@
 package com.excelsecu.axml;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.excelsecu.axml.dbbuilder.Config;
@@ -59,6 +62,64 @@ public class Util {
         catch( Exception e ) {
             e.printStackTrace();
             return "";
+        }
+    }
+    
+    /**
+     * Find out the class which matches the XML label
+     * @param XML label
+     * @return the class matches the XML label or null when not found
+     */
+    public static Class<?> matchClass(String name) {
+        for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
+            String className = "";
+            if (name.contains("support")) {
+                className = Config.CLASSES_LIST[i].getName();
+            } else {
+                className = Config.CLASSES_LIST[i].getSimpleName();
+            }
+            if (className.equals(name)) {
+                return Config.CLASSES_LIST[i];
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 
+     * Generate Java file according to the path and content. Auto override and create directory.
+     * @param path the path of the file to be built
+     * @param content the content of the file
+     */
+    public static void generateFile(String path, String content) {
+        int index = path.lastIndexOf('\\');
+        if (index == -1) {
+            index = path.lastIndexOf('/');
+        }
+        if (index == -1) {
+            throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
+        }
+        String dir = path.substring(0, index);
+        File dirFile = new File(dir);
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            dirFile.mkdirs();
+        }
+        File javaFile = new File(path);
+        if (!javaFile.exists()) {
+            try {
+                javaFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
+            }
+        }
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
+            out.write(content);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
         }
     }
 }

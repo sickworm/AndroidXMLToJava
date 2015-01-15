@@ -35,8 +35,19 @@ public class LayoutTranslater {
 	 * @return
 	 */
 	public String translate(AXMLNode node) {
-	    String nodeName = Util.classToObject(node.getName()) + num;
         String javaBlock = "";
+	    try {
+	        node.getType();
+	    } catch (AXMLException e) {
+	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
+	            System.out.println("<" + node.getName() + "/>" + " label not support");
+	            javaBlock = "//<" + node.getName() + "/>\n";
+	            return javaBlock;
+	        }
+	        e.printStackTrace();
+	    }
+	    
+	    String nodeName = Util.classToObject(node.getName()) + num;
         String newMethod = node.getName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
@@ -83,12 +94,13 @@ public class LayoutTranslater {
                 if (map.containsKey(key))
                     break;
             }
-            if (!map.containsKey(key))
-                throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+            if (!map.containsKey(key)) {
+                throw new AXMLException(AXMLException.METHOD_NOT_FOUND, key);
+            }
         }
         String methodName = map.get(key);
         if (methodName.equals(null) || methodName.equals("")) {
-            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+            throw new AXMLException(AXMLException.METHOD_NOT_FOUND, key);
         }
         methodName = methodName.substring(0, methodName.indexOf("("));
         return methodName;

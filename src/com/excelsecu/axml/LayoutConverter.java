@@ -42,14 +42,14 @@ public class LayoutConverter {
         this.path = path;
         this.parser = new Parser(path);
         this.translater = new LayoutTranslater();
-        root = parser.parse();
     }
     
     public String convertAsString() {
+        root = parser.parse();
         return convert(root);
     }
     
-    public String convert(AXMLNode root) {
+    private String convert(AXMLNode root) {
         String javaBlock = "";
         String nodeJavaBlock = translater.translate(root);
         javaBlock += nodeJavaBlock;

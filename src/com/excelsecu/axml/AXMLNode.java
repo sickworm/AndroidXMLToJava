@@ -6,8 +6,6 @@ import java.util.List;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
-import com.excelsecu.axml.dbbuilder.Config;
-
 public class AXMLNode implements Cloneable {
     private AXMLNode parent;
     private List<AXMLNode> children;
@@ -15,7 +13,7 @@ public class AXMLNode implements Cloneable {
     private int layer;
     private Element e;
     private List<Attribute> attrList;
-    private Class<?> type;
+    private Class<?> type = null;
     
     public AXMLNode(AXMLNode parent, Element e, int layer) {
         this.parent = parent;
@@ -26,15 +24,15 @@ public class AXMLNode implements Cloneable {
             parent.addChild(this);
         }
         if (e == null) {
-            throw new AXMLException(AXMLException.PARAMETER_NOT_INITIALIZE);
+            throw new AXMLException(AXMLException.PARAMETER_NOT_INITIALIZE,
+                    "AXMLNode constructor Element object is null");
         } else {
             this.e = e;
         }
-        this.type = matchClass();
-        if (this.type == null) {
-            throw new AXMLException(AXMLException.CLASS_NOT_FOUND);
-        }
-        attrList = new ArrayList<Attribute>();
+        
+        this.type = Util.matchClass(e.getName());
+        
+        this.attrList = new ArrayList<Attribute>();
         for (int i = 0; i < e.attributeCount(); i++) {
             attrList.add(e.attribute(i));
         }
@@ -42,22 +40,6 @@ public class AXMLNode implements Cloneable {
     
     public void addChild(AXMLNode child) {
         children.add(child);
-    }
-    
-    private Class<?> matchClass() {
-        String name = e.getName();
-        for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
-            String className = "";
-            if (name.contains("support")) {
-                className = Config.CLASSES_LIST[i].getName();
-            } else {
-                className = Config.CLASSES_LIST[i].getSimpleName();
-            }
-            if (className.equals(name)) {
-                return Config.CLASSES_LIST[i];
-            }
-        }
-        return null;
     }
     
     public AXMLNode getParent() {
@@ -69,6 +51,9 @@ public class AXMLNode implements Cloneable {
     }
     
     public Class<?> getType() {
+        if (type == null) {
+            throw new AXMLException(AXMLException.CLASS_NOT_FOUND, getName());
+        }
         return type;
     }
     
@@ -84,7 +69,11 @@ public class AXMLNode implements Cloneable {
         return layer;
     }
     
-    protected AXMLNode clone() {
+    public String asXML() {
+        return e.asXML();
+    }
+    
+    public AXMLNode clone() {
         return new AXMLNode(this.parent, this.e, this.layer);
     }
 }

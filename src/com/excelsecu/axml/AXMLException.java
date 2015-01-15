@@ -16,14 +16,30 @@ public class AXMLException extends RuntimeException {
     public static final int PROJECT_DIR_NOT_FOUND = 0x00000005;
     /**the parameter haven't initialize**/
     public static final int PARAMETER_NOT_INITIALIZE = 0x00010001;
+    /**error when generating the Java file**/
+    public static final int FILE_BUILD_ERROR = 0x00020001;
 
     private int errorCode = NO_ERROR;
-    
+    private String details = "";
+
     public AXMLException(int errorCode) {
         this.errorCode = errorCode;
     }
     
+    public AXMLException(int errorCode, String details) {
+        this.errorCode = errorCode;
+        this.details = details;
+    }
+    
     public int getErrorCode() {
         return errorCode;
+    }
+    
+    public void setDetails(String details) {
+        this.details = details;
+    }
+    
+    public String getDetails() {
+        return details;
     }
 }

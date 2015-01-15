@@ -57,7 +57,7 @@ public class Parser {
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
         if (list == null || list.size() == 0) {
-            return null;
+            return node;
         }
         for(Element e : list){
             parseElements(node, e, layer + 1);
