@@ -41,7 +41,7 @@ public class LayoutTranslater {
 	        type = node.getType();
 	    } catch (AXMLException e) {
 	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
-	            System.out.println("<" + node.getLabelName() + "/>" + " label not support\n");
+	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
 	            javaBlock = "//<" + node.getLabelName() + "/>\n\n";
 	            return javaBlock;
 	        }

@@ -91,12 +91,12 @@ public class Util {
      * @param path the path of the file to be built
      * @param content the content of the file
      */
-    public static void generateFile(File f, String content) {
+    public static void generateFile(File f, String content, boolean append) {
         String subPath = f.getPath();
         subPath = subPath.substring(4);
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.lastIndexOf('.')) + ".java";
-        String path = Config.PROJECT_OUT_PATH + Config.PACKAGE_PATH + subPath;
+        String path = Config.PROJECT_OUT_PATH + subPath;
         int index = path.lastIndexOf(File.separator);
         if (index == -1) {
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
@@ -106,7 +106,14 @@ public class Util {
         if (!dirFile.exists() || !dirFile.isDirectory()) {
             dirFile.mkdirs();
         }
+        
         File javaFile = new File(path);
+        if (append && javaFile.exists() && javaFile.isFile()) {
+            System.out.println("Append content to" + path + "...");
+        } else {
+            System.out.println("Generating " + path + "...");
+        }
+        
         if (!javaFile.exists()) {
             try {
                 javaFile.createNewFile();
@@ -116,7 +123,7 @@ public class Util {
             }
         }
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
+            BufferedWriter out = new BufferedWriter(new FileWriter(javaFile, append));
             out.write(content);
             out.close();
         } catch (IOException e) {
