@@ -32,16 +32,16 @@ public class ProjectConverter {
     private static void LayoutOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
+            if (!Util.getFileExtension(f).equals("xml")) {
+                continue;
+            }
             if (f.isFile() && f.getName().endsWith(".xml")) {
                 System.out.println(f.getName() + "\n");
                 try {
                     LayoutConverter converter = new LayoutConverter(f.getPath());
                     String content = converter.convertAsString();
-                    String path = Config.PROJECT_OUT_PATH + Config.PACKAGE_PATH +
-                            dir.getPath().substring(4) + "/" +
-                            f.getName().substring(0, f.getName().lastIndexOf('.')) + ".java";
                     idList.addAll(converter.getIdList());
-                    Util.generateFile(path, content);
+                    Util.generateFile(f, content);
                 } catch (AXMLException e) {
                     System.out.println(f.getName() + " convert error: " +
                             e.getErrorCode() + " " + e.getDetails() + "\n");
@@ -50,6 +50,5 @@ public class ProjectConverter {
             }
         }
     }
-    
     
 }

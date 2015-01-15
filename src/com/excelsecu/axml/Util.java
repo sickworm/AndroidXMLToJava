@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.excelsecu.axml.dbbuilder.Config;
+import com.excelsecu.axml.Config;
 
 /**
  * Util of com.excelsecu.axml package
@@ -91,11 +91,13 @@ public class Util {
      * @param path the path of the file to be built
      * @param content the content of the file
      */
-    public static void generateFile(String path, String content) {
-        int index = path.lastIndexOf('\\');
-        if (index == -1) {
-            index = path.lastIndexOf('/');
-        }
+    public static void generateFile(File f, String content) {
+        String subPath = f.getPath();
+        subPath = subPath.substring(4);
+        //subPath = subPath.replace(".xml", ".java") is not safety
+        subPath = subPath.substring(0, subPath.lastIndexOf('.')) + ".java";
+        String path = Config.PROJECT_OUT_PATH + Config.PACKAGE_PATH + subPath;
+        int index = path.lastIndexOf(File.separator);
         if (index == -1) {
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
         }
@@ -120,6 +122,20 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
+        }
+    }
+    
+    /**
+     * Get the file extension, return "" if no extension
+     * @param file
+     * @return extension of the file
+     */
+    public static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            return "";
         }
     }
 }
