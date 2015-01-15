@@ -1,1 +1,4 @@
 Android XML to Java code. Still on Development.
+
+2015/1/14:
+Support some basic attributes of layout XML. Like id, layout_width, layout_height, enabled.
