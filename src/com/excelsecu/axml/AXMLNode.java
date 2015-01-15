@@ -13,6 +13,7 @@ public class AXMLNode implements Cloneable {
     private int layer;
     private Element e;
     private List<Attribute> attrList;
+    private String objectName = "";
     private Class<?> type = null;
     
     public AXMLNode(AXMLNode parent, Element e, int layer) {
@@ -52,13 +53,21 @@ public class AXMLNode implements Cloneable {
     
     public Class<?> getType() {
         if (type == null) {
-            throw new AXMLException(AXMLException.CLASS_NOT_FOUND, getName());
+            throw new AXMLException(AXMLException.CLASS_NOT_FOUND, getLabelName());
         }
         return type;
     }
     
-    public String getName() {
+    public String getLabelName() {
         return e.getName();
+    }
+    
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
+    }
+    
+    public String getObjectName() {
+        return objectName;
     }
     
     public List<Attribute> getAttributes() {

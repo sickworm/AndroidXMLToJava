@@ -80,7 +80,7 @@ public class Parser {
             tab += "\t";
             i--;
         }
-        System.out.println(tab + "<" + rootNode.getName() + ">");
+        System.out.println(tab + "<" + rootNode.getLabelName() + ">");
         List<Attribute> attrList = rootNode.getAttributes();
         for (Attribute a : attrList) {
             System.out.println(tab + "\t" + a.getQualifiedName() + " = " + a.getValue());

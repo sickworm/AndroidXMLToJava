@@ -36,19 +36,21 @@ public class LayoutTranslater {
 	 */
 	public String translate(AXMLNode node) {
         String javaBlock = "";
+        Class<?> type = null;
 	    try {
-	        node.getType();
+	        type = node.getType();
 	    } catch (AXMLException e) {
 	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
-	            System.out.println("<" + node.getName() + "/>" + " label not support");
-	            javaBlock = "//<" + node.getName() + "/>\n";
+	            System.out.println("<" + node.getLabelName() + "/>" + " label not support\n");
+	            javaBlock = "//<" + node.getLabelName() + "/>\n";
 	            return javaBlock;
 	        }
 	        e.printStackTrace();
 	    }
 	    
-	    String nodeName = Util.classToObject(node.getName()) + num;
-        String newMethod = node.getName() + " " + nodeName + " = new " + nodeName + "();\n";
+	    String nodeName = Util.classToObject(node.getLabelName()) + num;
+	    node.setObjectName(nodeName);
+        String newMethod = node.getLabelName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
         for (Attribute a : node.getAttributes()) {
@@ -56,7 +58,7 @@ public class LayoutTranslater {
             String attrName = a.getQualifiedName();
             String attrValue = a.getValue();
             try {
-                String methodName = transAttrToMethod(attrName, node.getType());
+                String methodName = transAttrToMethod(a, type);
                 String methodValue = translateValue(attrValue);
                 attrMethod = methodName + "(" + methodValue + ")";
                 attrMethod = nodeName + "." + attrMethod + ";\n";
@@ -72,6 +74,11 @@ public class LayoutTranslater {
             }
             javaBlock += attrMethod;
         }
+        AXMLNode parent = node.getParent();
+        if (parent != null) {
+            String addViewMethod = parent.getObjectName() + ".addView(" + nodeName + ");\n";
+            javaBlock += addViewMethod;
+        }
         javaBlock += "\n";
         num++;
         
@@ -83,8 +90,10 @@ public class LayoutTranslater {
 	 * @param attrName	The name of attribute.
 	 * @return Android method matches the attribute without parameters.
 	 */
-	private String transAttrToMethod(String attrName, Class<?> type) {
+	private String transAttrToMethod(Attribute a, Class<?> type) {
 	    //find the conversion between XML attribute and Java method in the match map.
+	    String attrName = a.getQualifiedName();
+	    String attrValue = a.getValue();
 	    String key = type.getSimpleName() + "$" + attrName;
         if (!map.containsKey(key)) {
             //find the conversion from its super class
@@ -102,14 +111,22 @@ public class LayoutTranslater {
         if (methodName.equals(null) || methodName.equals("")) {
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND, key);
         }
+        
+        //when attribute has several types of value (like android:background),
+        //change the method if nessary.
+        if (attrValue.matches("#[0-9a-fA-F]+") &&
+                methodName.equals("setBackgroundResource(int)")) {
+            methodName = "setBackgroundColor(int)";
+        }
+
         methodName = methodName.substring(0, methodName.indexOf("("));
         return methodName;
 	}
 	
 	protected String translateValue(String value) {
         extraHandle(value);
+        //not strict enough, should check attrName both
 	    //dp, px, sp
-	    //not strict enough, should check attrName both
 	    if (value.matches("[0-9]+dp")) {
             value = value.substring(0, value.length() - 2);
             value = value + " / scale + 0.5f";
@@ -123,14 +140,28 @@ public class LayoutTranslater {
             value = "ViewGroup.LayoutParams.WRAP_CONTENT";
         }
 	    
-	    if (value.contains("@+id/") || value.contains("@id/")) {
+	    //id
+	    if (value.startsWith("@+id/") || value.startsWith("@id/")) {
 	        value = value.substring(value.indexOf('/') + 1);
 	        value = "R.id." + value;
 	    } else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
             value = "R.id." + value;
-	        value = "getResources().getString(" + value + ")";
+	        value = "AXMLResource.getString(" + value + ")";
         }
+	    
+	    //color
+	    if (value.matches("#[0-9a-fA-F]+")) {
+	        value = value.replace("#", "0x");
+	    }
+	    
+	    //visibility
+	    if (value.equals("gone") || value.equals("visibile") ||
+	            value.equals("invisibile")) {
+	        value = "View." + value.toUpperCase();
+	        addImport(android.view.View.class);
+	    }
+	    
         return value;
 	}
 	
@@ -183,6 +214,8 @@ public class LayoutTranslater {
         List<Attribute> attrList;
         /** set up width and height just need one setting **/
         private boolean widthAndHeight = false;
+        /** set up margin just need one setting **/
+        private boolean margin = false;
         
         public AXMLSpecialTranslater(String nodeName, AXMLNode node, int num) {
             this.nodeName = nodeName;
@@ -194,19 +227,48 @@ public class LayoutTranslater {
         public String translate(Attribute attr) throws AXMLException {
             String attrName = attr.getQualifiedName();
             String javaBlock = "";
+
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 if (!widthAndHeight) {
                     String paramName = Util.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
                     String width = findValueByName("android:layout_width");
                     String height = findValueByName("android:layout_height");
-                    width = translateValue(width);
-                    height = translateValue(height);
-                    javaBlock = "ViewGroup.LayoutParams " + paramName + " = new ViewGroup.LayoutParams(" +width + ", " + height + ");\n";
+                    width = width.equals("")?
+                            "ViewGroup.LayoutParams.WRAP_CONTENT" : translateValue(width);
+                    height = height.equals("")?
+                            "ViewGroup.LayoutParams.WRAP_CONTENT" : translateValue(width);
+                    String paramValue = width + ", " + height;
+                    javaBlock = "ViewGroup.LayoutParams " + paramName +
+                            " = new ViewGroup.LayoutParams(" + paramValue + ");\n";
                     javaBlock += nodeName + ".setLayoutParams(" + paramName + ");\n";
                     widthAndHeight = true;
+                    return javaBlock;
                 }
-                return javaBlock;
+                return "";
             }
+
+            if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
+                    attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
+                if (!margin) {
+                    String paramName = Util.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String left = findValueByName("android:layout_marginLeft");
+                    String top = findValueByName("android:layout_marginTop");
+                    String right = findValueByName("android:layout_marginRight");
+                    String bottom = findValueByName("android:layout_marginBottom");
+                    left = left.equals("")? "0" : translateValue(left);
+                    top = top.equals("")? "0" : translateValue(top);
+                    right = right.equals("")? "0" : translateValue(right);
+                    bottom = bottom.equals("")? "0" : translateValue(bottom);
+                    String paramValue = left + ", " + top + ", " + right + ", " + bottom;
+                    javaBlock = "ViewGroup.MarginLayoutParams " + paramName +
+                            " = new ViewGroup.MarginLayoutParams(" + paramValue + ");\n";
+                    javaBlock += nodeName + ".setMargins(" + paramName + ");\n";
+                    margin = true;
+                    return javaBlock;
+                }
+                return "";
+            }
+            
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
         }
         
@@ -216,7 +278,7 @@ public class LayoutTranslater {
                     return a.getValue();
                 }
             }
-            throw new AXMLException(AXMLException.ATTRIBUTE_NOT_FOUND);
+            return "";
         }
     }
 }

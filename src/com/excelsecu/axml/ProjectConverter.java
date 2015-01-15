@@ -1,9 +1,11 @@
 package com.excelsecu.axml;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectConverter {
-    
+    private static List<String> idList = new ArrayList<String>();
     public static void main(String[] argv) {
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
@@ -35,16 +37,19 @@ public class ProjectConverter {
                 try {
                     LayoutConverter converter = new LayoutConverter(f.getPath());
                     String content = converter.convertAsString();
-                    String sep = System.getProperty("file.separator");
-                    String path = Config.PROJECT_OUT_PATH + sep + "layout" + sep +
+                    String path = Config.PROJECT_OUT_PATH + Config.PACKAGE_PATH +
+                            dir.getPath().substring(4) + "/" +
                             f.getName().substring(0, f.getName().lastIndexOf('.')) + ".java";
+                    idList.addAll(converter.getIdList());
                     Util.generateFile(path, content);
                 } catch (AXMLException e) {
                     System.out.println(f.getName() + " convert error: " +
-                            e.getErrorCode() + " " + e.getDetails());
+                            e.getErrorCode() + " " + e.getDetails() + "\n");
                     e.printStackTrace();
                 }
             }
         }
     }
+    
+    
 }
