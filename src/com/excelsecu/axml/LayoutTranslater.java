@@ -18,7 +18,7 @@ import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
 public class LayoutTranslater {
     private HashMap<String, String> map = null;
     private String extraMethod = "";
-    private List<String> idList = new ArrayList<String>();
+    private static List<String> idList = new ArrayList<String>();
     private List<Class<?>> importList = new ArrayList<Class<?>>();
     private int num = 1;
     /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
@@ -148,7 +148,7 @@ public class LayoutTranslater {
 	    } else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
             value = "R.string." + value;
-	        value = "AXMLResource.getString(" + value + ")";
+	        value = "AXMLResources.getString(" + value + ")";
         }
 	    
 	    //color
@@ -167,7 +167,7 @@ public class LayoutTranslater {
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
             value = "R.drawable." + value;
-            value = "AXMLResource.getDrawable(" + value + ")";
+            value = "AXMLResources.getDrawable(" + value + ")";
         }
 	    
         return value;
@@ -188,8 +188,12 @@ public class LayoutTranslater {
                 scale = true;
                 extraMethod += "final float scale = this.getResources().getDisplayMetrics().density;\n";
             }
-        } else if (attrValue.startsWith("@+id/")) {
-            idList.add(attrValue.substring(attrValue.indexOf('/') + 1));
+        } else if (attrName.equals("android:id") &&
+                attrValue.startsWith("@+id/")) {
+            String id = attrValue.substring(attrValue.indexOf('/') + 1);
+            if (!idList.contains(id)) {
+                idList.add(id);
+            }
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {
             addImport(android.view.ViewGroup.LayoutParams.class);
@@ -212,7 +216,7 @@ public class LayoutTranslater {
         return extraMethod;
     }
     
-    public List<String> getIdList() {
+    public static List<String> getIdList() {
         return idList;
     }
     

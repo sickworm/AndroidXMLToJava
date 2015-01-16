@@ -38,7 +38,7 @@ public class ProjectConverter {
         if (!res.isDirectory()) {
             throw new AXMLException(AXMLException.PROJECT_DIR_NOT_FOUND);
         }
-        File resOut = new File(Config.PROJECT_OUT_PATH);
+        File resOut = new File(Config.PROJECT_OUT_ROOT);
         if (resOut.exists()) {
             Utils.deleteDir(resOut);
         }
@@ -73,7 +73,6 @@ public class ProjectConverter {
                 try {
                     LayoutConverter converter = new LayoutConverter(f.getPath());
                     String content = converter.convertAsString();
-                    idList.addAll(converter.getIdList());
                     try {
                         content = Utils.buildJavaFile(f, content);
                     } catch (AXMLException e) {
@@ -91,6 +90,7 @@ public class ProjectConverter {
             }
             System.out.println("");
         }
+        idList.addAll(LayoutConverter.getIdList());
     }
     
     private static void ValueOutput(File valueFile) {
@@ -146,8 +146,8 @@ public class ProjectConverter {
                         " = 0x" + Integer.toHexString(LIST_BASE[i] + j) + ";\n";
             }
             content += "\t}\n\n";
-            content += "}";
         }
+        content += "}";
         
         String rPath = Config.PROJECT_OUT_PATH + "R.java";
         System.out.println("Generating " + rPath + "...");

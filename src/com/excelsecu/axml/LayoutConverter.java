@@ -22,7 +22,7 @@ public class LayoutConverter {
         System.out.println(javaBlock);
 
         System.out.println("-----id start-----");
-        List<String> idList = converter.getIdList();
+        List<String> idList = LayoutConverter.getIdList();
         for (String id : idList) {
             System.out.println("R.id." + id);
         }
@@ -67,8 +67,8 @@ public class LayoutConverter {
         return translater.getExtraMethod();
     }
     
-    public List<String> getIdList() {
-        return translater.getIdList();
+    public static List<String> getIdList() {
+        return LayoutTranslater.getIdList();
     }
     
     public List<Class<?>> getImportList() {
