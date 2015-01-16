@@ -142,26 +142,33 @@ public class LayoutTranslater {
         }
 	    
 	    //id
-	    if (value.startsWith("@+id/") || value.startsWith("@id/")) {
+        else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
 	        value = value.substring(value.indexOf('/') + 1);
 	        value = "R.id." + value;
 	    } else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
-            value = "R.id." + value;
+            value = "R.string." + value;
 	        value = "AXMLResource.getString(" + value + ")";
         }
 	    
 	    //color
-	    if (value.matches("#[0-9a-fA-F]+")) {
+	    else if (value.matches("#[0-9a-fA-F]+")) {
 	        value = value.replace("#", "0x");
 	    }
 	    
 	    //visibility
-	    if (value.equals("gone") || value.equals("visibile") ||
+	    else if (value.equals("gone") || value.equals("visibile") ||
 	            value.equals("invisibile")) {
 	        value = "View." + value.toUpperCase();
 	        addImport(android.view.View.class);
 	    }
+	    
+	    //drawable
+        else if (value.startsWith("@drawable/")) {
+            value = value.substring(value.indexOf('/') + 1);
+            value = "R.drawable." + value;
+            value = "AXMLResource.getDrawable(" + value + ")";
+        }
 	    
         return value;
 	}
@@ -181,7 +188,7 @@ public class LayoutTranslater {
                 scale = true;
                 extraMethod += "final float scale = this.getResources().getDisplayMetrics().density;\n";
             }
-        } else if (attrValue.contains("@+id/")) {
+        } else if (attrValue.startsWith("@+id/")) {
             idList.add(attrValue.substring(attrValue.indexOf('/') + 1));
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {

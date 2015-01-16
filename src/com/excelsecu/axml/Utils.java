@@ -12,7 +12,7 @@ import java.util.Scanner;
 import com.excelsecu.axml.Config;
 
 /**
- * Util of com.excelsecu.axml package
+ * Utils of com.excelsecu.axml package
  * @author ch
  *
  */
@@ -111,7 +111,7 @@ public class Utils {
         
         File javaFile = new File(path);
         if (append && javaFile.exists() && javaFile.isFile()) {
-            System.out.println("Append content to " + path + "...");
+            System.out.println("Appending content to " + path + "...");
         } else {
             System.out.println("Generating " + path + "...");
         }
@@ -182,7 +182,7 @@ public class Utils {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf(' ', index + 1);
                     returnClass = str.substring(0, index);
-                    returnObject = str.substring(index, index2);
+                    returnObject = str.substring(index + 1, index2);
                     break;
                 }
             }
