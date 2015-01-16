@@ -13,22 +13,23 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class ProjectConverter {
-    private static List<String> dimenList = new ArrayList<String>();
-    private static List<String> drawableList = new ArrayList<String>();
-    private static List<String> idList = new ArrayList<String>();
-    private static List<String> layoutList = new ArrayList<String>();
-    private static List<String> stringList = new ArrayList<String>();
-    private static List<String> styleList = new ArrayList<String>();
+    private static List<String> dimenRList = new ArrayList<String>();
+    private static List<String> drawableRList = new ArrayList<String>();
+    private static List<String> idRList = new ArrayList<String>();
+    private static List<String> layoutRList = new ArrayList<String>();
+    private static List<String> stringRList = new ArrayList<String>();
+    private static List<String> styleRList = new ArrayList<String>();
+    private static String stringContent = "";
     private static final String[] LIST_ORDER = {"dimen", "drawable", "id"
         , "layout", "string", "style"};
     private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>();
     static {
-        LIST_ORDER_LIST.add(dimenList);
-        LIST_ORDER_LIST.add(drawableList);
-        LIST_ORDER_LIST.add(idList);
-        LIST_ORDER_LIST.add(layoutList);
-        LIST_ORDER_LIST.add(stringList);
-        LIST_ORDER_LIST.add(styleList);
+        LIST_ORDER_LIST.add(dimenRList);
+        LIST_ORDER_LIST.add(drawableRList);
+        LIST_ORDER_LIST.add(idRList);
+        LIST_ORDER_LIST.add(layoutRList);
+        LIST_ORDER_LIST.add(stringRList);
+        LIST_ORDER_LIST.add(styleRList);
     }
     private static final int[] LIST_BASE = {Config.DIMEN_BASE, Config.DRAWABLE_BASE,
         Config.ID_BASE, Config.LAYOUT_BASE, Config.STRING_BASE, Config.STYLE_BASE};
@@ -60,6 +61,8 @@ public class ProjectConverter {
             }
         }
         GenerateR();
+        GenerateString();
+        System.out.println("Done! Out Path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
     
     private static void LayoutOutput(File dir) {
@@ -73,15 +76,16 @@ public class ProjectConverter {
                 try {
                     LayoutConverter converter = new LayoutConverter(f.getPath());
                     String content = converter.convertAsString();
+                    content = converter.getExtraMethod() + "\n" + content;
                     try {
-                        content = Utils.buildJavaFile(f, content);
+                        content = Utils.buildJavaFile(f, content, converter.getImportList());
                     } catch (AXMLException e) {
                         System.out.println(f.getName() + " build Java file error: " +
                                 e.getErrorCode() + " " + e.getDetails() + "");
                         content = "//Temp file. Error occured when building this file.\n" +
-                                "//Error: " + e.getErrorCode() + " " + e.getDetails() + content;
+                                "//Error: " + e.getErrorCode() + " " + e.getDetails() + "\n\n" + content;
                     }
-                    Utils.generateFile(f, content, false);
+                    Utils.generateFile(f, content);
                 } catch (AXMLException e) {
                     System.out.println(f.getName() + " convert error: " +
                             e.getErrorCode() + " " + e.getDetails() + "");
@@ -90,7 +94,7 @@ public class ProjectConverter {
             }
             System.out.println("");
         }
-        idList.addAll(LayoutConverter.getIdList());
+        idRList.addAll(LayoutConverter.getIdList());
     }
     
     private static void ValueOutput(File valueFile) {
@@ -115,24 +119,13 @@ public class ProjectConverter {
             return;
         @SuppressWarnings("unchecked")
         List<Element> list = root.elements();
-        String content = "";
         for (Element e : list) {
             if (e.getName().equals("string")) {
-                content += "public static final String " + e.attributeValue("name") +
+                stringContent += "public static final String " + e.attributeValue("name") +
                         " = \"" + e.getText() + "\";\n";
-                stringList.add(e.attributeValue("name"));
+                stringRList.add(e.attributeValue("name"));
             }
         }
-        
-        if (content.equals("")) {
-            return;
-        }
-        String path = stringFile.getPath();
-        path = path.substring(0, path.lastIndexOf(File.separator) + 1);
-        path += "strings.xml";
-        File file = new File(path);
-        content = Utils.buildJavaFile(file, content);
-        Utils.generateFile(file, content, true);
     }
     
     private static void GenerateR() {
@@ -159,6 +152,14 @@ public class ProjectConverter {
             e.printStackTrace();
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, rPath);
         }
+        System.out.println("");
+    }
+    
+    private static void GenerateString() {
+        File file = new File("res/values/strings.xml");
+        stringContent = Utils.buildJavaFile(file, stringContent, null);
+        Utils.generateFile(file, stringContent);
+        System.out.println("");
     }
     
 }

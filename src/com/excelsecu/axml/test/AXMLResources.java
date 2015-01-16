@@ -2,6 +2,7 @@ package com.excelsecu.axml.test;
 
 import java.lang.reflect.Field;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -12,8 +13,14 @@ import android.view.View;
  *
  */
 public class AXMLResources {
+    public static Context context = null;
+    
     public static void main(String[] argv) {
         System.out.println(getString(R.string.bluetooth));
+    }
+    
+    public static void init(Context con) {
+        context = con;
     }
     
     public static String getString(int id) {
@@ -42,7 +49,7 @@ public class AXMLResources {
         return null;
     }
     
-    public static View getView(int id) {
+    public static View getLayout(int id) {
         return null;
     }
 }

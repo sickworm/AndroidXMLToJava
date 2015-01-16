@@ -29,11 +29,9 @@ public class LayoutConverter {
         System.out.println("-----id end------");
         System.out.println("");
         System.out.println("-----import start-----");
-        List<Class<?>> classList = converter.getImportList();
-        for (Class<?> c : classList) {
-            String className = c.getName();
-            className = className.replace('$', '.');
-            System.out.println("import " + className + ";");
+        List<String> classList = converter.getImportList();
+        for (String s : classList) {
+            System.out.println("import " + s + ";");
         }
         System.out.println("-----import end------");
     }
@@ -71,7 +69,7 @@ public class LayoutConverter {
         return LayoutTranslater.getIdList();
     }
     
-    public List<Class<?>> getImportList() {
+    public List<String> getImportList() {
         return translater.getImportList();
     }
 }

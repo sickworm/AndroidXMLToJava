@@ -19,7 +19,7 @@ public class LayoutTranslater {
     private HashMap<String, String> map = null;
     private String extraMethod = "";
     private static List<String> idList = new ArrayList<String>();
-    private List<Class<?>> importList = new ArrayList<Class<?>>();
+    private List<String> importList = new ArrayList<String>();
     private int num = 1;
     /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
     private static boolean scale = false;
@@ -50,9 +50,12 @@ public class LayoutTranslater {
 	    
 	    String nodeName = Utils.classToObject(node.getLabelName()) + num;
 	    node.setObjectName(nodeName);
-        String newMethod = node.getLabelName() + " " + nodeName + " = new " + nodeName + "();\n";
+        String newMethod = node.getLabelName() + " " + nodeName + " = new " + 
+                                node.getLabelName() + "(context);\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
+        addImport(Config.PACKAGE_NAME + ".R");
+        addImport(android.content.Context.class.getName());
         for (Attribute a : node.getAttributes()) {
             String attrMethod = "";
             String attrName = a.getQualifiedName();
@@ -130,7 +133,7 @@ public class LayoutTranslater {
 	    //dp, px, sp
 	    if (value.matches("[0-9]+dp")) {
             value = value.substring(0, value.length() - 2);
-            value = value + " / scale + 0.5f";
+            value = "(int) (" + value + " / scale + 0.5f)";
 	    } else if (value.matches("[0-9]+sp")) {
 	        value = value.substring(0, value.length() - 2);
 	    } else if (value.matches("[0-9]+px")) {
@@ -160,7 +163,6 @@ public class LayoutTranslater {
 	    else if (value.equals("gone") || value.equals("visibile") ||
 	            value.equals("invisibile")) {
 	        value = "View." + value.toUpperCase();
-	        addImport(android.view.View.class);
 	    }
 	    
 	    //drawable
@@ -179,26 +181,29 @@ public class LayoutTranslater {
 	 * @param attrValue
 	 */
 	private void extraHandle(AXMLNode node, Attribute attr) {
-        addImport(node.getType());
+        addImport(node.getType().getName());
 
         String attrValue = attr.getValue();
         String attrName = attr.getQualifiedName();
         if (attrValue.matches("[0-9]+dp")) {
             if (!scale) {
                 scale = true;
-                extraMethod += "final float scale = this.getResources().getDisplayMetrics().density;\n";
-            }
-        } else if (attrName.equals("android:id") &&
-                attrValue.startsWith("@+id/")) {
-            String id = attrValue.substring(attrValue.indexOf('/') + 1);
-            if (!idList.contains(id)) {
-                idList.add(id);
+                extraMethod += "final float scale = context.getResources().getDisplayMetrics().density;\n";
             }
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {
-            addImport(android.view.ViewGroup.LayoutParams.class);
+            addImport(android.view.ViewGroup.class.getName());
         } else if (attrName.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
-            addImport(android.view.ViewGroup.MarginLayoutParams.class);
+            addImport(android.view.ViewGroup.class.getName());
+        } else if (attrValue.equals("gone") || attrValue.equals("visibile") ||
+                attrValue.equals("invisibile")) {
+            addImport(android.view.View.class.getName());
+        } else if (attrName.equals("android:id") &&
+                    attrValue.startsWith("@+id/")) {
+                String id = attrValue.substring(attrValue.indexOf('/') + 1);
+                if (!Utils.hasString(idList, id)) {
+                    idList.add(id);
+                }
         }
 	}
     
@@ -206,8 +211,8 @@ public class LayoutTranslater {
 	 *  Add the class to the import list. If already exists, ignore. 
 	 *  @param className the class try to be added in import list
 	 */
-    protected void addImport(Class<?> className) {
-        if (!importList.contains(className)) {
+    protected void addImport(String className) {
+        if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
     }
@@ -220,7 +225,7 @@ public class LayoutTranslater {
         return idList;
     }
     
-    public List<Class<?>> getImportList() {
+    public List<String> getImportList() {
         return importList;
     }
     
@@ -268,7 +273,7 @@ public class LayoutTranslater {
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
                     attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
                 if (!margin) {
-                    String paramName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String paramName = Utils.classToObject(ViewGroup.MarginLayoutParams.class.getSimpleName()) + num;
                     Attribute attrLeft = findAttrByName("android:layout_marginLeft");
                     Attribute attrTop = findAttrByName("android:layout_marginTop");
                     Attribute attrRight = findAttrByName("android:layout_marginRight");

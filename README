@@ -1,5 +1,8 @@
 Android XML to Java code. Still on Development.
 
+2015/1/16:
+Add R.java, AXMLResources feature(only getString() works).
+
 2015/1/15:
 Support margins, <string/>. Generated Java files will show in a good order.
 

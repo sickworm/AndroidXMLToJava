@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Scanner;
 
 import com.excelsecu.axml.Config;
@@ -92,7 +93,7 @@ public class Utils {
      * @param path the path of the file to be built
      * @param content the content of the file
      */
-    public static void generateFile(File f, String content, boolean append) {
+    public static void generateFile(File f, String content) {
         String subPath = f.getPath();
         subPath = subPath.substring(4);
         //subPath = subPath.replace(".xml", ".java") is not safety
@@ -110,14 +111,10 @@ public class Utils {
         }
         
         File javaFile = new File(path);
-        if (append && javaFile.exists() && javaFile.isFile()) {
-            System.out.println("Appending content to " + path + "...");
-        } else {
-            System.out.println("Generating " + path + "...");
-        }
+        System.out.println("Generating " + path + "...");
         
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(javaFile, append));
+            BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
             out.write(content);
             out.close();
         } catch (IOException e) {
@@ -161,13 +158,20 @@ public class Utils {
      * @param file the origin XML file
      * @param content Java code translated from XML file
      */
-    public static String buildJavaFile(File file, String content) {
+    public static String buildJavaFile(File file, String content, List<String> importList) {
         String subPath = file.getPath();
         subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
         subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
         //Java class title
         String title = "package " + Config.PACKAGE_NAME + "." + subPath + ";\n\n";
         String className = file.getName();
+        //add import list
+        if (importList != null) {
+            for (String s : importList) {
+                title += "import " + s + ";\n";
+            }
+            title += "\n";
+        }
         className = className.substring(0, className.lastIndexOf('.'));
         title += "public class " + className + " {\n";
         //in this condition, Java file need a return type
@@ -178,7 +182,7 @@ public class Utils {
             Scanner scan = new Scanner(content);
             while (scan.hasNext()) {
                 String str = scan.nextLine();
-                if (str.matches("\\w+ \\w+ = new \\w+\\(\\);")) {
+                if (str.matches("\\w+ \\w+ = new \\w+\\(context\\);")) {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf(' ', index + 1);
                     returnClass = str.substring(0, index);
@@ -190,14 +194,29 @@ public class Utils {
             if (returnObject.equals("")) {
                 throw new AXMLException(AXMLException.FILE_BUILD_ERROR, "can not find main object");
             }
-            title += "\tpublic static " + returnClass + " get() {\n";
+            title += "\tpublic static " + returnClass + " get(Context context) {\n";
             content = "\t\t" + content.replace("\n", "\n\t\t") +
                     "return " + returnObject + ";\n";
+            return title + content + "\t}\n}";
         //in this condition, member in this Java file are all 'public static final'
         } else {
             content = "\t" + content.replace("\n", "\n\t");
+            return title + content + "}";
         }
-
-        return title + content + "\t}\n}";
+    }
+    
+    /**
+     * Find out whether the string is in the list
+     * @param list  the list to be searched
+     * @param string the string to be found
+     * @return
+     */
+    public static boolean hasString(List<String> list, String string) {
+        for (String s : list) {
+            if (s.equals(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
