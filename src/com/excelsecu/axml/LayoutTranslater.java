@@ -48,7 +48,7 @@ public class LayoutTranslater {
 	        e.printStackTrace();
 	    }
 	    
-	    String nodeName = Util.classToObject(node.getLabelName()) + num;
+	    String nodeName = Utils.classToObject(node.getLabelName()) + num;
 	    node.setObjectName(nodeName);
         String newMethod = node.getLabelName() + " " + nodeName + " = new " + nodeName + "();\n";
         javaBlock += newMethod;
@@ -98,7 +98,7 @@ public class LayoutTranslater {
 	    String key = type.getSimpleName() + "$" + attrName;
         if (!map.containsKey(key)) {
             //find the conversion from its super class
-            while (Util.isSupportClass(type.getSuperclass())) {
+            while (Utils.isSupportClass(type.getSuperclass())) {
                 type = type.getSuperclass();
                 key = type.getSimpleName() + "$" + attrName;
                 if (map.containsKey(key))
@@ -237,7 +237,7 @@ public class LayoutTranslater {
 
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 if (!widthAndHeight) {
-                    String paramName = Util.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String paramName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
                     Attribute attrWidth = findAttrByName("android:layout_width");
                     Attribute attrHeight = findAttrByName("android:layout_height");
                     String width = (attrWidth == null)?
@@ -257,7 +257,7 @@ public class LayoutTranslater {
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
                     attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
                 if (!margin) {
-                    String paramName = Util.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                    String paramName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
                     Attribute attrLeft = findAttrByName("android:layout_marginLeft");
                     Attribute attrTop = findAttrByName("android:layout_marginTop");
                     Attribute attrRight = findAttrByName("android:layout_marginRight");

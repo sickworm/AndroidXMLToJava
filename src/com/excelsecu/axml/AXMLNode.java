@@ -31,7 +31,7 @@ public class AXMLNode implements Cloneable {
             this.e = e;
         }
         
-        this.type = Util.matchClass(e.getName());
+        this.type = Utils.matchClass(e.getName());
         
         this.attrList = new ArrayList<Attribute>();
         for (int i = 0; i < e.attributeCount(); i++) {

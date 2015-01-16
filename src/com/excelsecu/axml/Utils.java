@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import com.excelsecu.axml.Config;
 
@@ -15,7 +16,7 @@ import com.excelsecu.axml.Config;
  * @author ch
  *
  */
-public class Util {
+public class Utils {
     /**
      * Transform a class name to a class object name. Change the first letter to lower case.
      */
@@ -97,7 +98,8 @@ public class Util {
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.lastIndexOf('.')) + ".java";
         String path = Config.PROJECT_OUT_PATH + subPath;
-        int index = path.lastIndexOf(File.separator);
+        path = path.replace('\\', '/');
+        int index = path.lastIndexOf('/');
         if (index == -1) {
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
         }
@@ -109,19 +111,11 @@ public class Util {
         
         File javaFile = new File(path);
         if (append && javaFile.exists() && javaFile.isFile()) {
-            System.out.println("Append content to" + path + "...");
+            System.out.println("Append content to " + path + "...");
         } else {
             System.out.println("Generating " + path + "...");
         }
         
-        if (!javaFile.exists()) {
-            try {
-                javaFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
-            }
-        }
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(javaFile, append));
             out.write(content);
@@ -144,5 +138,66 @@ public class Util {
         } else {
             return "";
         }
+    }
+    
+    /**
+     * Delete dir with files.
+     * @param file directory to be deleted
+     */
+    public static void deleteDir(File file) {
+        if(file.isFile() || file.list().length == 0) {
+            file.delete();
+        } else {
+            File[] fileList = file.listFiles();
+            for(File f : fileList) {
+                deleteDir(f);
+                f.delete();
+            }
+        }
+    }
+    
+    /**
+     * Gives the Java code{@param content} a complete construct.
+     * @param file the origin XML file
+     * @param content Java code translated from XML file
+     */
+    public static String buildJavaFile(File file, String content) {
+        String subPath = file.getPath();
+        subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
+        subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
+        //Java class title
+        String title = "package " + Config.PACKAGE_NAME + "." + subPath + ";\n\n";
+        String className = file.getName();
+        className = className.substring(0, className.lastIndexOf('.'));
+        title += "public class " + className + " {\n";
+        //in this condition, Java file need a return type
+        if (!subPath.equals("values")) {
+            //find the main object to return
+            String returnObject = "";
+            String returnClass = "";
+            Scanner scan = new Scanner(content);
+            while (scan.hasNext()) {
+                String str = scan.nextLine();
+                if (str.matches("\\w+ \\w+ = new \\w+\\(\\);")) {
+                    int index = str.indexOf(' ');
+                    int index2 = str.indexOf(' ', index + 1);
+                    returnClass = str.substring(0, index);
+                    returnObject = str.substring(index, index2);
+                    break;
+                }
+            }
+            scan.close();
+            if (returnObject.equals("")) {
+                throw new AXMLException(AXMLException.FILE_BUILD_ERROR, "can not find main object");
+            }
+            title += "\tpublic static " + returnClass + " get() {\n";
+            content = "\t\t" + content.replace("\n", "\n\t\t") +
+                    "return " + returnObject + ";\n";
+        //in this condition, member in this Java file are all 'public static final'
+        } else {
+            content = "\t" + content.replace("\n", "\n\t");
+        }
+
+        return title + content + "\t}\n}";
     }
 }
