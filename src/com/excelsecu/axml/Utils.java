@@ -173,7 +173,7 @@ public class Utils {
             title += "\n";
         }
         className = className.substring(0, className.lastIndexOf('.'));
-        title += "public class " + className + " {\n";
+        title += "public static final class " + className + " {\n\n";
         //in this condition, Java file need a return type
         if (!subPath.equals("values")) {
             //find the main object to return
@@ -194,7 +194,8 @@ public class Utils {
             if (returnObject.equals("")) {
                 throw new AXMLException(AXMLException.FILE_BUILD_ERROR, "can not find main object");
             }
-            title += "\tpublic static " + returnClass + " get(Context context) {\n";
+            
+            title += "\tpublic static final " + returnClass + " get(Context context) {";
             content = "\t\t" + content.replace("\n", "\n\t\t") +
                     "return " + returnObject + ";\n";
             return title + content + "\t}\n}";

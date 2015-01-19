@@ -74,7 +74,7 @@ public class LayoutTranslater {
                     attrMethod = specialTranslater.translate(a);
                 } catch (AXMLException e1) {
                     //translater can not translate this attribute
-                    attrMethod = "//" + attrName + "=\"" + attrValue + "\";\n";
+                    attrMethod = "//" + attrName + "=\"" + attrValue + "\";\t//not support\n";
                 }
             }
             if (!attrMethod.startsWith("//"))
