@@ -62,13 +62,13 @@ public class ProjectConverter {
         }
         GenerateR();
         GenerateString();
-        System.out.println("Done! Out Path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
+        System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
     
     private static void LayoutOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
-            System.out.println("Analysing " + f.getName() + "...");
+            System.out.println("Analysing " + f.getPath() + "...");
             if (!Utils.getFileExtension(f).equals("xml")) {
                 continue;
             }
@@ -100,7 +100,7 @@ public class ProjectConverter {
     private static void ValueOutput(File valueFile) {
         File[] fileList = valueFile.listFiles();
         for (File valuesF : fileList) {
-            System.out.println("Analysing " + valuesF.getName() + "...");
+            System.out.println("Analysing " + valuesF.getPath() + "...");
             StringOutput(valuesF);
             System.out.println("");
         }
@@ -143,7 +143,7 @@ public class ProjectConverter {
         content += "}";
         
         String rPath = Config.PROJECT_OUT_PATH + "R.java";
-        System.out.println("Generating " + rPath + "...");
+        System.out.println("Generating " + rPath.replace('/', File.separatorChar) + "...");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(rPath));
             out.write(content);

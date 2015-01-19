@@ -111,7 +111,7 @@ public class Utils {
         }
         
         File javaFile = new File(path);
-        System.out.println("Generating " + path + "...");
+        System.out.println("Generating " + path.replace('/', File.separatorChar) + "...");
         
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
