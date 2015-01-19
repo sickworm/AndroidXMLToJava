@@ -58,7 +58,6 @@ public class LayoutTranslater {
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node, num);
         javaBlock += specialTranslater.buildLayoutParams();
-        addImport(Config.PACKAGE_NAME + ".R");
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
             String attrMethod = "";
@@ -160,8 +159,7 @@ public class LayoutTranslater {
 	    //string
         else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
-            value = "R.string." + value;
-	        value = "AXMLResources.getString(" + value + ")";
+            value = "strings." + value;
         } else if (attr.getQualifiedName().equals("android:text")) {
             value = "\"" + value + "\"";
         }
@@ -180,8 +178,14 @@ public class LayoutTranslater {
 	    //drawable
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "R.drawable." + value;
-            value = "AXMLResources.getDrawable(" + value + ")";
+            value = "drawable." + value + ".get(context)";
+        }
+	    
+        //orientation
+        else if (value.equals("vertical")) {
+            value = "LinearLayout.VERTICAL";
+        } else if (value.equals("horizontal")) {
+            value = "LinearLayout.HORIZONTAL";
         }
 	    
         return value;
@@ -194,7 +198,7 @@ public class LayoutTranslater {
 	 */
 	private void extraHandle(AXMLNode node, Attribute attr) {
         addImport(node.getType().getName());
-
+        
         String attrValue = attr.getValue();
         String attrName = attr.getQualifiedName();
         if (attrValue.matches("[0-9]+dp")) {
@@ -212,12 +216,17 @@ public class LayoutTranslater {
             addImport(View.class.getName());
         } else if (attrName.equals("android:id") &&
                     attrValue.startsWith("@+id/")) {
-                String id = attrValue.substring(attrValue.indexOf('/') + 1);
-                if (!Utils.hasString(idList, id)) {
-                    idList.add(id);
-                }
+            addImport(Config.PACKAGE_NAME + ".R");
+            String id = attrValue.substring(attrValue.indexOf('/') + 1);
+            if (!Utils.hasString(idList, id)) {
+                idList.add(id);
+            }
         } else if (attrValue.matches("#[0-9a-fA-F]+")) {
             addImport(Color.class.getName());
+        } else if (attrValue.startsWith("@string/")) {
+            addImport(Config.PACKAGE_NAME + ".values.strings");
+        } else if (attrValue.startsWith("@drawable/")) {
+            addImport(Config.PACKAGE_NAME + ".drawable");
         }
 	}
     
@@ -274,6 +283,10 @@ public class LayoutTranslater {
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 return "";
             }
+            //weight
+            if (attrName.equals("android:layout_weight")) {
+                return layoutParamName + ".weight = " + attr.getValue() + ";\n";
+            }
             
             //MarginLayoutParams
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
@@ -318,12 +331,8 @@ public class LayoutTranslater {
                 } else {
                     throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, ruleValue);
                 }
-                
-                javaBlock = className + ".LayoutParams " + layoutParamName +
-                        " = new " + className + ".LayoutParams(" +
-                        className + ".LayoutParams.WRAP_CONTENT, " +
-                        className + ".LayoutRarams.WRAP_CONTENT);\n";
                 javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
+                
                 return javaBlock;
             }
             
