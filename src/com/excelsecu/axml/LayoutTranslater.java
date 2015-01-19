@@ -56,7 +56,7 @@ public class LayoutTranslater {
         String newMethod = node.getLabelName() + " " + nodeName + " = new " + 
                                 node.getLabelName() + "(context);\n";
         javaBlock += newMethod;
-        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
+        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node, num);
         addImport(Config.PACKAGE_NAME + ".R");
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
@@ -236,17 +236,16 @@ public class LayoutTranslater {
     
     public class AXMLSpecialTranslater {
         private int num;
-        private String nodeName;
-        @SuppressWarnings("unused")
         private AXMLNode node;
         List<Attribute> attrList;
         /** set up width and height just need one setting **/
         private boolean widthAndHeight = false;
-        /** set up margin just need one setting **/
+        /** set up margins just need one setting **/
         private boolean margin = false;
+        /** set up rules just need one RelativeLayout.LayoutParams **/
+        private boolean rule = false;
         
-        public AXMLSpecialTranslater(String nodeName, AXMLNode node, int num) {
-            this.nodeName = nodeName;
+        public AXMLSpecialTranslater(AXMLNode node, int num) {
             this.node = node;
             this.num = num;
             attrList = node.getAttributes();
@@ -255,26 +254,32 @@ public class LayoutTranslater {
         public String translate(Attribute attr) throws AXMLException {
             String attrName = attr.getQualifiedName();
             String javaBlock = "";
-
+            
+            //LayoutParams
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 if (!widthAndHeight) {
                     String paramName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
                     Attribute attrWidth = findAttrByName("android:layout_width");
                     Attribute attrHeight = findAttrByName("android:layout_height");
+                    String className = node.getLabelName();
                     String width = (attrWidth == null)?
-                            "ViewGroup.LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
+                            className + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
                     String height = (attrHeight == null)?
-                            "ViewGroup.LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
+                            className + ".LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
                     String paramValue = width + ", " + height;
-                    javaBlock = "ViewGroup.LayoutParams " + paramName +
-                            " = new ViewGroup.LayoutParams(" + paramValue + ");\n";
-                    javaBlock += nodeName + ".setLayoutParams(" + paramName + ");\n";
+                    javaBlock = className + ".LayoutParams " + paramName +
+                            " = new " + className + ".LayoutParams(" + paramValue + ");\n";
+                    javaBlock += node.getLabelName() + ".setLayoutParams(" + paramName + ");\n";
                     widthAndHeight = true;
+                    if (className.equals("RelativeLayout")) {
+                        rule = true;
+                    }
                     return javaBlock;
                 }
                 return "";
             }
 
+            //MarginLayoutParams
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
                     attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
                 if (!margin) {
@@ -290,11 +295,53 @@ public class LayoutTranslater {
                     String paramValue = left + ", " + top + ", " + right + ", " + bottom;
                     javaBlock = "ViewGroup.MarginLayoutParams " + paramName +
                             " = new ViewGroup.MarginLayoutParams(" + paramValue + ");\n";
-                    javaBlock += nodeName + ".setMargins(" + paramName + ");\n";
+                    javaBlock += node.getLabelName() + ".setMargins(" + paramName + ");\n";
                     margin = true;
                     return javaBlock;
                 }
                 return "";
+            }
+            
+            //RelativeLayout rules
+            if (attr.getQualifiedName().matches("android:layout_.*")) {
+                String ruleName = attr.getName();
+                ruleName = ruleName.substring(ruleName.indexOf('_') + 1);
+                //change attribute name to relativelayout rule name
+                for (int i = 0; i < ruleName.length(); i++) {
+                    if (Character.isUpperCase(ruleName.charAt(i))) {
+                        ruleName  = ruleName.substring(0, i) + '_' + ruleName.substring(i);
+                        i++;
+                    }
+                }
+                ruleName = ruleName.toUpperCase();
+                ruleName = "RelativeLayout." + ruleName;
+                String ruleValue = attr.getValue();
+                String className = node.getLabelName();
+                //false means nothing
+                if (ruleValue.equals("false")) {
+                    return "";
+                }
+                if (ruleValue.equals("true")) {
+                    ruleValue = className + ".TRUE";
+                } else if (ruleValue.startsWith("@id/.*") ||
+                        ruleValue.startsWith("@+id/")){
+                    ruleValue = ruleValue.substring(ruleValue.indexOf('/') + 1);
+                    ruleValue = "R.id." + ruleValue;
+                } else {
+                    throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+                }
+                
+                String paramName = Utils.classToObject(
+                        ViewGroup.LayoutParams.class.getSimpleName()) + num;
+                if (!rule) {
+                    javaBlock = className + ".LayoutParams " + paramName +
+                            " = new " + className + ".LayoutParams(" +
+                            className + ".LayoutParams.WRAP_CONTENT, " +
+                            className + ".LayoutRarams.WRAP_CONTENT);\n";
+                    rule = true;
+                }
+                javaBlock += paramName + ".addRule(" + ruleName + ", " + ruleValue + ");\n";
+                return javaBlock;
             }
             
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
