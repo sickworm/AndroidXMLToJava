@@ -10,6 +10,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Scanner;
 
+import org.dom4j.Attribute;
+
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
 import com.excelsecu.axml.Config;
 
 /**
@@ -219,5 +224,32 @@ public class Utils {
             }
         }
         return false;
+    }
+    
+    /**
+     * Find out whether the attribute has corresponding RelativeLayout rule.
+     * @param attr the attribute to find
+     * @return the rule of attribtue, or null if not found
+     */
+    public static String findRule(String attrName) {
+        return Config.RULE_MAP.get(attrName);
+    }
+    
+    /**
+     * Get the name of parent to build the LayoutParams
+     * @param node
+     * @return
+     */
+    public static String getParentName(AXMLNode node) {
+        if (node.getParent() == null) {
+            List<Attribute> attrList = node.getAttributes();
+            for (Attribute a : attrList) {
+                if (Config.RULE_MAP.get(a.getQualifiedName()) != null) {
+                    return RelativeLayout.class.getSimpleName();
+                }
+            }
+            return ViewGroup.class.getSimpleName();
+        }
+        return node.getParent().getLabelName();
     }
 }

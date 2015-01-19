@@ -18,6 +18,8 @@ public class AXMLException extends RuntimeException {
     public static final int PARAMETER_NOT_INITIALIZE = 0x00010001;
     /**error when generating the Java file**/
     public static final int FILE_BUILD_ERROR = 0x00020001;
+    /**the value of attribute is not correct**/
+    public static final int ATTRIBUTE_VALUE_ERROR = 0x00020002;
 
     private int errorCode = NO_ERROR;
     private String details = "";
