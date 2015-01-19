@@ -8,6 +8,9 @@ public class Config {
     	/** Super **/
         android.view.View.class,
         android.view.ViewGroup.class,
+        android.widget.AdapterView.class,
+        android.widget.ListAdapter.class,
+        android.widget.AbsListView.class,
         
     	/** Form Widgets **/
         android.widget.Button.class,

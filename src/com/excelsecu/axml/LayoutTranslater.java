@@ -132,6 +132,7 @@ public class LayoutTranslater {
 	
 	protected String translateValue(Attribute attr) {
 	    String value = attr.getValue();
+	    
         //not strict enough, should check attrName both
 	    //dp, px, sp
 	    if (value.matches("[0-9]+dp")) {
@@ -151,10 +152,15 @@ public class LayoutTranslater {
         else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
 	        value = value.substring(value.indexOf('/') + 1);
 	        value = "R.id." + value;
-	    } else if (value.contains("@string/")) {
+	    }
+        
+	    //string
+        else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
             value = "R.string." + value;
 	        value = "AXMLResources.getString(" + value + ")";
+        } else if (attr.getQualifiedName().equals("android:text")) {
+            value = "\"" + value + "\"";
         }
 	    
 	    //color
