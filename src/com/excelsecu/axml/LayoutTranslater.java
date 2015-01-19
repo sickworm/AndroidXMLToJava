@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
@@ -55,7 +58,7 @@ public class LayoutTranslater {
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(nodeName, node, num);
         addImport(Config.PACKAGE_NAME + ".R");
-        addImport(android.content.Context.class.getName());
+        addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
             String attrMethod = "";
             String attrName = a.getQualifiedName();
@@ -156,7 +159,7 @@ public class LayoutTranslater {
 	    
 	    //color
 	    else if (value.matches("#[0-9a-fA-F]+")) {
-	        value = value.replace("#", "0x");
+	        value = "Color.parseColor(\"" + value + "\")";
 	    }
 	    
 	    //visibility
@@ -192,18 +195,20 @@ public class LayoutTranslater {
             }
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {
-            addImport(android.view.ViewGroup.class.getName());
+            addImport(ViewGroup.class.getName());
         } else if (attrName.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
-            addImport(android.view.ViewGroup.class.getName());
+            addImport(ViewGroup.class.getName());
         } else if (attrValue.equals("gone") || attrValue.equals("visibile") ||
                 attrValue.equals("invisibile")) {
-            addImport(android.view.View.class.getName());
+            addImport(View.class.getName());
         } else if (attrName.equals("android:id") &&
                     attrValue.startsWith("@+id/")) {
                 String id = attrValue.substring(attrValue.indexOf('/') + 1);
                 if (!Utils.hasString(idList, id)) {
                     idList.add(id);
                 }
+        } else if (attrValue.matches("#[0-9a-fA-F]+")) {
+            addImport(Color.class.getName());
         }
 	}
     
