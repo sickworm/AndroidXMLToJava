@@ -82,8 +82,9 @@ public class ProjectConverter {
                     } catch (AXMLException e) {
                         System.out.println(f.getName() + " build Java file error: " +
                                 e.getErrorCode() + " " + e.getDetails() + "");
-                        content = "//Temp file. Error occured when building this file.\n" +
-                                "//Error: " + e.getErrorCode() + " " + e.getDetails() + "\n\n" + content;
+                        content = "//Temp file. Error occurred when building this file.\n" +
+                                "//Error: " + Integer.toHexString(e.getErrorCode()) + " " +
+                                e.getDetails() + "\n\n" + content;
                     }
                     Utils.generateFile(f, content);
                 } catch (AXMLException e) {

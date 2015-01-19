@@ -57,6 +57,7 @@ public class LayoutTranslater {
                                 node.getLabelName() + "(context);\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node, num);
+        javaBlock += specialTranslater.buildLayoutParams();
         addImport(Config.PACKAGE_NAME + ".R");
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
@@ -242,19 +243,20 @@ public class LayoutTranslater {
         return importList;
     }
     
+    /**
+     * Handle the method not exists in the attr-to-method map.
+     * @author ch
+     *
+     */
     public class AXMLSpecialTranslater {
         private int num;
         private AXMLNode node;
         private String parentName;
         private String layoutParamName;
         private List<Attribute> attrList;
-
-        /** set up width and height just need one setting **/
-        private boolean widthAndHeight = false;
+        
         /** set up margins just need one setting **/
         private boolean margin = false;
-        /** mark of "new LayoutParams" **/
-        private boolean params = false;
         
         public AXMLSpecialTranslater(AXMLNode node, int num) {
             this.node = node;
@@ -268,25 +270,11 @@ public class LayoutTranslater {
             String attrName = attr.getQualifiedName();
             String javaBlock = "";
             
-            //LayoutParams
+            //LayoutParams, handled in buildLayoutParams
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
-                if (!widthAndHeight) {
-                    Attribute attrWidth = findAttrByName("android:layout_width");
-                    Attribute attrHeight = findAttrByName("android:layout_height");
-                    String width = (attrWidth == null)?
-                            parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
-                    String height = (attrHeight == null)?
-                            parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
-                    String paramValue = width + ", " + height;
-                    javaBlock = parentName + ".LayoutParams " + layoutParamName +
-                            " =\n\t\tnew " + parentName + ".LayoutParams(" + paramValue + ");\n";
-                    widthAndHeight = true;
-                    params = true;
-                    return javaBlock;
-                }
                 return "";
             }
-
+            
             //MarginLayoutParams
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
                     attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
@@ -331,13 +319,10 @@ public class LayoutTranslater {
                     throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, ruleValue);
                 }
                 
-                if (!params) {
-                    javaBlock = className + ".LayoutParams " + layoutParamName +
-                            " = new " + className + ".LayoutParams(" +
-                            className + ".LayoutParams.WRAP_CONTENT, " +
-                            className + ".LayoutRarams.WRAP_CONTENT);\n";
-                    params = true;
-                }
+                javaBlock = className + ".LayoutParams " + layoutParamName +
+                        " = new " + className + ".LayoutParams(" +
+                        className + ".LayoutParams.WRAP_CONTENT, " +
+                        className + ".LayoutRarams.WRAP_CONTENT);\n";
                 javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
                 return javaBlock;
             }
@@ -355,11 +340,25 @@ public class LayoutTranslater {
         }
         
         public String setLayoutParams() {
-            if (params) {
-                return node.getObjectName() + ".setLayoutParams(" + layoutParamName + ");\n";
-            } else {
-                return "";
-            }
+            return node.getObjectName() + ".setLayoutParams(" + layoutParamName + ");\n";
+        }
+        
+        /**
+         * Init LayoutParams
+         * @return
+         */
+        public String buildLayoutParams() {
+            String javaBlock;
+            Attribute attrWidth = findAttrByName("android:layout_width");
+            Attribute attrHeight = findAttrByName("android:layout_height");
+            String width = (attrWidth == null)?
+                    parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
+            String height = (attrHeight == null)?
+                    parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
+            String paramValue = width + ", " + height;
+            javaBlock = parentName + ".LayoutParams " + layoutParamName +
+                    " =\n\t\tnew " + parentName + ".LayoutParams(" + paramValue + ");\n";
+            return javaBlock;
         }
     }
 }
