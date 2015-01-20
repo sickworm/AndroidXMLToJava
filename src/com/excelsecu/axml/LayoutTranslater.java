@@ -304,22 +304,32 @@ public class LayoutTranslater {
             
             //MarginLayoutParams
             if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
-                    attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight")) {
+                    attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight") ||
+                    attrName.equals("android:layout_margin")) {
                 if (!margin) {
                     String paramName =
                             Utils.classToObject(ViewGroup.MarginLayoutParams.class.getSimpleName()) + num;
-                    Attribute attrLeft = findAttrByName("android:layout_marginLeft");
-                    Attribute attrTop = findAttrByName("android:layout_marginTop");
-                    Attribute attrRight = findAttrByName("android:layout_marginRight");
-                    Attribute attrBottom = findAttrByName("android:layout_marginBottom");
-                    String left = (attrLeft == null)? "0" : translateValue(attrLeft);
-                    String top = (attrTop == null)? "0" : translateValue(attrTop);
-                    String right = (attrRight == null)? "0" : translateValue(attrRight);
-                    String bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
+                    String left;
+                    String top;
+                    String right;
+                    String bottom;
+                    if (attrName.equals("android:layout_margin")) {
+                        left = top = right = bottom = translateValue(attr);
+                    } else {
+                        Attribute attrLeft = findAttrByName("android:layout_marginLeft");
+                        Attribute attrTop = findAttrByName("android:layout_marginTop");
+                        Attribute attrRight = findAttrByName("android:layout_marginRight");
+                        Attribute attrBottom = findAttrByName("android:layout_marginBottom");
+                        left = (attrLeft == null)? "0" : translateValue(attrLeft);
+                        top = (attrTop == null)? "0" : translateValue(attrTop);
+                        right = (attrRight == null)? "0" : translateValue(attrRight);
+                        bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
+                    }
                     String paramValue = left + ", " + top + ", " + right + ", " + bottom;
                     javaBlock = "ViewGroup.MarginLayoutParams " + paramName +
                             " =\n\t\tnew ViewGroup.MarginLayoutParams(" + paramValue + ");\n";
                     javaBlock += node.getObjectName() + ".setMargins(" + paramName + ");\n";
+                    
                     margin = true;
                     return javaBlock;
                 }
