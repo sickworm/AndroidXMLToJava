@@ -58,6 +58,10 @@ public class AXMLNode implements Cloneable {
         return type;
     }
     
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
+    
     public String getLabelName() {
         return e.getName();
     }
@@ -72,6 +76,10 @@ public class AXMLNode implements Cloneable {
     
     public List<Attribute> getAttributes() {
         return attrList;
+    }
+    
+    public String attributeValue(String name) {
+        return e.attributeValue(name);
     }
     
     public int getLayer() {

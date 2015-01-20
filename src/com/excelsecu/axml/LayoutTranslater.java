@@ -40,21 +40,35 @@ public class LayoutTranslater {
 	public String translate(AXMLNode node) {
         String javaBlock = "";
         Class<?> type = null;
+        String nodeName = Utils.classToObject(node.getLabelName()) + num;
+        node.setObjectName(nodeName);
+        
+        String newMethod = "";
 	    try {
 	        type = node.getType();
+	        newMethod = node.getLabelName() + " " + nodeName + " = new " + 
+                    node.getLabelName() + "(context);\n";
 	    } catch (AXMLException e) {
-	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
-	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
-	            javaBlock = "//<" + node.getLabelName() + "/>\t//not support\n\n";
-	            return javaBlock;
+	        if (node.getLabelName().equals("include")) {
+	            String layout = node.attributeValue("layout");
+	            layout = layout.substring(layout.indexOf('/') + 1);
+	            if (layout != null) {
+	                newMethod = "View " + nodeName + " = layout." +
+	                        layout + ".get(context);\n";
+	            }
+	            node.setType(android.view.View.class);
+	            type = node.getType();
+	            addImport(Config.PACKAGE_NAME + ".layout");
+	        } else {
+    	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
+    	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
+    	            javaBlock = "//<" + node.getLabelName() + "/>\t//not support\n\n";
+    	            return javaBlock;
+    	        }
+    	        e.printStackTrace();
 	        }
-	        e.printStackTrace();
 	    }
 	    
-	    String nodeName = Utils.classToObject(node.getLabelName()) + num;
-	    node.setObjectName(nodeName);
-        String newMethod = node.getLabelName() + " " + nodeName + " = new " + 
-                                node.getLabelName() + "(context);\n";
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node, num);
         javaBlock += specialTranslater.buildLayoutParams();
@@ -334,6 +348,12 @@ public class LayoutTranslater {
                 javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
                 
                 return javaBlock;
+            }
+            
+            //include
+            if (attrName.equals("layout")) {
+                //handled in newMethod
+                return "";
             }
             
             throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
