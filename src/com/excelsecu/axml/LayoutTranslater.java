@@ -57,12 +57,12 @@ public class LayoutTranslater {
 	            String layout = node.attributeValue("layout");
 	            layout = layout.substring(layout.indexOf('/') + 1);
 	            if (layout != null) {
-	                newMethod = "View " + nodeName + " = layout." +
+	                newMethod = "View " + nodeName + " = " +
 	                        layout + ".get(context);\n";
 	            }
 	            node.setType(android.view.View.class);
 	            type = node.getType();
-	            addImport(Config.PACKAGE_NAME + ".layout");
+	            addImport(Config.PACKAGE_NAME + ".layout." + layout);
 	        } else {
     	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
     	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
@@ -197,7 +197,7 @@ public class LayoutTranslater {
 	    //drawable
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "drawable." + value + ".get(context)";
+            value = "" + value + ".get(context)";
         }
 	    
         //orientation
@@ -265,7 +265,8 @@ public class LayoutTranslater {
         } else if (attrValue.startsWith("@string/")) {
             addImport(Config.PACKAGE_NAME + ".values.strings");
         } else if (attrValue.startsWith("@drawable/")) {
-            addImport(Config.PACKAGE_NAME + ".drawable");
+            String value = attrValue.substring(attrValue.indexOf('/') + 1);
+            addImport(Config.PACKAGE_NAME + ".drawable." + value);
         } else if (attrName.equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
             addImport(Gravity.class.getName());
