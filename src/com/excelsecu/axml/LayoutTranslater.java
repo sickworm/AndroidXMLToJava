@@ -8,6 +8,9 @@ import org.dom4j.Attribute;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -149,6 +152,7 @@ public class LayoutTranslater {
 	
 	private String translateValue(Attribute attr) {
 	    String value = attr.getValue();
+        String attrName = attr.getQualifiedName();
 	    
         //not strict enough, should check attrName both
 	    //dp, px, sp
@@ -206,26 +210,21 @@ public class LayoutTranslater {
 	    //gravity
         else if (attr.getQualifiedName().equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
-            List<String> gravityList = new ArrayList<String>();
-            value = value.toUpperCase();
-            while (true) {
-                int i = value.indexOf('|');
-                if (i == -1) {
-                    String gravity = value.trim();
-                    gravityList.add(gravity);
-                    break;
-                }
-                String gravity = value.substring(0, i);
-                gravity = gravity.trim();
-                gravityList.add(gravity);
-                value = value.substring(i + 1);
+            value = Utils.devideParams(value, "Gravity");
+        }
+	    
+	    //text
+        else if (attrName.equals("android:password")) {
+            value = "new PasswordTransformationMethod()";
+        } else if (attrName.equals("android:singleLine")) {
+            value = "new SingleLineTransformationMethod()";
+        } else if (attrName.equals("android:inputType")) {
+            String error = value; 
+            value = Config.INPUT_TYPE_MAP.get(value);
+            if (value == null) {
+                throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, error);
             }
-            value = "";
-            for (String gravity : gravityList) {
-                value += "Gravity." + gravity;
-                value += " | ";
-            }
-            value = value.substring(0, value.length() - 3);
+            value = Utils.devideParams(value, "InputType");
         }
 	    
         return value;
@@ -267,9 +266,15 @@ public class LayoutTranslater {
             addImport(Config.PACKAGE_NAME + ".values.strings");
         } else if (attrValue.startsWith("@drawable/")) {
             addImport(Config.PACKAGE_NAME + ".drawable");
-        } else if (attr.getQualifiedName().equals("android:gravity") ||
+        } else if (attrName.equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
             addImport(Gravity.class.getName());
+        } else if (attrName.equals("android:password")) {
+            addImport(PasswordTransformationMethod.class.getName());
+        } else if (attrName.equals("android:singleLine")) {
+            addImport(SingleLineTransformationMethod.class.getName());
+        } else if (attrName.equals("android:inputType")) {
+            addImport(InputType.class.getName());
         }
 	}
     

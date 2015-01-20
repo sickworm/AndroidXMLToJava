@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -252,5 +253,29 @@ public class Utils {
             return ViewGroup.class.getSimpleName();
         }
         return node.getParent().getLabelName();
+    }
+    
+    public static String devideParams(String value, String prefix) {
+        List<String> list = new ArrayList<String>();
+        value = value.toUpperCase();
+        while (true) {
+            int i = value.indexOf('|');
+            if (i == -1) {
+                String gravity = value.trim();
+                list.add(gravity);
+                break;
+            }
+            String gravity = value.substring(0, i);
+            gravity = gravity.trim();
+            list.add(gravity);
+            value = value.substring(i + 1);
+        }
+        value = "";
+        for (String v : list) {
+            value += prefix + "." + v;
+            value += " | ";
+        }
+        value = value.substring(0, value.length() - 3);
+        return value;
     }
 }
