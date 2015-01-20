@@ -155,7 +155,7 @@ public class LayoutTranslater {
         String attrName = attr.getQualifiedName();
 	    
         //not strict enough, should check attrName both
-	    //dp, px, sp
+	    //dp, px, sp, float
 	    if (value.matches("[0-9.]+dp")) {
             value = value.substring(0, value.length() - 2);
             value = "(int) (" + value + " / scale + 0.5f)";
@@ -167,6 +167,8 @@ public class LayoutTranslater {
             value = "ViewGroup.LayoutParams.MATCH_PARENT";
         } else if (value.equals("wrap_content")) {
             value = "ViewGroup.LayoutParams.WRAP_CONTENT";
+        } else if (value.matches("[0-9]+.[0-9]+")) {
+            value = value + "f";
         }
 	    
 	    //id
@@ -323,6 +325,7 @@ public class LayoutTranslater {
             this.node = node;
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
+            addImport(Utils.matchClass(parentName).getName());
             layoutParamName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
         }
         
