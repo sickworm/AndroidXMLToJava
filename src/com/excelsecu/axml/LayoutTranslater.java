@@ -142,7 +142,7 @@ public class LayoutTranslater {
         //when attribute has several types of value (like android:background),
         //change the method if nessary.
         if (attrValue.matches("#[0-9a-fA-F]+") &&
-                methodName.equals("setBackgroundResource(int)")) {
+                methodName.equals("setBackground(Drawable)")) {
             methodName = "setBackgroundColor(int)";
         }
 
