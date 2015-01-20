@@ -53,8 +53,12 @@ public class AndroidDocConverter {
 	            attrToMethodMap.putAll(sublist);
 	        }
 	    }
-        //some attributes aren't shown in Android doc, add them in here.
+        //some attributes don't shown in Android doc (like setEnabled), add them in here.
         attrToMethodMap.putAll(Config.ADDITION_MAP);
+        //some attributes can't translate directly (like padding), remove them in here.
+        for (String removal : Config.REMOVAL_LIST) {
+            attrToMethodMap.remove(removal);
+        }
         return attrToMethodMap;
     }
 	

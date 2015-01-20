@@ -76,7 +76,9 @@ public class ProjectConverter {
                 try {
                     LayoutConverter converter = new LayoutConverter(f.getPath());
                     String content = converter.convertAsString();
-                    content = converter.getExtraMethod() + "\n" + content;
+                    if (!converter.getExtraMethod().equals("")) {
+                        content = converter.getExtraMethod() + "\n" + content;
+                    }
                     try {
                         content = Utils.buildJavaFile(f, content, converter.getImportList());
                     } catch (AXMLException e) {

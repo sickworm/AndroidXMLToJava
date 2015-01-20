@@ -97,13 +97,26 @@ public class Config {
     };
 
     /**
-     * some attributes aren't shown in Android doc, add them in here
+     * some attributes don't shown in Android doc, add them in here
      */
     public static final HashMap<String, String> ADDITION_MAP = new HashMap<String, String>();
     static {
         ADDITION_MAP.put("View$android:enabled", "setEnabled(boolean)");
         ADDITION_MAP.put("RadioButton$android:checked", "setChecked(boolean)");
     }
+
+    /**
+     * some attributes can't translate directly (like padding), remove them in here
+     */
+    public static final String[] REMOVAL_LIST = {
+        "View$android:padding",
+        "View$android:paddingLeft",
+        "View$android:paddingRight",
+        "View$android:paddingStart",
+        "View$android:paddingEnd",
+        "View$android:paddingTop",
+        "View$android:paddingBottom",
+    };
     
     /**the local Android doc path from SDK Manager**/
     public static final String BASE_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";

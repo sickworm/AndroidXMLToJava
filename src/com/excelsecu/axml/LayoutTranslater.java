@@ -26,7 +26,7 @@ public class LayoutTranslater {
     private List<String> importList = new ArrayList<String>();
     private int num = 1;
     /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
-    private static boolean scale = false;
+    private boolean scale = false;
     
 	public LayoutTranslater() {
         map = AndroidDocConverter.getMap();
@@ -147,7 +147,7 @@ public class LayoutTranslater {
         return methodName;
 	}
 	
-	protected String translateValue(Attribute attr) {
+	private String translateValue(Attribute attr) {
 	    String value = attr.getValue();
 	    
         //not strict enough, should check attrName both
@@ -307,6 +307,8 @@ public class LayoutTranslater {
         
         /** set up margins just need one setting **/
         private boolean margin = false;
+        /** set up padding just need one setting **/
+        private boolean padding = false;
         
         public AXMLSpecialTranslater(AXMLNode node, int num) {
             this.node = node;
@@ -359,6 +361,52 @@ public class LayoutTranslater {
                 }
                 return "";
             }
+            
+            //panding
+            if (attrName.equals("android:paddingBottom") || attrName.equals("android:paddingTop") ||
+                    attrName.equals("android:paddingLeft") || attrName.equals("android:paddingRight") ||
+                    attrName.equals("android:paddingStart") || attrName.equals("android:paddingEnd") ||
+                    attrName.equals("android:padding")) {
+                if (!padding) {
+                    if (attrName.equals("android:padding")) {
+                        String attrValue = translateValue(attr);
+                        javaBlock = node.getObjectName() + ".setPadding(" +
+                                attrValue + ", " + attrValue + ", " +
+                                attrValue + ", " + attrValue + ");\n";
+                    } else {
+                        Attribute attrTop = findAttrByName("android:paddingTop");
+                        Attribute attrBottom = findAttrByName("android:paddingBottom");
+                        Attribute attrStart = findAttrByName("android:paddingStart");
+                        Attribute attrEnd = findAttrByName("android:paddingEnd");
+                        Attribute attrLeft = findAttrByName("android:paddingLeft");
+                        Attribute attrRight = findAttrByName("android:paddingRight");
+                        String top = (attrTop == null)? "0" : translateValue(attrTop);
+                        String bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
+                        String start = (attrStart == null)? "0" : translateValue(attrRight);
+                        String end = (attrEnd == null)? "0" : translateValue(attrBottom);
+                        String left = (attrLeft == null)? "0" : translateValue(attrLeft);
+                        String right = (attrRight == null)? "0" : translateValue(attrRight);
+                        if (left != null || attrBottom != null) {
+                            javaBlock += node.getObjectName() + ".setPadding(" +
+                                    left + ", " + top + ", " +
+                                    right + ", " + bottom + ");\n";
+                        }
+                        //padding should not be set in two ways, It may have translate problem
+                        //here because of the order
+                        //or I should add some warning
+                        if (attrStart != null || attrEnd != null) {
+                            javaBlock += node.getObjectName() + ".setPaddingRelative(" +
+                                    start + ", " + top + ", " +
+                                    end + ", " + bottom + ");\n";
+                        }
+                    }
+                    
+                    padding = true;
+                    return javaBlock;
+                }
+                return "";
+            }
+            
             
             //RelativeLayout rules
             String rule = Utils.findRule(attrName);

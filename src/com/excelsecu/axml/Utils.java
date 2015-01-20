@@ -201,7 +201,7 @@ public class Utils {
                 throw new AXMLException(AXMLException.FILE_BUILD_ERROR, "can not find main object");
             }
             
-            title += "\tpublic static final " + returnClass + " get(Context context) {";
+            title += "\tpublic static final " + returnClass + " get(Context context) {\n";
             content = "\t\t" + content.replace("\n", "\n\t\t") +
                     "return " + returnObject + ";\n";
             return title + content + "\t}\n}";
