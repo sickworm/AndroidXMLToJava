@@ -104,6 +104,8 @@ public class Config {
         ADDITION_MAP.put("View$android:enabled", "setEnabled(boolean)");
         ADDITION_MAP.put("RadioButton$android:checked", "setChecked(boolean)");
         ADDITION_MAP.put("LinearLayout$android:weightSum", "setWeightSum(float)");
+        //replace setBackgroundResource(int) to setBackground(Drawable)
+        ADDITION_MAP.put("View$android:background", "setBackground(Drawable)");
     }
 
     /**
