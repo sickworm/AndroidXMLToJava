@@ -156,10 +156,10 @@ public class LayoutTranslater {
 	    
         //not strict enough, should check attrName both
 	    //dp, px, sp
-	    if (value.matches("[0-9]+dp")) {
+	    if (value.matches("[0-9.]+dp")) {
             value = value.substring(0, value.length() - 2);
             value = "(int) (" + value + " / scale + 0.5f)";
-	    } else if (value.matches("[0-9]+sp")) {
+	    } else if (value.matches("[0-9.]+sp")) {
 	        value = value.substring(0, value.length() - 2);
 	    } else if (value.matches("[0-9]+px")) {
             value = value.substring(0, value.length() - 2);
