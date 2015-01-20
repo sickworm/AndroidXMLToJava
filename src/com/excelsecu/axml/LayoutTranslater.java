@@ -8,6 +8,7 @@ import org.dom4j.Attribute;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -202,6 +203,30 @@ public class LayoutTranslater {
             value = "LinearLayout.HORIZONTAL";
         }
 	    
+	    //gravity
+        else if (attr.getQualifiedName().equals("android:gravity")) {
+            List<String> gravityList = new ArrayList<String>();
+            value = value.toUpperCase();
+            while (true) {
+                int i = value.indexOf('|');
+                if (i == -1) {
+                    String gravity = value.trim();
+                    gravityList.add(gravity);
+                    break;
+                }
+                String gravity = value.substring(0, i);
+                gravity = gravity.trim();
+                gravityList.add(gravity);
+                value = value.substring(i + 1);
+            }
+            value = "";
+            for (String gravity : gravityList) {
+                value += "Gravity." + gravity;
+                value += " | ";
+            }
+            value = value.substring(0, value.length() - 3);
+        }
+	    
         return value;
 	}
 	
@@ -241,6 +266,8 @@ public class LayoutTranslater {
             addImport(Config.PACKAGE_NAME + ".values.strings");
         } else if (attrValue.startsWith("@drawable/")) {
             addImport(Config.PACKAGE_NAME + ".drawable");
+        } else if (attr.getQualifiedName().equals("android:gravity")) {
+            addImport(Gravity.class.getName());
         }
 	}
     
@@ -309,10 +336,7 @@ public class LayoutTranslater {
                 if (!margin) {
                     String paramName =
                             Utils.classToObject(ViewGroup.MarginLayoutParams.class.getSimpleName()) + num;
-                    String left;
-                    String top;
-                    String right;
-                    String bottom;
+                    String left, top, right, bottom;
                     if (attrName.equals("android:layout_margin")) {
                         left = top = right = bottom = translateValue(attr);
                     } else {
