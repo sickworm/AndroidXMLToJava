@@ -204,7 +204,8 @@ public class LayoutTranslater {
         }
 	    
 	    //gravity
-        else if (attr.getQualifiedName().equals("android:gravity")) {
+        else if (attr.getQualifiedName().equals("android:gravity") ||
+                attr.getQualifiedName().equals("android:layout_gravity")) {
             List<String> gravityList = new ArrayList<String>();
             value = value.toUpperCase();
             while (true) {
@@ -266,7 +267,8 @@ public class LayoutTranslater {
             addImport(Config.PACKAGE_NAME + ".values.strings");
         } else if (attrValue.startsWith("@drawable/")) {
             addImport(Config.PACKAGE_NAME + ".drawable");
-        } else if (attr.getQualifiedName().equals("android:gravity")) {
+        } else if (attr.getQualifiedName().equals("android:gravity") ||
+                attr.getQualifiedName().equals("android:layout_gravity")) {
             addImport(Gravity.class.getName());
         }
 	}
@@ -329,6 +331,10 @@ public class LayoutTranslater {
             //weight
             if (attrName.equals("android:layout_weight")) {
                 return layoutParamName + ".weight = " + attr.getValue() + ";\n";
+            }
+            //layout_gravity
+            if (attrName.equals("android:layout_gravity")) {
+                return layoutParamName + ".gravity = " + translateValue(attr) + ";\n";
             }
             
             //MarginLayoutParams
