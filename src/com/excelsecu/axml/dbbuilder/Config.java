@@ -11,6 +11,7 @@ public class Config {
         android.widget.AdapterView.class,
         android.widget.ListAdapter.class,
         android.widget.AbsListView.class,
+        android.widget.CompoundButton.class,
         
     	/** Form Widgets **/
         android.widget.Button.class,
@@ -101,6 +102,7 @@ public class Config {
     public static final HashMap<String, String> ADDITION_MAP = new HashMap<String, String>();
     static {
         ADDITION_MAP.put("View$android:enabled", "setEnabled(boolean)");
+        ADDITION_MAP.put("RadioButton$android:checked", "setChecked(boolean)");
     }
     
     /**the local Android doc path from SDK Manager**/
