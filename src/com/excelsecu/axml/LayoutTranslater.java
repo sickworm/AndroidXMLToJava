@@ -71,7 +71,7 @@ public class LayoutTranslater {
 	    }
 	    
         javaBlock += newMethod;
-        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node, num);
+        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node);
         javaBlock += specialTranslater.buildLayoutParams();
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
@@ -301,20 +301,20 @@ public class LayoutTranslater {
      *
      */
     public class AXMLSpecialTranslater {
-        private int num;
         private AXMLNode node;
         private String parentName;
         private String layoutParamName;
         private List<Attribute> attrList;
+        private String width;
+        private String height;
         
         /** set up margins just need one setting **/
         private boolean margin = false;
         /** set up padding just need one setting **/
         private boolean padding = false;
         
-        public AXMLSpecialTranslater(AXMLNode node, int num) {
+        public AXMLSpecialTranslater(AXMLNode node) {
             this.node = node;
-            this.num = num;
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
             layoutParamName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
@@ -342,8 +342,6 @@ public class LayoutTranslater {
                     attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight") ||
                     attrName.equals("android:layout_margin")) {
                 if (!margin) {
-                    String paramName =
-                            Utils.classToObject(ViewGroup.MarginLayoutParams.class.getSimpleName()) + num;
                     String left, top, right, bottom;
                     if (attrName.equals("android:layout_margin")) {
                         left = top = right = bottom = translateValue(attr);
@@ -358,9 +356,7 @@ public class LayoutTranslater {
                         bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
                     }
                     String paramValue = left + ", " + top + ", " + right + ", " + bottom;
-                    javaBlock = "ViewGroup.MarginLayoutParams " + paramName +
-                            " =\n\t\tnew ViewGroup.MarginLayoutParams(" + paramValue + ");\n";
-                    javaBlock += node.getObjectName() + ".setMargins(" + paramName + ");\n";
+                    javaBlock += layoutParamName + ".setMargins(" + paramValue + ");\n";
                     
                     margin = true;
                     return javaBlock;
@@ -468,9 +464,9 @@ public class LayoutTranslater {
             String javaBlock;
             Attribute attrWidth = findAttrByName("android:layout_width");
             Attribute attrHeight = findAttrByName("android:layout_height");
-            String width = (attrWidth == null)?
+            width = (attrWidth == null)?
                     parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
-            String height = (attrHeight == null)?
+            height = (attrHeight == null)?
                     parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
             String paramValue = width + ", " + height;
             javaBlock = parentName + ".LayoutParams " + layoutParamName +

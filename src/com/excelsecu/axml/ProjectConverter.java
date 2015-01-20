@@ -79,6 +79,7 @@ public class ProjectConverter {
                     if (!converter.getExtraMethod().equals("")) {
                         content = converter.getExtraMethod() + "\n" + content;
                     }
+                    
                     try {
                         content = Utils.buildJavaFile(f, content, converter.getImportList());
                     } catch (AXMLException e) {

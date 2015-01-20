@@ -179,7 +179,7 @@ public class Utils {
             title += "\n";
         }
         className = className.substring(0, className.lastIndexOf('.'));
-        title += "public static final class " + className + " {\n\n";
+        title += "public final class " + className + " {\n\n";
         //in this condition, Java file need a return type
         if (!subPath.equals("values")) {
             //find the main object to return
