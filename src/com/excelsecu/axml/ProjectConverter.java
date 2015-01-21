@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -25,19 +26,9 @@ public class ProjectConverter {
     private static List<String> styleRList = new ArrayList<String>();
     private static final String[] LIST_ORDER = {"anim", "attr", "color", "dimen",
         "drawable", "id", "layout", "menu", "style", "string"};
-    private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>();
-    static {
-        LIST_ORDER_LIST.add(animRList);
-        LIST_ORDER_LIST.add(attrRList);
-        LIST_ORDER_LIST.add(colorRList);
-        LIST_ORDER_LIST.add(dimenRList);
-        LIST_ORDER_LIST.add(drawableRList);
-        LIST_ORDER_LIST.add(idRList);
-        LIST_ORDER_LIST.add(layoutRList);
-        LIST_ORDER_LIST.add(menuRList);
-        LIST_ORDER_LIST.add(styleRList);
-        LIST_ORDER_LIST.add(stringRList);
-    }
+    private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>(
+            Arrays.asList(animRList, attrRList, colorRList, dimenRList, drawableRList,
+                    idRList, layoutRList, menuRList, styleRList, stringRList));
     
     private static String stringContent = "";
     private static String colorContent = "";
