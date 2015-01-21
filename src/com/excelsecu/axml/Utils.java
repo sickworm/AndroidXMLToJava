@@ -14,6 +14,7 @@ import java.util.Scanner;
 import org.dom4j.Attribute;
 
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.excelsecu.axml.Config;
@@ -248,6 +249,9 @@ public class Utils {
             for (Attribute a : attrList) {
                 if (Config.RULE_MAP.get(a.getQualifiedName()) != null) {
                     return RelativeLayout.class.getSimpleName();
+                }
+                if (a.getQualifiedName().equals("android:layout_gravity")) {
+                    return LinearLayout.class.getSimpleName();
                 }
             }
             return ViewGroup.class.getSimpleName();
