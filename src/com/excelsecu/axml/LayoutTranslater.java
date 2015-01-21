@@ -9,6 +9,7 @@ import org.dom4j.Attribute;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.SingleLineTransformationMethod;
 import android.view.Gravity;
@@ -236,6 +237,9 @@ public class LayoutTranslater {
                 throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, error);
             }
             value = Utils.devideParams(value, "InputType");
+        } else if (attrName.equals("android:ellipsize")) {
+            value = value.toUpperCase();
+            value = "TextUtils.TruncateAt." + value;
         }
 	    
         return value;
@@ -289,6 +293,8 @@ public class LayoutTranslater {
             addImport(InputType.class.getName());
         } else if (attrValue.matches("@color/.+")) {
             addImport(Config.PACKAGE_NAME + ".values.color");
+        } else if (attrName.equals("android:ellipsize")) {
+            addImport(TextUtils.class.getName());
         }
 	}
     
