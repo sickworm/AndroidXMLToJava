@@ -10,12 +10,7 @@ public class Config {
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.axml.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.axml.dbbuilder.Config.ENCODE;
 
-    public static final int DIMEN_BASE = 0x7f040000;
-    public static final int DRAWABLE_BASE = 0x7f020000;
-    public static final int ID_BASE = 0x7f070000;
-    public static final int LAYOUT_BASE = 0x7f030000;
-    public static final int STRING_BASE = 0x7f050000;
-    public static final int STYLE_BASE = 0x7f060000;
+    public static final int BASE = 0x7f040000;
 
     public static final HashMap<String, String> RULE_MAP = new HashMap<String, String>();
     public static final HashMap<String, String> INPUT_TYPE_MAP = new HashMap<String, String>();

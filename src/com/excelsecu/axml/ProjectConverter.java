@@ -13,26 +13,34 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class ProjectConverter {
+    private static List<String> animRList = new ArrayList<String>();
+    private static List<String> attrRList = new ArrayList<String>();
+    private static List<String> colorRList = new ArrayList<String>();
     private static List<String> dimenRList = new ArrayList<String>();
     private static List<String> drawableRList = new ArrayList<String>();
     private static List<String> idRList = new ArrayList<String>();
     private static List<String> layoutRList = new ArrayList<String>();
+    private static List<String> menuRList = new ArrayList<String>();
     private static List<String> stringRList = new ArrayList<String>();
     private static List<String> styleRList = new ArrayList<String>();
-    private static String stringContent = "";
-    private static final String[] LIST_ORDER = {"dimen", "drawable", "id"
-        , "layout", "string", "style"};
+    private static final String[] LIST_ORDER = {"anim", "attr", "color", "dimen",
+        "drawable", "id", "layout", "menu", "style", "string"};
     private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>();
     static {
+        LIST_ORDER_LIST.add(animRList);
+        LIST_ORDER_LIST.add(attrRList);
+        LIST_ORDER_LIST.add(colorRList);
         LIST_ORDER_LIST.add(dimenRList);
         LIST_ORDER_LIST.add(drawableRList);
         LIST_ORDER_LIST.add(idRList);
         LIST_ORDER_LIST.add(layoutRList);
-        LIST_ORDER_LIST.add(stringRList);
+        LIST_ORDER_LIST.add(menuRList);
         LIST_ORDER_LIST.add(styleRList);
+        LIST_ORDER_LIST.add(stringRList);
     }
-    private static final int[] LIST_BASE = {Config.DIMEN_BASE, Config.DRAWABLE_BASE,
-        Config.ID_BASE, Config.LAYOUT_BASE, Config.STRING_BASE, Config.STYLE_BASE};
+    
+    private static String stringContent = "";
+    private static String colorContent = "";
     
     public static void main(String[] argv) {
         File res = new File(Config.PROJECT_RES_PATH);
@@ -62,6 +70,7 @@ public class ProjectConverter {
         }
         GenerateR();
         GenerateString();
+        GenerateColor();
         System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
     
@@ -105,30 +114,31 @@ public class ProjectConverter {
         File[] fileList = valueFile.listFiles();
         for (File valuesF : fileList) {
             System.out.println("Analysing " + valuesF.getPath() + "...");
-            StringOutput(valuesF);
-            System.out.println("");
-        }
-    }
-    
-    private static void StringOutput(File stringFile) {
-        Document document = null;
-        try {
-            document = new SAXReader().read(stringFile).getDocument();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-            throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
-        }
-        Element root = document.getRootElement();
-        if (!root.getName().equals("resources"))
-            return;
-        @SuppressWarnings("unchecked")
-        List<Element> list = root.elements();
-        for (Element e : list) {
-            if (e.getName().equals("string")) {
-                stringContent += "public static final String " + e.attributeValue("name") +
-                        " = \"" + e.getText() + "\";\n";
-                stringRList.add(e.attributeValue("name"));
+            Document document = null;
+            try {
+                document = new SAXReader().read(valuesF).getDocument();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
             }
+            Element root = document.getRootElement();
+            if (!root.getName().equals("resources"))
+                return;
+            @SuppressWarnings("unchecked")
+            List<Element> list = root.elements();
+            for (Element e : list) {
+                if (e.getName().equals("string")) {
+                    stringContent += "public static final String " + e.attributeValue("name") +
+                            " = \"" + e.getText() + "\";\n";
+                    stringRList.add(e.attributeValue("name"));
+                }
+                if (e.getName().equals("color")) {
+                    colorContent += "public static final int " + e.attributeValue("name") +
+                            " = " + e.getText().replace("#", "0x") + ";\n";
+                    colorRList.add(e.attributeValue("name"));
+                }
+            }
+            System.out.println("");
         }
     }
     
@@ -140,7 +150,7 @@ public class ProjectConverter {
             content += "\tpublic static final class " + LIST_ORDER[i] + "{\n";
             for (int j = 0; j < list.size(); j++) {
                 content += "\t\tpublic static final int " + list.get(j) +
-                        " = 0x" + Integer.toHexString(LIST_BASE[i] + j) + ";\n";
+                        " = 0x" + Integer.toHexString(Config.BASE + (i * 0x10000) + j) + ";\n";
             }
             content += "\t}\n\n";
         }
@@ -166,4 +176,10 @@ public class ProjectConverter {
         System.out.println("");
     }
     
+    private static void GenerateColor() {
+        File file = new File("res/values/colors.xml");
+        colorContent = Utils.buildJavaFile(file, colorContent, null);
+        Utils.generateFile(file, colorContent);
+        System.out.println("");
+    }    
 }
