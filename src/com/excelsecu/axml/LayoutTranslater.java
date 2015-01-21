@@ -141,9 +141,12 @@ public class LayoutTranslater {
         
         //when attribute has several types of value (like android:background),
         //change the method if nessary.
-        if (attrValue.matches("#[0-9a-fA-F]+") &&
-                methodName.equals("setBackground(Drawable)")) {
-            methodName = "setBackgroundColor(int)";
+        if (methodName.equals("setBackground(Drawable)")) {
+            if (attrValue.matches("#[0-9a-fA-F]+") ||
+                    attrValue.matches("@android:color/.+") ||
+                    attrValue.matches("@color/.+")) {
+                methodName = "setBackgroundColor(int)";
+            }
         }
 
         methodName = methodName.substring(0, methodName.indexOf("("));
@@ -188,7 +191,13 @@ public class LayoutTranslater {
 	    //color
 	    else if (value.matches("#[0-9a-fA-F]+")) {
 	        value = "Color.parseColor(\"" + value + "\")";
-	    }
+	    } else if (value.matches("@android:color/.+")) {
+	        value = value.substring(value.indexOf('/') + 1);
+            value = "android.R.color." + value;
+        } else if (value.matches("@color/.+")) {
+            value = value.substring(value.indexOf('/') + 1);
+            value = "color." + value;
+        }
 	    
 	    //visibility
 	    else if (value.equals("gone") || value.equals("visibile") ||
@@ -278,6 +287,8 @@ public class LayoutTranslater {
             addImport(SingleLineTransformationMethod.class.getName());
         } else if (attrName.equals("android:inputType")) {
             addImport(InputType.class.getName());
+        } else if (attrValue.matches("@color/.+")) {
+            addImport(Config.PACKAGE_NAME + ".values.color");
         }
 	}
     
