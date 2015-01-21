@@ -6,12 +6,15 @@ public class Config {
     public static final String PROJECT_RES_PATH = "res/";
     public static final String PROJECT_OUT_ROOT = "res_out/";
     public static final String PACKAGE_NAME = "com.excelsecu.axml.test";
-    public static final String PROJECT_OUT_PATH = PROJECT_OUT_ROOT + PACKAGE_NAME.replace('.', '/') + "/";;
+    public static final String JAVA_OUT_PATH = PROJECT_OUT_ROOT + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
+    public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.axml.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.axml.dbbuilder.Config.ENCODE;
 
+    /**base of R resources id**/
     public static final int BASE = 0x7f040000;
 
+    /**RelativeLayout.Rule's map of attr to Java value**/
     public static final HashMap<String, String> RULE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 2080190935307088596L;
         {
@@ -40,6 +43,8 @@ public class Config {
             put("layout_toStartOf", "START_OF");
         }
     };
+    
+    /**TextView.InputType's map of attr to Java value**/
     public static final HashMap<String, String> INPUT_TYPE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 8702820407293253537L;
         {

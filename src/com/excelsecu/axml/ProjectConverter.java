@@ -54,6 +54,7 @@ public class ProjectConverter {
                 LayoutOutput(f);
             } else if (path.matches(".+anim")) {
             } else if (path.matches(".+drawable.*")) {
+                DrawableOutput(f);
             } else if (path.matches(".+menu.*")) {
             } else if (path.matches(".+values.*")) {
                 ValueOutput(f);
@@ -101,13 +102,13 @@ public class ProjectConverter {
         idRList.addAll(LayoutConverter.getIdList());
     }
     
-    private static void ValueOutput(File valueFile) {
-        File[] fileList = valueFile.listFiles();
-        for (File valuesF : fileList) {
-            System.out.println("Analysing " + valuesF.getPath() + "...");
+    private static void ValueOutput(File dir) {
+        File[] fileList = dir.listFiles();
+        for (File f : fileList) {
+            System.out.println("Analysing " + f.getPath() + "...");
             Document document = null;
             try {
-                document = new SAXReader().read(valuesF).getDocument();
+                document = new SAXReader().read(f).getDocument();
             } catch (DocumentException e) {
                 e.printStackTrace();
                 throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
@@ -134,6 +135,20 @@ public class ProjectConverter {
             System.out.println("");
         }
     }
+
+    private static void DrawableOutput(File dir) {
+        File[] fileList = dir.listFiles();
+        for (File f : fileList) {
+            if (!Utils.getFileExtension(f).equals("xml")) {
+                String outPath = f.getPath();
+                outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));
+                System.out.println("Copying " + f.getPath() + " to " +
+                        new File(outPath).getPath() + "...");
+                Utils.copyFile(f.getPath(), outPath);
+            }
+        }
+        System.out.println("");
+    }
     
     private static void GenerateR() {
         String content = "";
@@ -149,8 +164,8 @@ public class ProjectConverter {
         }
         content += "}";
         
-        String rPath = Config.PROJECT_OUT_PATH + "R.java";
-        System.out.println("Generating " + rPath.replace('/', File.separatorChar) + "...");
+        String rPath = Config.JAVA_OUT_PATH + "R.java";
+        System.out.println("Generating " + new File(rPath).getPath() + "...");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(rPath));
             out.write(content);
@@ -174,5 +189,5 @@ public class ProjectConverter {
         colorContent = Utils.buildJavaFile(file, colorContent, null);
         Utils.generateFile(file, colorContent);
         System.out.println("");
-    }    
+    }
 }

@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +108,7 @@ public class Utils {
         subPath = subPath.substring(4);
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.lastIndexOf('.')) + ".java";
-        String path = Config.PROJECT_OUT_PATH + subPath;
+        String path = Config.JAVA_OUT_PATH + subPath;
         path = path.replace('\\', '/');
         int index = path.lastIndexOf('/');
         if (index == -1) {
@@ -119,7 +121,7 @@ public class Utils {
         }
         
         File javaFile = new File(path);
-        System.out.println("Generating " + path.replace('/', File.separatorChar) + "...");
+        System.out.println("Generating " + new File(path).getPath() + "...");
         
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
@@ -260,7 +262,13 @@ public class Utils {
         return node.getParent().getLabelName();
     }
     
-    public static String devideParams(String value, String prefix) {
+    /**
+     * Prefix each parameter devided by '|'
+     * @param value value to be devided
+     * @param prefix prefix of the value
+     * @return value added prefix
+     */
+    public static String prefixParams(String value, String prefix) {
         List<String> list = new ArrayList<String>();
         value = value.toUpperCase();
         while (true) {
@@ -282,5 +290,39 @@ public class Utils {
         }
         value = value.substring(0, value.length() - 3);
         return value;
+    }
+    
+    public static boolean copyFile(String oldPath, String newPath) {
+        try {
+            int byteread = 0;
+            File newFile = new File(newPath);
+            File newFilePath = new File(newPath.substring(0, newPath.lastIndexOf(File.separatorChar)));
+            File oldFile = new File(oldPath);
+            if (!newFilePath.isDirectory()) {
+                newFilePath.mkdirs();
+            }
+            if (!newFile.exists()) {
+                if (newFile.createNewFile()) {
+                    return false;
+                }
+            }
+            
+            if (oldFile.exists()) {
+                InputStream inStream = new FileInputStream(oldPath);
+                FileOutputStream outStream = new FileOutputStream(newPath);
+                byte[] buffer = new byte[5120];
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, byteread);
+                }
+                inStream.close();
+                outStream.close();
+                return true;
+            }
+            return false;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

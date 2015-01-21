@@ -222,7 +222,7 @@ public class LayoutTranslater {
 	    //gravity
         else if (attr.getQualifiedName().equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
-            value = Utils.devideParams(value, "Gravity");
+            value = Utils.prefixParams(value, "Gravity");
         }
 	    
 	    //text
@@ -236,7 +236,7 @@ public class LayoutTranslater {
             if (value == null) {
                 throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, error);
             }
-            value = Utils.devideParams(value, "InputType");
+            value = Utils.prefixParams(value, "InputType");
         } else if (attrName.equals("android:ellipsize")) {
             value = value.toUpperCase();
             value = "TextUtils.TruncateAt." + value;
