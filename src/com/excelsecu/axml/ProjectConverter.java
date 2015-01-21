@@ -128,8 +128,10 @@ public class ProjectConverter {
             List<Element> list = root.elements();
             for (Element e : list) {
                 if (e.getName().equals("string")) {
+                    String text = e.getText();
+                    text = text.replace("\"", "\\\"");
                     stringContent += "public static final String " + e.attributeValue("name") +
-                            " = \"" + e.getText() + "\";\n";
+                            " = \"" + text + "\";\n";
                     stringRList.add(e.attributeValue("name"));
                 }
                 if (e.getName().equals("color")) {
