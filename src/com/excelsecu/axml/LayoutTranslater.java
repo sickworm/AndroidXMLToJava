@@ -154,7 +154,7 @@ public class LayoutTranslater {
         return methodName;
 	}
 	
-	private String translateValue(Attribute attr) {
+	public static String translateValue(Attribute attr) {
 	    String value = attr.getValue();
         String attrName = attr.getQualifiedName();
 	    

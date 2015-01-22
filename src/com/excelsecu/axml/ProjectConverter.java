@@ -142,9 +142,25 @@ public class ProjectConverter {
             if (!Utils.getFileExtension(f).equals("xml")) {
                 String outPath = f.getPath();
                 outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));
-                System.out.println("Copying " + f.getPath() + " to " +
+                System.out.println("Copying " + f.getPath() + " to\n\t" +
                         new File(outPath).getPath() + "...");
                 Utils.copyFile(f.getPath(), outPath);
+            } else {
+                System.out.print("Analysing " + f.getPath() + "...");
+                String content = "";
+                AXMLNode root = new AXMLParser(f.getPath()).parse();
+                try {
+                    root = new AXMLParser(f.getPath()).parse();
+                } catch (AXMLException e) {
+                    System.out.print("Analyse " + f.getPath() + "error. Give up.");
+                    return;
+                }
+                String name = root.getLabelName();
+                if (name.equals("selector")) {
+                    content = new SelectorConverter(root).convert();
+                } else if (name.equals("shape")) {
+                    
+                }
             }
         }
         System.out.println("");

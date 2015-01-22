@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class LayoutConverter {
     private String path;
-    private Parser parser;
+    private AXMLParser parser;
     private AXMLNode root;
     private LayoutTranslater translater;
     
@@ -38,7 +38,7 @@ public class LayoutConverter {
     
     public LayoutConverter(String path) {
         this.path = path;
-        this.parser = new Parser(path);
+        this.parser = new AXMLParser(path);
         this.translater = new LayoutTranslater();
     }
     
