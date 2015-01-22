@@ -1,5 +1,8 @@
 Android XML to Java code. Still on Development.
 
+2015/1/22:
+Support drawable selector, drawable picture.java not generated yet.
+
 2015/1/21:
 Support drawable picture, fix some value error
 
