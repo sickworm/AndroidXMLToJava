@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.StateListDrawable;
+
 public class SelectorConverter {
     private static final int TYPE_NOT_INITIALIZE = -1;
     private static final int TYPE_NOTHING = 0;
@@ -13,6 +17,10 @@ public class SelectorConverter {
     private AXMLNode node;
     private int type = TYPE_NOT_INITIALIZE;
     private List<String> importList = new ArrayList<String>(); 
+    
+    public static void main(String[] argv) {
+        System.out.println(new SelectorConverter(new AXMLParser("res/drawable/color_selector.xml").parse()).convert());
+    }
     
     public SelectorConverter(AXMLNode node) {
         this.node = node;
@@ -46,11 +54,53 @@ public class SelectorConverter {
     }
     
     private String convertToColorStateList() {
+        addImport(Config.PACKAGE_NAME + ".values.colors");
+        addImport(Context.class.getName());
+        addImport(ColorStateList.class.getName());
         String javaBlock = "";
+        String stateSetList = "";
+        String colorList = "";
+        for (AXMLNode n : node.getChildren()) {
+            if (!n.getLabelName().equals("item")) {
+                continue;
+            }
+            String stateSet = "";
+            String color = "";
+            for (Attribute a : n.getAttributes()) {
+                String attrName = a.getQualifiedName();
+                if (attrName.equals("android:color")) {
+                    color = LayoutTranslater.translateValue(a);
+                } else {
+                    String state = "android.R.attr." + a.getName();
+                    if (a.getValue().equals("false")) {
+                        state = "-" + state;
+                    }
+                    if (stateSet.equals("")) {
+                        stateSet = state;
+                    } else {
+                        stateSet += ", " + state;
+                    }
+                }
+            }
+            if (colorList.equals("")) {
+                colorList = color;
+            } else {
+                colorList += ", " + color;
+            }
+            stateSetList += "\n\t{" + stateSet + "},";
+        }
+        //remove comma
+        stateSetList = stateSetList.substring(0, stateSetList.length() - 1);
+
+        javaBlock += "int[][] stateSet" + " = new int[][] {" + stateSetList + "};\n";
+        javaBlock += "int[] colorSet" + " = new int[] {" + colorList + "};\n";
+        javaBlock += "ColorStateList colorStateList = new ColorStateList(stateSet, colorSet);\n";
         return javaBlock;
     }
     
     private String convertToStateListDrawable() {
+        addImport(StateListDrawable.class.getName());
+        addImport(Context.class.getName());
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
@@ -65,7 +115,7 @@ public class SelectorConverter {
                 if (attrName.equals("android:drawable")) {
                     drawable = LayoutTranslater.translateValue(a);
                     String attrValue = a.getValue();
-                    importList.add(Config.PACKAGE_NAME + "." + attrValue.substring(attrValue.indexOf('/')));
+                    addImport(Config.PACKAGE_NAME + "." + attrValue.substring(attrValue.indexOf('/') + 1));
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -85,7 +135,12 @@ public class SelectorConverter {
             num++;
         }
         return javaBlock;
-        
+    }
+    
+    private void addImport(String className) {
+        if (!Utils.hasString(importList, className)) {
+            importList.add(className);
+        }
     }
     
     public List<String> getImportList() {

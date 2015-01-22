@@ -197,7 +197,7 @@ public class LayoutTranslater {
             value = "android.R.color." + value;
         } else if (value.matches("@color/.+")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "color." + value;
+            value = "colors." + value;
         }
 	    
 	    //visibility
@@ -292,7 +292,7 @@ public class LayoutTranslater {
         } else if (attrName.equals("android:inputType")) {
             addImport(InputType.class.getName());
         } else if (attrValue.matches("@color/.+")) {
-            addImport(Config.PACKAGE_NAME + ".values.color");
+            addImport(Config.PACKAGE_NAME + ".values.colors");
         } else if (attrName.equals("android:ellipsize")) {
             addImport(TextUtils.class.getName());
         }

@@ -18,7 +18,7 @@ public class AXMLParser {
     
     public static void main(String[] argv) {
         System.out.println("--------XMLParse start-------");
-        AXMLNode rootNode = new AXMLParser("test.xml").parse();
+        AXMLNode rootNode = new AXMLParser("res/layout/base.xml").parse();
         printNode(rootNode, 0);
         System.out.println("--------XMLParse end---------");
     }

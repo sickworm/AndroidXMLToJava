@@ -13,6 +13,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import android.graphics.Color;
+
 public class ProjectConverter {
     private static List<String> animRList = new ArrayList<String>();
     private static List<String> attrRList = new ArrayList<String>();
@@ -128,7 +130,7 @@ public class ProjectConverter {
                 }
                 if (e.getName().equals("color")) {
                     colorContent += "public static final int " + e.attributeValue("name") +
-                            " = " + e.getText().replace("#", "0x") + ";\n";
+                            " = Color.parseColor(\"" + e.getText() + "\");\n";
                     colorRList.add(e.attributeValue("name"));
                 }
             }
@@ -157,9 +159,13 @@ public class ProjectConverter {
                 }
                 String name = root.getLabelName();
                 if (name.equals("selector")) {
-                    content = new SelectorConverter(root).convert();
+                    SelectorConverter selectorConverter = new SelectorConverter(root);
+                    content = selectorConverter.convert();
+                    List<String> importList = selectorConverter.getImportList();
+                    content = Utils.buildJavaFile(f, content, importList);
+                    Utils.generateFile(f, content);
                 } else if (name.equals("shape")) {
-                    
+                    ;
                 }
             }
         }
@@ -201,8 +207,10 @@ public class ProjectConverter {
     }
     
     private static void GenerateColor() {
+        List<String> importList = new ArrayList<String>();
+        importList.add(Color.class.getName());
         File file = new File("res/values/colors.xml");
-        colorContent = Utils.buildJavaFile(file, colorContent, null);
+        colorContent = Utils.buildJavaFile(file, colorContent, importList);
         Utils.generateFile(file, colorContent);
         System.out.println("");
     }

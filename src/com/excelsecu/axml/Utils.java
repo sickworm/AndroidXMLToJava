@@ -192,7 +192,7 @@ public class Utils {
             Scanner scan = new Scanner(content);
             while (scan.hasNext()) {
                 String str = scan.nextLine();
-                if (str.matches("\\w+ \\w+ = new \\w+\\(context\\);")) {
+                if (str.matches("\\w+ \\w+ = new \\w+(.*);")) {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf(' ', index + 1);
                     returnClass = str.substring(0, index);
