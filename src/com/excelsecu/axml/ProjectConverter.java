@@ -96,6 +96,7 @@ public class ProjectConverter {
                                 e.getDetails() + "\n\n" + content;
                     }
                     Utils.generateFile(f, content);
+                    layoutRList.add(Utils.getClassName(f));
                 } catch (AXMLException e) {
                     System.out.println(f.getName() + " convert error: " +
                             e.getErrorCode() + " " + e.getDetails() + "");
