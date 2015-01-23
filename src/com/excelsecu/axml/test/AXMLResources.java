@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -48,6 +49,10 @@ public class AXMLResources {
     }
     
     public Drawable getDrawable(int id) {
+        return null;
+    }
+    
+    public ColorStateList getColorStateList(int id) {
         return null;
     }
     

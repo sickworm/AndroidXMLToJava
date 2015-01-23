@@ -214,7 +214,13 @@ public class LayoutTranslater {
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
             value = "R.drawable." + value;
-            value = "resources.getDrawable(" + value + ")";
+            //ColorStateList is not a Drawable, should use another method
+            if (attrName.contains("Color") ||
+                    attrName.contains("TintList")) {
+                value = "resources.getColorStateList(" + value + ")";
+            } else {
+                value = "resources.getDrawable(" + value + ")";
+            }
         }
 	    
         //orientation
@@ -225,8 +231,8 @@ public class LayoutTranslater {
         }
 	    
 	    //gravity
-        else if (attr.getQualifiedName().equals("android:gravity") ||
-                attr.getQualifiedName().equals("android:layout_gravity")) {
+        else if (attrName.equals("android:gravity") ||
+                attrName.equals("android:layout_gravity")) {
             value = Utils.prefixParams(value, "Gravity");
         }
 	    
