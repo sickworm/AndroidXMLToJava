@@ -107,7 +107,7 @@ public class Utils {
         String subPath = f.getPath();
         subPath = subPath.substring(4);
         //subPath = subPath.replace(".xml", ".java") is not safety
-        subPath = subPath.substring(0, subPath.lastIndexOf('.')) + ".java";
+        subPath = subPath.substring(0, subPath.indexOf('.')) + ".java";
         String path = Config.JAVA_OUT_PATH + subPath;
         path = path.replace('\\', '/');
         int index = path.lastIndexOf('/');
@@ -182,7 +182,7 @@ public class Utils {
             }
             title += "\n";
         }
-        className = className.substring(0, className.lastIndexOf('.'));
+        className = className.substring(0, className.indexOf('.'));
         title += "public final class " + className + " {\n";
         //in this condition, Java file need a return type
         if (!subPath.equals("values")) {
@@ -192,7 +192,8 @@ public class Utils {
             Scanner scan = new Scanner(content);
             while (scan.hasNext()) {
                 String str = scan.nextLine();
-                if (str.matches("\\w+ \\w+ = new \\w+(.*);")) {
+                //find out the element first built
+                if (str.matches("\\w+ \\w+ *= *.+")) {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf(' ', index + 1);
                     returnClass = str.substring(0, index);
