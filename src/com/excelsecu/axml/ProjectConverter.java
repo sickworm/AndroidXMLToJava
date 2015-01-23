@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +14,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 
 public class ProjectConverter {
     private static List<String> animRList = new ArrayList<String>();
@@ -147,6 +150,22 @@ public class ProjectConverter {
                 System.out.println("Copying " + f.getPath() + " to\n\t" +
                         new File(outPath).getPath() + "...");
                 Utils.copyFile(f.getPath(), outPath);
+                //return object must put in the first line
+                String className = f.getName().substring(0, f.getName().indexOf('.'));
+                String content = "Drawable drawable = null;\n";
+                content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
+                        f.getPath().replace("res", "\\assets").replace("\\", "/") + "\"); \n";
+                content += "drawable = Drawable.createFromStream(inStream" +
+                        ", \"" + className +"\");\n";
+                List<String> importList = new ArrayList<String>();
+                importList.add(Drawable.class.getName());
+                importList.add(Context.class.getName());
+                importList.add(InputStream.class.getName());
+                
+                //package name can't use '-'
+                File file = new File(f.getPath().replace('-', '_'));
+                content = Utils.buildJavaFile(file, content, importList);
+                Utils.generateFile(file, content);
             } else {
                 System.out.print("Analysing " + f.getPath() + "...");
                 String content = "";
