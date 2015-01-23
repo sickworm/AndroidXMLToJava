@@ -51,6 +51,10 @@ public class AXMLResources {
         return null;
     }
     
+    public int getColor(int id) {
+        return 0;
+    }
+    
     public View getLayout(int id) {
         Field[] fieldList = R.layout.class.getFields();
         for (Field f : fieldList) {
@@ -59,7 +63,7 @@ public class AXMLResources {
                     String name = f.getName();
                         String packageName = new Object() {  
                             public String getClassName() {  
-                                String packageName = this.getClass().getTypeName();
+                                String packageName = this.getClass().getName();
                                 return packageName.substring(0, packageName.lastIndexOf('.'));  
                             }  
                         }.getClassName();

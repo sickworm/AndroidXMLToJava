@@ -54,7 +54,6 @@ public class SelectorConverter {
     }
     
     private String convertToColorStateList() {
-        addImport(Config.PACKAGE_NAME + ".values.colors");
         addImport(Context.class.getName());
         addImport(ColorStateList.class.getName());
         String javaBlock = "";
@@ -70,6 +69,9 @@ public class SelectorConverter {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:color")) {
                     color = LayoutTranslater.translateValue(a);
+                    if (color.contains("AXMLResources")) {
+                        addImport(Config.PACKAGE_NAME + ".AXMLResources");
+                    }
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -101,6 +103,7 @@ public class SelectorConverter {
     private String convertToStateListDrawable() {
         addImport(StateListDrawable.class.getName());
         addImport(Context.class.getName());
+        addImport(Config.PACKAGE_NAME + ".R");
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
@@ -114,8 +117,9 @@ public class SelectorConverter {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:drawable")) {
                     drawable = LayoutTranslater.translateValue(a);
-                    String attrValue = a.getValue();
-                    addImport(Config.PACKAGE_NAME + "." + attrValue.substring(attrValue.indexOf('/') + 1));
+                    if (drawable.contains("AXMLResources")) {
+                        addImport(Config.PACKAGE_NAME + ".AXMLResources");
+                    }
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {

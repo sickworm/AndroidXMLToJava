@@ -172,9 +172,8 @@ public class Utils {
         String subPath = file.getPath();
         subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
         subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
-        //Java class title
         String title = "package " + Config.PACKAGE_NAME + "." + subPath + ";\n\n";
-        String className = file.getName();
+        
         //add import list
         if (importList != null) {
             for (String s : importList) {
@@ -182,8 +181,9 @@ public class Utils {
             }
             title += "\n";
         }
-        className = className.substring(0, className.indexOf('.'));
+        String className = Utils.getClassName(file);
         title += "public final class " + className + " {\n";
+        
         //in this condition, Java file need a return type
         if (!subPath.equals("values")) {
             //find the main object to return
@@ -196,6 +196,9 @@ public class Utils {
                 if (str.matches("\\w+ \\w+ *= *.+")) {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf(' ', index + 1);
+                    if (str.substring(index + 1, index2).equals(Config.RESOURCES_NAME)) {
+                        continue;
+                    }
                     returnClass = str.substring(0, index);
                     returnObject = str.substring(index + 1, index2);
                     break;
@@ -293,6 +296,12 @@ public class Utils {
         return value;
     }
     
+    /**
+     * Copy file from oldPath to newPath
+     * @param oldPath old file path
+     * @param newPath new file path
+     * @return true if succeed, false if failed
+     */
     public static boolean copyFile(String oldPath, String newPath) {
         try {
             int byteread = 0;
@@ -325,5 +334,20 @@ public class Utils {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    /**
+     * Get the class name according to the file path
+     * @param file the XML file to be converted
+     * @return the class name after converted
+     */
+    public static String getClassName(File file) {
+        if (file == null) {
+            return "";
+        } else if (file.getName().indexOf('.') == -1) {
+            return "";
+        }
+        
+        return file.getName().substring(0, file.getName().indexOf('.'));
     }
 }

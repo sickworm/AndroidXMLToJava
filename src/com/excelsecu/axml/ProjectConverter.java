@@ -151,7 +151,7 @@ public class ProjectConverter {
                         new File(outPath).getPath() + "...");
                 Utils.copyFile(f.getPath(), outPath);
                 //return object must put in the first line
-                String className = f.getName().substring(0, f.getName().indexOf('.'));
+                String className = Utils.getClassName(f);
                 String content = "Drawable drawable = null;\n";
                 content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
                         f.getPath().replace("res", "\\assets").replace("\\", "/") + "\"); \n";
@@ -186,6 +186,11 @@ public class ProjectConverter {
                 } else if (name.equals("shape")) {
                     ;
                 }
+            }
+            
+            String id = Utils.getClassName(f);
+            if (!Utils.hasString(drawableRList, id)) {
+                drawableRList.add(id);
             }
         }
         System.out.println("");

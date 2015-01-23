@@ -31,6 +31,8 @@ public class LayoutTranslater {
     private int num = 1;
     /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
     private boolean scale = false;
+    /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
+    private boolean resources = false;
     
 	public LayoutTranslater() {
         map = AndroidDocConverter.getMap();
@@ -184,7 +186,8 @@ public class LayoutTranslater {
 	    //string
         else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
-            value = "strings." + value;
+            value = "R.string." + value;
+            value = Config.RESOURCES_NAME + ".getString(" + value + ")";
         } else if (attr.getQualifiedName().equals("android:text")) {
             value = "\"" + value + "\"";
         }
@@ -197,7 +200,8 @@ public class LayoutTranslater {
             value = "android.R.color." + value;
         } else if (value.matches("@color/.+")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "colors." + value;
+            value = "R.color." + value;
+            value = Config.RESOURCES_NAME + ".getColor(" + value + ")";
         }
 	    
 	    //visibility
@@ -209,7 +213,8 @@ public class LayoutTranslater {
 	    //drawable
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "" + value + ".get(context)";
+            value = "R.drawable." + value;
+            value = "resources.getDrawable(" + value + ")";
         }
 	    
         //orientation
@@ -257,8 +262,8 @@ public class LayoutTranslater {
         String attrName = attr.getQualifiedName();
         if (attrValue.matches("[0-9]+dp")) {
             if (!scale) {
-                scale = true;
                 extraMethod += "final float scale = context.getResources().getDisplayMetrics().density;\n";
+                scale = true;
             }
         } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
                 || attrValue.equals("wrap_content")) {
@@ -277,11 +282,6 @@ public class LayoutTranslater {
             }
         } else if (attrValue.matches("#[0-9a-fA-F]+")) {
             addImport(Color.class.getName());
-        } else if (attrValue.startsWith("@string/")) {
-            addImport(Config.PACKAGE_NAME + ".values.strings");
-        } else if (attrValue.startsWith("@drawable/")) {
-            String value = attrValue.substring(attrValue.indexOf('/') + 1);
-            addImport(Config.PACKAGE_NAME + ".drawable." + value);
         } else if (attrName.equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
             addImport(Gravity.class.getName());
@@ -291,10 +291,18 @@ public class LayoutTranslater {
             addImport(SingleLineTransformationMethod.class.getName());
         } else if (attrName.equals("android:inputType")) {
             addImport(InputType.class.getName());
-        } else if (attrValue.matches("@color/.+")) {
-            addImport(Config.PACKAGE_NAME + ".values.colors");
         } else if (attrName.equals("android:ellipsize")) {
             addImport(TextUtils.class.getName());
+        }
+        
+        else if (attrValue.startsWith("@drawable/") ||
+                attrValue.startsWith("@color/") ||
+                attrValue.startsWith("@string/")) {
+            addImport(Config.PACKAGE_NAME + ".AXMLResources");
+            if (!resources) {
+                extraMethod += "AXMLResources " + Config.RESOURCES_NAME + " = new AXMLResources(context);\n";
+                resources = true;
+            }
         }
 	}
     
