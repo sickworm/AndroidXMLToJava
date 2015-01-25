@@ -1,22 +1,17 @@
 package com.excelsecu.axml;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dom4j.Attribute;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.StateListDrawable;
 
-public class SelectorConverter {
+public class SelectorConverter extends BaseConverter{
     private static final int TYPE_NOT_INITIALIZE = -1;
     private static final int TYPE_NOTHING = 0;
     private static final int TYPE_COLOR = 1;
     private static final int TYPE_DRAWABLE = 2;
     private AXMLNode node;
-    private int type = TYPE_NOT_INITIALIZE;
-    private List<String> importList = new ArrayList<String>(); 
+    private int type = TYPE_NOT_INITIALIZE; 
     
     public static void main(String[] argv) {
         System.out.println(new SelectorConverter(new AXMLParser("res/drawable/color_selector.xml").parse()).convert());
@@ -69,9 +64,6 @@ public class SelectorConverter {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:color")) {
                     color = LayoutTranslater.translateValue(a);
-                    if (color.contains("AXMLResources")) {
-                        addImport(Config.PACKAGE_NAME + ".AXMLResources");
-                    }
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -101,9 +93,8 @@ public class SelectorConverter {
     }
     
     private String convertToStateListDrawable() {
-        addImport(StateListDrawable.class.getName());
         addImport(Context.class.getName());
-        addImport(Config.PACKAGE_NAME + ".R");
+        addImport(StateListDrawable.class.getName());
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
@@ -117,9 +108,6 @@ public class SelectorConverter {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:drawable")) {
                     drawable = LayoutTranslater.translateValue(a);
-                    if (drawable.contains("AXMLResources")) {
-                        addImport(Config.PACKAGE_NAME + ".AXMLResources");
-                    }
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -139,15 +127,5 @@ public class SelectorConverter {
             num++;
         }
         return javaBlock;
-    }
-    
-    private void addImport(String className) {
-        if (!Utils.hasString(importList, className)) {
-            importList.add(className);
-        }
-    }
-    
-    public List<String> getImportList() {
-        return importList;
     }
 }
