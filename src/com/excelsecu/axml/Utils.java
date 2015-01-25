@@ -34,6 +34,9 @@ public class Utils {
         if (className == null || className.length() < 1) {
             return null;
         }
+        if (className.indexOf('.') != -1) {
+        	className = className.substring(className.lastIndexOf('.') + 1);
+        }
         char firstLetter = className.charAt(0);
         firstLetter = Character.toLowerCase(firstLetter);
         String objectName = className.substring(1);

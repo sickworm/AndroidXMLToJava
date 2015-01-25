@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,9 +13,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 
 public class ProjectConverter {
     private static List<String> animRList = new ArrayList<String>();
@@ -39,6 +38,12 @@ public class ProjectConverter {
     private static String colorContent = "";
     
     public static void main(String[] argv) {
+    	System.out.println("Adding custom widget...");
+    	CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
+    			"com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class);
+    	CustomWidget.addCustomWidget("com.safeview.safeEditText",
+    			"com.safeview.safeEditText", EditText.class);
+    	
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
             throw new AXMLException(AXMLException.PROJECT_DIR_NOT_FOUND);
@@ -80,14 +85,14 @@ public class ProjectConverter {
             }
             if (f.isFile() && f.getName().endsWith(".xml")) {
                 try {
-                    LayoutConverter converter = new LayoutConverter(f.getPath());
-                    String content = converter.convertAsString();
-                    if (!converter.getExtraMethod().equals("")) {
-                        content = converter.getExtraMethod() + "\n" + content;
+                	LayoutTranslator translator = new LayoutTranslator(f);
+                    String content = translator.translate();
+                    if (!translator.getExtraMethod().equals("")) {
+                        content = translator.getExtraMethod() + "\n" + content;
                     }
                     
                     try {
-                        content = Utils.buildJavaFile(f, content, converter.getImportList());
+                        content = Utils.buildJavaFile(f, content, translator.getImportList());
                     } catch (AXMLException e) {
                         System.out.println(f.getName() + " build Java file error: " +
                                 e.getErrorCode() + " " + e.getDetails() + "");
@@ -105,7 +110,7 @@ public class ProjectConverter {
             }
             System.out.println("");
         }
-        idRList.addAll(LayoutConverter.getIdList());
+        idRList.addAll(LayoutTranslator.getIdList());
     }
     
     private static void ValueOutput(File dir) {
@@ -145,57 +150,23 @@ public class ProjectConverter {
     private static void DrawableOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
-            if (!Utils.getFileExtension(f).equals("xml")) {
-                String outPath = f.getPath();
-                outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));
-                System.out.println("Copying " + f.getPath() + " to\n\t" +
-                        new File(outPath).getPath() + "...");
-                Utils.copyFile(f.getPath(), outPath);
-                //return object must put in the first line
-                String className = Utils.getClassName(f);
-                String content = "Drawable drawable = null;\n";
-                content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
-                        f.getPath().replace("res", "\\assets").replace("\\", "/") + "\"); \n";
-                content += "drawable = Drawable.createFromStream(inStream" +
-                        ", \"" + className +"\");\n";
-                List<String> importList = new ArrayList<String>();
-                importList.add(Drawable.class.getName());
-                importList.add(Context.class.getName());
-                importList.add(InputStream.class.getName());
-                
-                //package name can't use '-'
-                File file = new File(f.getPath().replace('-', '_'));
-                content = Utils.buildJavaFile(file, content, importList);
-                Utils.generateFile(file, content);
-            } else {
-                System.out.print("Analysing " + f.getPath() + "...");
-                String content = "";
-                AXMLNode root = new AXMLParser(f.getPath()).parse();
-                try {
-                    root = new AXMLParser(f.getPath()).parse();
-                } catch (AXMLException e) {
-                    System.out.print("Analyse " + f.getPath() + "error. Give up.");
-                    return;
-                }
-                String name = root.getLabelName();
-                if (name.equals("selector")) {
-                    SelectorConverter selectorConverter = new SelectorConverter(root);
-                    content = selectorConverter.convert();
-                    content = selectorConverter.getExtraMethod() + "\n" + content;
-                    List<String> importList = selectorConverter.getImportList();
-                    content = Utils.buildJavaFile(f, content, importList);
-                    Utils.generateFile(f, content);
-                } else if (name.equals("shape")) {
-                    ;
-                }
-            }
-            
+            System.out.print("Analysing " + f.getPath() + "...");
+        	DrawableTranslator translator = new DrawableTranslator(f);
+        	String content = translator.translate();
+
             String id = Utils.getClassName(f);
             if (!Utils.hasString(drawableRList, id)) {
                 drawableRList.add(id);
             }
+        	if (content.equals(""))
+        		continue;
+        	
+            //package name can't use '-'
+            File outFile = new File(f.getPath().replace('-', '_'));
+            content = Utils.buildJavaFile(outFile, content, translator.getImportList());
+            Utils.generateFile(outFile, content);
+            System.out.println("");
         }
-        System.out.println("");
     }
     
     private static void GenerateR() {

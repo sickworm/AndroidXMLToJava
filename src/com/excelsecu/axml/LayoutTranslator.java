@@ -1,5 +1,6 @@
 package com.excelsecu.axml;
 
+import java.io.File;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -8,47 +9,78 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 /**
- * Translate a Android XML Node to a Java method block.
+ * Translate Android XML layout resources to Java method block.
  * @author ch
  *
  */
-public class LayoutTranslater extends BaseConverter {
-    private int num = 1;
+public class LayoutTranslator extends BaseTranslator {
+	private int num = 1;
+
+    public static void main(String[] argv) {
+        String path = "test.xml";
+        LayoutTranslator translator = new LayoutTranslator(new File(path));
+        String javaBlock = translator.translate();
+        String extraMethod = translator.getExtraMethod();
+        System.out.println(extraMethod);
+        System.out.println(javaBlock);
+
+        System.out.println("-----id start-----");
+        List<String> idList = LayoutTranslator.getIdList();
+        for (String id : idList) {
+            System.out.println("R.id." + id);
+        }
+        System.out.println("-----id end------");
+        System.out.println("");
+        System.out.println("-----import start-----");
+        List<String> classList = translator.getImportList();
+        for (String s : classList) {
+            System.out.println("import " + s + ";");
+        }
+        System.out.println("-----import end------");
+    }
+
+    public LayoutTranslator(File file) {
+		super(file);
+	}
 	
-	/**
-	 * Translate a XML attritube to a Java method.
-	 * @param attrName the name of attribute
-	 * @param attrValue the value of attribute
-	 * @return
-	 */
-	public String translate(AXMLNode node) {
+    public LayoutTranslator(AXMLNode node) {
+		super(node);
+	}
+    
+    public String translate() {
         String javaBlock = "";
-        Class<?> type = null;
+        String nodeJavaBlock = translateNode(getNode());
+        javaBlock += nodeJavaBlock;
+        for (AXMLNode n : getNode().getChildren()) {
+            javaBlock += translateNode(n);
+        }
+        return javaBlock;
+    }
+    
+    /**
+	 * Translate a Android XML Node to a Java method block.
+     * @return the Java block
+     */
+	private String translateNode(AXMLNode node) {
+        String javaBlock = "";
+        String newMethod = "";
         String nodeName = Utils.classToObject(node.getLabelName()) + num;
         node.setObjectName(nodeName);
         
-        String newMethod = "";
-        type = node.getType();
-        if (type == null) {
-	        if (node.getLabelName().equals("include")) {
-	            String layout = node.attributeValue("layout");
-	            layout = layout.substring(layout.indexOf('/') + 1);
-	            if (layout != null) {
-	                newMethod = "View " + nodeName + " = " +
-	                        layout + ".get(context);\n";
-	            }
-	            node.setType(android.view.View.class);
-	            type = node.getType();
-	            addImport(Config.PACKAGE_NAME + ".layout." + layout);
-	        } else {
-	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
-	            javaBlock = "//<" + node.getLabelName() + "/>\t//not support\n\n";
-	            return javaBlock;
-	        }
+        //include label
+        if (node.getLabelName().equals("include")) {
+            String layout = node.attributeValue("layout");
+            layout = layout.substring(layout.indexOf('/') + 1);
+            if (layout != null) {
+                newMethod = "View " + nodeName + " = " +
+                        layout + ".get(context);\n";
+            }
+            addImport(Config.PACKAGE_NAME + ".layout." + layout);
+        } else {
+	        newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
+	                node.getLabelName() + "(context);\n";
         }
-        newMethod = node.getLabelName() + " " + nodeName + " = new " + 
-                node.getLabelName() + "(context);\n";
-	    
+		    
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node);
         javaBlock += specialTranslater.buildLayoutParams();
@@ -58,7 +90,7 @@ public class LayoutTranslater extends BaseConverter {
             String attrName = a.getQualifiedName();
             String attrValue = a.getValue();
             try {
-                String methodName = transAttrToMethod(a, type);
+                String methodName = transAttrToMethod(a, getType());
                 String methodValue = translateValue(a);
                 attrMethod = methodName + "(" + methodValue + ")";
                 attrMethod = nodeName + "." + attrMethod + ";\n";
@@ -251,7 +283,7 @@ public class LayoutTranslater extends BaseConverter {
         }
         
         /**
-         * Init LayoutParams
+         * Initialize LayoutParams object
          * @return
          */
         public String buildLayoutParams() {

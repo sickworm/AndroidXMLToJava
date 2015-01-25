@@ -1,5 +1,6 @@
 package com.excelsecu.axml;
 
+import java.io.File;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -14,7 +15,7 @@ import org.dom4j.io.SAXReader;
  *
  */
 public class AXMLParser {
-    private final String path;
+	private String path;
     
     public static void main(String[] argv) {
         System.out.println("--------XMLParse start-------");
@@ -22,7 +23,11 @@ public class AXMLParser {
         printNode(rootNode, 0);
         System.out.println("--------XMLParse end---------");
     }
-    
+
+    public AXMLParser(File file) {
+        this.path = file.getPath();
+    }
+
     public AXMLParser(String path) {
         this.path = path;
     }

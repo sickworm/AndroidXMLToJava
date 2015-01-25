@@ -1,5 +1,6 @@
 package com.excelsecu.axml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,19 +18,43 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class BaseConverter {
+/**
+ * Super class for drawable and layout resources. Translate a AXMLNode to java block.
+ * @author ch
+ *
+ */
+public class BaseTranslator {
     private static List<String> idList = new ArrayList<String>();
-    private HashMap<String, String> map = null;
+    private static HashMap<String, String> map = null;
     private String extraMethod = "";
     private List<String> importList = new ArrayList<String>();
     
-    /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
-    private boolean scale = false;
-    /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
-    private boolean resources = false;
+    private AXMLNode node = null;
+    private File file = null;
     
-	public BaseConverter() {
+    /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
+    private boolean scale = false;
+    /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
+    private boolean resources = false;
+
+    public BaseTranslator(File file) {
+        this.file = file;
+        if (Utils.getFileExtension(file).equals("xml")) {
+        	init();
+        }
+    }
+    
+	public BaseTranslator(AXMLNode node) {
+		this.node = node;
         map = AndroidDocConverter.getMap();
+        init();
+	}
+	
+	protected void init() {
+		if (node == null) {
+	        AXMLParser parser = new AXMLParser(file);
+			node = parser.parse();
+		}
 	}
 	
 	/**
@@ -73,6 +98,11 @@ public class BaseConverter {
         return methodName;
 	}
 	
+	/**
+	 * Translate a XML attribute's value to a Java method's value.
+	 * @param attr the attribute to be translated
+	 * @return the value after translating
+	 */
 	protected static String translateValue(Attribute attr) {
 	    String value = attr.getValue();
         String attrName = attr.getQualifiedName();
@@ -244,12 +274,28 @@ public class BaseConverter {
         }
     }
     
+    public AXMLNode getNode() {
+    	return node;
+    }
+    
+    public Class<?> getType() {
+    	return node.getType();
+    }
+    
+    public File getFile() {
+    	return file;
+    }
+    
     public String getExtraMethod() {
         return extraMethod;
     }
     
     public List<String> getImportList() {
         return importList;
+    }
+
+    public void setImportList(List<String> importList) {
+        this.importList = importList;
     }
     
     public static List<String> getIdList() {

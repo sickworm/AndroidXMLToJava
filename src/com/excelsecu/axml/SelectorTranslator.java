@@ -5,56 +5,33 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.StateListDrawable;
 
-public class SelectorConverter extends BaseConverter{
-    private static final int TYPE_NOT_INITIALIZE = -1;
-    private static final int TYPE_NOTHING = 0;
-    private static final int TYPE_COLOR = 1;
-    private static final int TYPE_DRAWABLE = 2;
-    private AXMLNode node;
-    private int type = TYPE_NOT_INITIALIZE; 
+public class SelectorTranslator extends BaseTranslator {
     
     public static void main(String[] argv) {
-        System.out.println(new SelectorConverter(new AXMLParser("res/drawable/color_selector.xml").parse()).convert());
+        System.out.println(new SelectorTranslator(new AXMLParser("res/drawable/color_selector.xml").parse()).translate());
     }
     
-    public SelectorConverter(AXMLNode node) {
-        this.node = node;
+    public SelectorTranslator(AXMLNode node) {
+        super(node);
     }
     
-    public String convert() {
-        if (typeOfSelector() == TYPE_COLOR) {
-            return convertToColorStateList();
-        } else if (typeOfSelector() == TYPE_DRAWABLE) {
-            return convertToStateListDrawable();
+    public String translate() {
+        if (getType() == ColorStateList.class) {
+            return translateToColorStateList();
+        } else if (getType() == StateListDrawable.class) {
+            return translateToStateListDrawable();
         } else {
             throw new AXMLException(AXMLException.AXML_PARSE_ERROR, "not a selector type");
         }
     }
     
-    private int typeOfSelector() {
-        if (type != TYPE_NOT_INITIALIZE) {
-            return type;
-        }
-        
-        for (AXMLNode n : node.getChildren()) {
-            for (Attribute a : n.getAttributes()) {
-                if (a.getQualifiedName().equals("android:color")) {
-                    return (type = TYPE_COLOR);
-                } else if (a.getQualifiedName().equals("android:drawable")) {
-                    return (type = TYPE_DRAWABLE);
-                }
-            }
-        }
-        return (type = TYPE_NOTHING);
-    }
-    
-    private String convertToColorStateList() {
+    private String translateToColorStateList() {
         addImport(Context.class.getName());
         addImport(ColorStateList.class.getName());
         String javaBlock = "";
         String stateSetList = "";
         String colorList = "";
-        for (AXMLNode n : node.getChildren()) {
+        for (AXMLNode n : getNode().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }
@@ -75,7 +52,7 @@ public class SelectorConverter extends BaseConverter{
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(node, a);
+                extraHandle(getNode(), a);
             }
             if (colorList.equals("")) {
                 colorList = color;
@@ -93,13 +70,13 @@ public class SelectorConverter extends BaseConverter{
         return javaBlock;
     }
     
-    private String convertToStateListDrawable() {
+    private String translateToStateListDrawable() {
         addImport(Context.class.getName());
         addImport(StateListDrawable.class.getName());
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
-        for (AXMLNode n : node.getChildren()) {
+        for (AXMLNode n : getNode().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }
@@ -120,7 +97,7 @@ public class SelectorConverter extends BaseConverter{
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(node, a);
+                extraHandle(getNode(), a);
             }
             
             String setName = "stateSet" + num;

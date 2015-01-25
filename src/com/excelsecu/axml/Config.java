@@ -15,7 +15,7 @@ public class Config {
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;
 
-    /**RelativeLayout.Rule's map of attr to Java value**/
+    /**RelativeLayout.Rule's map of attribute to Java value**/
     public static final HashMap<String, String> RULE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 2080190935307088596L;
         {
