@@ -28,11 +28,8 @@ public class LayoutTranslater extends BaseConverter {
         node.setObjectName(nodeName);
         
         String newMethod = "";
-	    try {
-	        type = node.getType();
-	        newMethod = node.getLabelName() + " " + nodeName + " = new " + 
-                    node.getLabelName() + "(context);\n";
-	    } catch (AXMLException e) {
+        type = node.getType();
+        if (type == null) {
 	        if (node.getLabelName().equals("include")) {
 	            String layout = node.attributeValue("layout");
 	            layout = layout.substring(layout.indexOf('/') + 1);
@@ -44,14 +41,13 @@ public class LayoutTranslater extends BaseConverter {
 	            type = node.getType();
 	            addImport(Config.PACKAGE_NAME + ".layout." + layout);
 	        } else {
-    	        if (e.getErrorCode() == AXMLException.CLASS_NOT_FOUND) {
-    	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
-    	            javaBlock = "//<" + node.getLabelName() + "/>\t//not support\n\n";
-    	            return javaBlock;
-    	        }
-    	        e.printStackTrace();
+	            System.out.println("<" + node.getLabelName() + "/>" + " label not support");
+	            javaBlock = "//<" + node.getLabelName() + "/>\t//not support\n\n";
+	            return javaBlock;
 	        }
-	    }
+        }
+        newMethod = node.getLabelName() + " " + nodeName + " = new " + 
+                node.getLabelName() + "(context);\n";
 	    
         javaBlock += newMethod;
         AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node);
@@ -71,7 +67,7 @@ public class LayoutTranslater extends BaseConverter {
                     //deal with the attributes that doesn't match the XML attributes table
                     attrMethod = specialTranslater.translate(a);
                 } catch (AXMLException e1) {
-                    //translater can not translate this attribute
+                    //translator can not translate this attribute
                     attrMethod = "//" + attrName + "=\"" + attrValue + "\";\t//not support\n";
                 }
             }

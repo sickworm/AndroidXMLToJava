@@ -181,6 +181,7 @@ public class ProjectConverter {
                 if (name.equals("selector")) {
                     SelectorConverter selectorConverter = new SelectorConverter(root);
                     content = selectorConverter.convert();
+                    content = selectorConverter.getExtraMethod() + "\n" + content;
                     List<String> importList = selectorConverter.getImportList();
                     content = Utils.buildJavaFile(f, content, importList);
                     Utils.generateFile(f, content);

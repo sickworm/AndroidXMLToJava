@@ -20,7 +20,7 @@ public class AXMLNode implements Cloneable {
         this.parent = parent;
         this.layer = layer;
         this.children = new ArrayList<AXMLNode>();
-        //Add it to this parent's chilren list
+        //Add it to this parent's children list
         if (parent != null) {
             parent.addChild(this);
         }
@@ -52,9 +52,6 @@ public class AXMLNode implements Cloneable {
     }
     
     public Class<?> getType() {
-        if (type == null) {
-            throw new AXMLException(AXMLException.CLASS_NOT_FOUND, getLabelName());
-        }
         return type;
     }
     

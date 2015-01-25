@@ -63,7 +63,7 @@ public class SelectorConverter extends BaseConverter{
             for (Attribute a : n.getAttributes()) {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:color")) {
-                    color = LayoutTranslater.translateValue(a);
+                    color = translateValue(a);
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -75,6 +75,7 @@ public class SelectorConverter extends BaseConverter{
                         stateSet += ", " + state;
                     }
                 }
+                extraHandle(node, a);
             }
             if (colorList.equals("")) {
                 colorList = color;
@@ -107,7 +108,7 @@ public class SelectorConverter extends BaseConverter{
             for (Attribute a : n.getAttributes()) {
                 String attrName = a.getQualifiedName();
                 if (attrName.equals("android:drawable")) {
-                    drawable = LayoutTranslater.translateValue(a);
+                    drawable = translateValue(a);
                 } else {
                     String state = "android.R.attr." + a.getName();
                     if (a.getValue().equals("false")) {
@@ -119,6 +120,7 @@ public class SelectorConverter extends BaseConverter{
                         stateSet += ", " + state;
                     }
                 }
+                extraHandle(node, a);
             }
             
             String setName = "stateSet" + num;

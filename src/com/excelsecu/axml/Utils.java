@@ -94,7 +94,7 @@ public class Utils {
             }
         }
         
-        return null;
+        return Void.class;
     }
     
     /**

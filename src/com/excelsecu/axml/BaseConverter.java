@@ -21,7 +21,7 @@ public class BaseConverter {
     private static List<String> idList = new ArrayList<String>();
     private HashMap<String, String> map = null;
     private String extraMethod = "";
-    public List<String> importList = new ArrayList<String>();
+    private List<String> importList = new ArrayList<String>();
     
     /** record of {@link LayoutTranslater#extraHandle(String attrName , String attrValue)} **/
     private boolean scale = false;
@@ -179,7 +179,7 @@ public class BaseConverter {
 	 * @param attrValue
 	 */
 	protected void extraHandle(AXMLNode node, Attribute attr) {
-        addImport(node.getType().getName());
+		addImport(node.getType().getName());
         
         String attrValue = attr.getValue();
         String attrName = attr.getQualifiedName();
@@ -222,6 +222,7 @@ public class BaseConverter {
                 attrValue.startsWith("@color/") ||
                 attrValue.startsWith("@string/")) {
             addImport(Config.PACKAGE_NAME + ".AXMLResources");
+            addImport(Config.PACKAGE_NAME + ".R");
             if (!resources) {
                 extraMethod += "AXMLResources " + Config.RESOURCES_NAME + " = new AXMLResources(context);\n";
                 resources = true;
@@ -234,6 +235,10 @@ public class BaseConverter {
 	 *  @param className the class try to be added in import list
 	 */
     protected void addImport(String className) {
+    	if (className == null || className.equals("") ||
+    			className.equals(Void.class.getName())) {
+    		return;
+    	}
         if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
