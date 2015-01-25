@@ -37,9 +37,9 @@ public class DrawableTranslator extends BaseTranslator{
             return content;
         } else {
             String content = "";
-            String name = getNode().getLabelName();
+            String name = getRoot().getLabelName();
             if (name.equals("selector")) {
-            	SelectorTranslator selectorConverter = new SelectorTranslator(getNode());
+            	SelectorTranslator selectorConverter = new SelectorTranslator(getRoot());
                 content = selectorConverter.translate();
                 content = selectorConverter.getExtraMethod() + "\n" + content;
                 setImportList(selectorConverter.getImportList());

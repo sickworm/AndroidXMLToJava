@@ -29,7 +29,7 @@ public class BaseTranslator {
     private String extraMethod = "";
     private List<String> importList = new ArrayList<String>();
     
-    private AXMLNode node = null;
+    private AXMLNode root = null;
     private File file = null;
     
     /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
@@ -44,16 +44,16 @@ public class BaseTranslator {
         }
     }
     
-	public BaseTranslator(AXMLNode node) {
-		this.node = node;
+	public BaseTranslator(AXMLNode root) {
+		this.root = root;
         map = AndroidDocConverter.getMap();
         init();
 	}
 	
 	protected void init() {
-		if (node == null) {
+		if (root == null) {
 	        AXMLParser parser = new AXMLParser(file);
-			node = parser.parse();
+	        root = parser.parse();
 		}
 	}
 	
@@ -67,6 +67,9 @@ public class BaseTranslator {
 	    String attrName = a.getQualifiedName();
 	    String attrValue = a.getValue();
 	    String key = type.getSimpleName() + "$" + attrName;
+    	if (a.getQualifiedName().equals("android:divider")) {
+    		System.out.println("aa");
+    	}
         if (!map.containsKey(key)) {
             //find the conversion from its super class
             while (Utils.isSupportClass(type.getSuperclass())) {
@@ -85,12 +88,14 @@ public class BaseTranslator {
         }
         
         //when attribute has several types of value (like android:background),
-        //change the method if nessary.
+        //change the method if necessary.
         if (methodName.equals("setBackground(Drawable)")) {
             if (attrValue.matches("#[0-9a-fA-F]+") ||
                     attrValue.matches("@android:color/.+") ||
                     attrValue.matches("@color/.+")) {
                 methodName = "setBackgroundColor(int)";
+            } else if (Config.API_LEVEL <= 8) {
+            	methodName = "setBackgroundDrawable(Drawable)";
             }
         }
 
@@ -144,7 +149,8 @@ public class BaseTranslator {
 	        value = "Color.parseColor(\"" + value + "\")";
 	    } else if (value.matches("@android:color/.+")) {
 	        value = value.substring(value.indexOf('/') + 1);
-            value = "android.R.color." + value;
+	        value = value.toUpperCase();
+            value = "Color." + value;
         } else if (value.matches("@color/.+")) {
             value = value.substring(value.indexOf('/') + 1);
             value = "R.color." + value;
@@ -161,7 +167,7 @@ public class BaseTranslator {
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
             value = "R.drawable." + value;
-            //ColorStateList is not a Drawable, should use another method
+            //ColorStateList is not a drawable, should use another method
             if (attrName.contains("Color") ||
                     attrName.contains("TintList")) {
                 value = "resources.getColorStateList(" + value + ")";
@@ -233,7 +239,8 @@ public class BaseTranslator {
             if (!Utils.hasString(idList, id)) {
                 idList.add(id);
             }
-        } else if (attrValue.matches("#[0-9a-fA-F]+")) {
+        } else if (attrValue.matches("#[0-9a-fA-F]+") ||
+        		attrValue.matches("@android:color/.+")) {
             addImport(Color.class.getName());
         } else if (attrName.equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
@@ -274,12 +281,12 @@ public class BaseTranslator {
         }
     }
     
-    public AXMLNode getNode() {
-    	return node;
+    public AXMLNode getRoot() {
+    	return root;
     }
     
     public Class<?> getType() {
-    	return node.getType();
+    	return root.getType();
     }
     
     public File getFile() {

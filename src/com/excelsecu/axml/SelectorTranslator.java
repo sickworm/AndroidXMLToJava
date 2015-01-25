@@ -31,7 +31,7 @@ public class SelectorTranslator extends BaseTranslator {
         String javaBlock = "";
         String stateSetList = "";
         String colorList = "";
-        for (AXMLNode n : getNode().getChildren()) {
+        for (AXMLNode n : getRoot().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }
@@ -52,7 +52,7 @@ public class SelectorTranslator extends BaseTranslator {
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(getNode(), a);
+                extraHandle(getRoot(), a);
             }
             if (colorList.equals("")) {
                 colorList = color;
@@ -76,7 +76,7 @@ public class SelectorTranslator extends BaseTranslator {
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
-        for (AXMLNode n : getNode().getChildren()) {
+        for (AXMLNode n : getRoot().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }
@@ -97,7 +97,7 @@ public class SelectorTranslator extends BaseTranslator {
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(getNode(), a);
+                extraHandle(getRoot(), a);
             }
             
             String setName = "stateSet" + num;

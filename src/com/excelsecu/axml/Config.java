@@ -11,6 +11,7 @@ public class Config {
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.axml.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.axml.dbbuilder.Config.ENCODE;
     public static final String RESOURCES_NAME = "resources";
+    public static final int API_LEVEL = 8;
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

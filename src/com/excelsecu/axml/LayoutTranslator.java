@@ -49,9 +49,9 @@ public class LayoutTranslator extends BaseTranslator {
     
     public String translate() {
         String javaBlock = "";
-        String nodeJavaBlock = translateNode(getNode());
+        String nodeJavaBlock = translateNode(getRoot());
         javaBlock += nodeJavaBlock;
-        for (AXMLNode n : getNode().getChildren()) {
+        for (AXMLNode n : getRoot().getChildren()) {
             javaBlock += translateNode(n);
         }
         return javaBlock;
@@ -90,7 +90,7 @@ public class LayoutTranslator extends BaseTranslator {
             String attrName = a.getQualifiedName();
             String attrValue = a.getValue();
             try {
-                String methodName = transAttrToMethod(a, getType());
+                String methodName = transAttrToMethod(a, node.getType());
                 String methodValue = translateValue(a);
                 attrMethod = methodName + "(" + methodValue + ")";
                 attrMethod = nodeName + "." + attrMethod + ";\n";
