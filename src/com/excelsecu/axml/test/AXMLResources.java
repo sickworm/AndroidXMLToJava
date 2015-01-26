@@ -4,13 +4,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.excelsecu.axml.test.values.colors;
+import com.excelsecu.axml.test.values.strings;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
 /**
- * Get the resources with int id by using inflect.
+ * Get the resources with int id.
  * This file is used in output directory to manager the resources. No meaning to the AXML transform project.
  * @author ch
  *
@@ -27,25 +30,7 @@ public class AXMLResources {
     }
     
     public String getString(int id) {
-            Field[] fieldList = R.string.class.getFields();
-            for (Field f : fieldList) {
-                try {
-                    if (f.getInt(null) == id) {
-                        String name = f.getName();
-                        Field[] fieldList1 = com.excelsecu.axml.test.values.strings.class.getFields();
-                        for (Field f1 : fieldList1) {
-                            if (f1.getName() == name) {
-                                return (String)f1.get(null);
-                            }
-                        }
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        return null;
+        return strings.map.get(id);
     }
     
     public Drawable getDrawable(int id) {
@@ -57,7 +42,7 @@ public class AXMLResources {
     }
     
     public int getColor(int id) {
-        return 0;
+        return colors.map.get(id);
     }
     
     public View getLayout(int id) {

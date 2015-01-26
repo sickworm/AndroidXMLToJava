@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 import org.dom4j.Attribute;
 
+import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -172,19 +173,29 @@ public class Utils {
      * @param file the origin XML file
      * @param content Java code translated from XML file
      */
-    public static String buildJavaFile(File file, String content, List<String> importList) {
+    public static String buildJavaFile(File file, String content, List<String> importList, List<String> idList) {
         String subPath = file.getPath();
         subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
         subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
         String title = "package " + Config.PACKAGE_NAME + "." + subPath + ";\n\n";
         
         //add import list
-        if (importList != null) {
-            for (String s : importList) {
-                title += "import " + s + ";\n";
-            }
-            title += "\n";
+        if (subPath.equals("values")) {
+	        if (importList == null) {
+	        	importList = new ArrayList<String>();
+	        }
+        	if (!Utils.hasString(importList, com.excelsecu.axml.test.R.class.getName())) {
+        		importList.add(com.excelsecu.axml.test.R.class.getName());
+        	}
+        	if (!Utils.hasString(importList, SparseArray.class.getName())) {
+        		importList.add(SparseArray.class.getName());
+        	}
         }
+        for (String s : importList) {
+            title += "import " + s + ";\n";
+        }
+        title += "\n";
+        
         String className = Utils.getClassName(file);
         title += "public final class " + className + " {\n";
         
@@ -218,8 +229,32 @@ public class Utils {
             content = "\t\t" + content.replace("\n", "\n\t\t") +
                     "return " + returnObject + ";\n";
             return title + content + "\t}\n}";
-        //in this condition, member in this Java file are all 'public static final'
         } else {
+        	//build a map
+        	String fileName = file.getPath();
+        	String type = "";
+        	String rClass = "";
+        	fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.indexOf('.'));
+        	switch(fileName) {
+        	case "strings":
+        		type = String.class.getSimpleName();
+        		rClass = "string";
+        		break;
+        	case "colors":
+        		type = Integer.class.getSimpleName();
+        		rClass = "color";
+        		break;
+        	default:
+        		type = String.class.getSimpleName();
+        		rClass = "string";
+        		break;
+        	}
+        	String map = "\npublic static final SparseArray<" + type + "> map = new SparseArray<" + type + ">() {\n\t{\n";
+        	for (String id : idList) {
+        		map += "\t\tput(R." + rClass + "." + id + ", " + id + ");\n";
+        	}
+        	map += "\t}\n};\n";
+        	content = content + map;
             content = "\t" + content.replace("\n", "\n\t");
             content = content.substring(0, content.lastIndexOf('\t'));
             return title + content + "}";
@@ -244,7 +279,7 @@ public class Utils {
     /**
      * Find out whether the attribute has corresponding RelativeLayout rule.
      * @param attr the attribute to find
-     * @return the rule of attribtue, or null if not found
+     * @return the rule of attribute, or null if not found
      */
     public static String findRule(String attrName) {
         return Config.RULE_MAP.get(attrName);

@@ -19,6 +19,7 @@ public class Config {
     /**RelativeLayout.Rule's map of attribute to Java value**/
     public static final HashMap<String, String> RULE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 2080190935307088596L;
+        
         {
             put("android:layout_above", "ABOVE");
             put("android:layout_alignBaseline", "ALIGN_BASELINE");
@@ -49,6 +50,7 @@ public class Config {
     /**TextView.InputType's map of attr to Java value**/
     public static final HashMap<String, String> INPUT_TYPE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 8702820407293253537L;
+        
         {
             put("none", "TYPE_NULL");
             put("text", "TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_NORMAL");

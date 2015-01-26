@@ -99,21 +99,24 @@ public class Config {
     /**
      * some attributes don't shown in Android doc, add them in here
      */
-    public static final HashMap<String, String> ADDITION_MAP = new HashMap<String, String>();
-    static {
-        ADDITION_MAP.put("View$android:enabled", "setEnabled(boolean)");
-        ADDITION_MAP.put("RadioButton$android:checked", "setChecked(boolean)");
-        ADDITION_MAP.put("LinearLayout$android:weightSum", "setWeightSum(float)");
-        //replace setBackgroundResource(int) to setBackground(Drawable)
-        ADDITION_MAP.put("View$android:background", "setBackground(Drawable)");
-        
-        //GradientDrawable
-        ADDITION_MAP.put("GradientDrawable$android:shape", "setType(int)");
-        ADDITION_MAP.put("GradientDrawable$android:type", "setGradientType(int)");
-        ADDITION_MAP.put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
-        ADDITION_MAP.put("GradientDrawable$android:angle", "setOrientation(int)");
-        ADDITION_MAP.put("GradientDrawable$android:radius", "setCornerRadius(float)");
-    }
+    public static final HashMap<String, String> ADDITION_MAP = new HashMap<String, String>() {
+		private static final long serialVersionUID = 6525815328033908940L;
+		
+		{
+	        put("View$android:enabled", "setEnabled(boolean)");
+	        put("RadioButton$android:checked", "setChecked(boolean)");
+	        put("LinearLayout$android:weightSum", "setWeightSum(float)");
+	        //replace setBackgroundResource(int) to setBackground(Drawable)
+	        put("View$android:background", "setBackground(Drawable)");
+	        
+	        //GradientDrawable
+	        put("GradientDrawable$android:shape", "setType(int)");
+	        put("GradientDrawable$android:type", "setGradientType(int)");
+	        put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
+	        put("GradientDrawable$android:angle", "setOrientation(int)");
+	        put("GradientDrawable$android:radius", "setCornerRadius(float)");
+    	}
+    };
 
     /**
      * some attributes can't translate directly (like padding), remove them in here

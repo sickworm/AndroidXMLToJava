@@ -92,7 +92,7 @@ public class ProjectConverter {
                     }
                     
                     try {
-                        content = Utils.buildJavaFile(f, content, translator.getImportList());
+                        content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);
                     } catch (AXMLException e) {
                         System.out.println(f.getName() + " build Java file error: " +
                                 e.getErrorCode() + " " + e.getDetails() + "");
@@ -163,7 +163,7 @@ public class ProjectConverter {
         	
             //package name can't use '-'
             File outFile = new File(f.getPath().replace('-', '_'));
-            content = Utils.buildJavaFile(outFile, content, translator.getImportList());
+            content = Utils.buildJavaFile(outFile, content, translator.getImportList(), drawableRList);
             Utils.generateFile(outFile, content);
             System.out.println("");
         }
@@ -198,7 +198,7 @@ public class ProjectConverter {
     
     private static void GenerateString() {
         File file = new File("res/values/strings.xml");
-        stringContent = Utils.buildJavaFile(file, stringContent, null);
+        stringContent = Utils.buildJavaFile(file, stringContent, null, stringRList);
         Utils.generateFile(file, stringContent);
         System.out.println("");
     }
@@ -207,7 +207,7 @@ public class ProjectConverter {
         List<String> importList = new ArrayList<String>();
         importList.add(Color.class.getName());
         File file = new File("res/values/colors.xml");
-        colorContent = Utils.buildJavaFile(file, colorContent, importList);
+        colorContent = Utils.buildJavaFile(file, colorContent, importList, colorRList);
         Utils.generateFile(file, colorContent);
         System.out.println("");
     }
