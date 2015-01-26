@@ -71,6 +71,7 @@ public class AXMLNode implements Cloneable {
         	        getLabelName().equals("solid") ||
         	        getLabelName().equals("stroke")) {
                 type = GradientDrawable.class;
+                setObjectName(Utils.classToObject(GradientDrawable.class.getSimpleName()));
             }
         }
 	}

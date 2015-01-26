@@ -6,7 +6,6 @@ import java.util.List;
 import org.dom4j.Attribute;
 
 import android.content.Context;
-import android.view.ViewGroup;
 
 /**
  * Translate Android XML layout resources to Java method block.
@@ -46,7 +45,7 @@ public class LayoutTranslator extends BaseTranslator {
         }
 		    
         javaBlock += newMethod;
-        AXMLSpecialTranslator specialTranslater = new AXMLSpecialTranslator(node);
+        SpecialTranslator specialTranslater = new SpecialTranslator(node);
         javaBlock += specialTranslater.buildLayoutParams();
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
@@ -70,7 +69,7 @@ public class LayoutTranslator extends BaseTranslator {
 	}
     
 	private String translateAttribute(Attribute attr, AXMLNode node,
-	        AXMLSpecialTranslator specialTranslator) throws AXMLException {
+	        SpecialTranslator specialTranslator) throws AXMLException {
         String attrMethod = "";
         try {
             attrMethod = super.translateAttribute(attr, node);
@@ -92,7 +91,7 @@ public class LayoutTranslator extends BaseTranslator {
      * @author ch
      *
      */
-    public class AXMLSpecialTranslator {
+    public class SpecialTranslator {
         private AXMLNode node;
         private String parentName;
         private String layoutParamName;
@@ -105,12 +104,12 @@ public class LayoutTranslator extends BaseTranslator {
         /** set up padding just need one setting **/
         private boolean padding = false;
         
-        public AXMLSpecialTranslator(AXMLNode node) {
+        public SpecialTranslator(AXMLNode node) {
             this.node = node;
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
             addImport(Utils.matchClass(parentName).getName());
-            layoutParamName = Utils.classToObject(ViewGroup.LayoutParams.class.getSimpleName()) + num;
+            layoutParamName = Utils.classToObject(parentName) + num;
         }
         
         public String translate(Attribute attr) throws AXMLException {

@@ -15,6 +15,7 @@ public class DrawableTranslator extends BaseTranslator{
 	@Override
 	public String translate() {
 		File file = getFile();
+        String content = "";
         if (!Utils.getFileExtension(file).equals("xml")) {
             String outPath = file.getPath();
             outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));
@@ -23,28 +24,25 @@ public class DrawableTranslator extends BaseTranslator{
             Utils.copyFile(file.getPath(), outPath);
             //return object must put in the first line
             String className = Utils.getClassName(file);
-            String content = "Drawable drawable = null;\n";
             content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
             		file.getPath().replace("res", "\\assets").replace("\\", "/") + "\"); \n";
-            content += "drawable = Drawable.createFromStream(inStream" +
+            content += "Drawable drawable = Drawable.createFromStream(inStream" +
                     ", \"" + className +"\");\n";
             addImport(Drawable.class.getName());
             addImport(Context.class.getName());
             addImport(InputStream.class.getName());
-            return content;
         } else {
-            String content = "";
             String name = getRoot().getLabelName();
+            BaseTranslator translator = new SelectorTranslator(getRoot());
             if (name.equals("selector")) {
-            	SelectorTranslator selectorConverter = new SelectorTranslator(getRoot());
-                content = selectorConverter.translate();
-                content = selectorConverter.getExtraMethod() + "\n" + content;
-                setImportList(selectorConverter.getImportList());
-                return content;
+                translator = new SelectorTranslator(getRoot());
             } else if (name.equals("shape")) {
-                return "";
+                translator = new ShapeTranslater(getRoot());
             }
+            content = translator.translate();
+            content = translator.getExtraMethod() + "\n" + content;
+            setImportList(translator.getImportList());
         }
-        return "";
+        return content;
 	}
 }

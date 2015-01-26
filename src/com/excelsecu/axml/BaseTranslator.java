@@ -136,7 +136,7 @@ public class BaseTranslator {
 	 * @param attr the attribute to be translated
 	 * @return the value after translating
 	 */
-	protected static String translateValue(Attribute attr) {
+	protected String translateValue(Attribute attr) {
 	    String value = attr.getValue();
         String attrName = attr.getQualifiedName();
 	    
@@ -153,7 +153,7 @@ public class BaseTranslator {
             value = "ViewGroup.LayoutParams.MATCH_PARENT";
         } else if (value.equals("wrap_content")) {
             value = "ViewGroup.LayoutParams.WRAP_CONTENT";
-        } else if (value.matches("[0-9]+.[0-9]+") &&
+        } else if (value.matches("[0-9]+\\.[0-9]+") &&
                 !(attrName.contains("text") || attrName.contains("hint"))) {
             value = value + "f";
         }

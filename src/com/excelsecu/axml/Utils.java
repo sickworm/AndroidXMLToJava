@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.excelsecu.axml.Config;
+import com.excelsecu.axml.test.AXMLResources;
 
 /**
  * Utils of com.excelsecu.axml package
@@ -198,12 +199,13 @@ public class Utils {
                 //find out the element first built
                 if (str.matches("\\w+ \\w+ *= *.+")) {
                     int index = str.indexOf(' ');
-                    int index2 = str.indexOf(' ', index + 1);
-                    if (str.substring(index + 1, index2).equals(Config.RESOURCES_NAME)) {
+                    int index2 = str.indexOf('=', index + 1);
+                    returnClass = str.substring(0, index);
+                    if (returnClass.equals(AXMLResources.class.getSimpleName()) ||
+                            returnClass.equals(InputStream.class.getSimpleName())) {
                         continue;
                     }
-                    returnClass = str.substring(0, index);
-                    returnObject = str.substring(index + 1, index2);
+                    returnObject = str.substring(index + 1, index2).trim();
                     break;
                 }
             }
