@@ -16,52 +16,16 @@ import android.view.ViewGroup;
 public class LayoutTranslator extends BaseTranslator {
 	private int num = 1;
 
-    public static void main(String[] argv) {
-        String path = "test.xml";
-        LayoutTranslator translator = new LayoutTranslator(new File(path));
-        String javaBlock = translator.translate();
-        String extraMethod = translator.getExtraMethod();
-        System.out.println(extraMethod);
-        System.out.println(javaBlock);
-
-        System.out.println("-----id start-----");
-        List<String> idList = LayoutTranslator.getIdList();
-        for (String id : idList) {
-            System.out.println("R.id." + id);
-        }
-        System.out.println("-----id end------");
-        System.out.println("");
-        System.out.println("-----import start-----");
-        List<String> classList = translator.getImportList();
-        for (String s : classList) {
-            System.out.println("import " + s + ";");
-        }
-        System.out.println("-----import end------");
-    }
-
     public LayoutTranslator(File file) {
 		super(file);
 	}
-	
-    public LayoutTranslator(AXMLNode node) {
-		super(node);
-	}
-    
-    public String translate() {
-        String javaBlock = "";
-        String nodeJavaBlock = translateNode(getRoot());
-        javaBlock += nodeJavaBlock;
-        for (AXMLNode n : getRoot().getChildren()) {
-            javaBlock += translateNode(n);
-        }
-        return javaBlock;
-    }
     
     /**
 	 * Translate a Android XML Node to a Java method block.
      * @return the Java block
      */
-	private String translateNode(AXMLNode node) {
+    @Override
+	protected String translateNode(AXMLNode node) {
         String javaBlock = "";
         String newMethod = "";
         String nodeName = Utils.classToObject(node.getLabelName()) + num;
@@ -82,29 +46,14 @@ public class LayoutTranslator extends BaseTranslator {
         }
 		    
         javaBlock += newMethod;
-        AXMLSpecialTranslater specialTranslater = new AXMLSpecialTranslater(node);
+        AXMLSpecialTranslator specialTranslater = new AXMLSpecialTranslator(node);
         javaBlock += specialTranslater.buildLayoutParams();
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
-            String attrMethod = "";
-            String attrName = a.getQualifiedName();
-            String attrValue = a.getValue();
-            try {
-                String methodName = transAttrToMethod(a, node.getType());
-                String methodValue = translateValue(a);
-                attrMethod = methodName + "(" + methodValue + ")";
-                attrMethod = nodeName + "." + attrMethod + ";\n";
-            } catch (AXMLException e) {
-                try {
-                    //deal with the attributes that doesn't match the XML attributes table
-                    attrMethod = specialTranslater.translate(a);
-                } catch (AXMLException e1) {
-                    //translator can not translate this attribute
-                    attrMethod = "//" + attrName + "=\"" + attrValue + "\";\t//not support\n";
-                }
-            }
-            if (!attrMethod.startsWith("//"))
+            String attrMethod = translateAttribute(a, node, specialTranslater);
+            if (!attrMethod.startsWith("//")) {
                 extraHandle(node, a);
+            }
             javaBlock += attrMethod;
         }
         
@@ -120,12 +69,30 @@ public class LayoutTranslator extends BaseTranslator {
         return javaBlock;
 	}
     
+	private String translateAttribute(Attribute attr, AXMLNode node,
+	        AXMLSpecialTranslator specialTranslator) throws AXMLException {
+        String attrMethod = "";
+        try {
+            attrMethod = super.translateAttribute(attr, node);
+        } catch (AXMLException e) {
+            try {
+                //deal with the attributes that doesn't match the XML attributes table
+                attrMethod = specialTranslator.translate(attr);
+            } catch (AXMLException e1) {
+                //translator can not translate this attribute
+                attrMethod = "//" + attr.getQualifiedName() + "=\"" +
+                        attr.getValue() + "\";\t//not support\n";
+            }
+        }
+        return attrMethod;
+	}
+    
     /**
      * Handle the method not exists in the attr-to-method map.
      * @author ch
      *
      */
-    public class AXMLSpecialTranslater {
+    public class AXMLSpecialTranslator {
         private AXMLNode node;
         private String parentName;
         private String layoutParamName;
@@ -138,7 +105,7 @@ public class LayoutTranslator extends BaseTranslator {
         /** set up padding just need one setting **/
         private boolean padding = false;
         
-        public AXMLSpecialTranslater(AXMLNode node) {
+        public AXMLSpecialTranslator(AXMLNode node) {
             this.node = node;
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);

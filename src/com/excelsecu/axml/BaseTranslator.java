@@ -57,6 +57,37 @@ public class BaseTranslator {
 		}
 	}
 	
+	public String translate() {
+        return translate(getRoot());
+	}
+	
+	protected String translate(AXMLNode node) {
+        String javaBlock = "";
+        String nodeJavaBlock = translateNode(node);
+        javaBlock += nodeJavaBlock;
+        for (AXMLNode n : node.getChildren()) {
+            javaBlock += translate(n);
+        }
+        return javaBlock;
+    }	
+	
+	protected String translateNode(AXMLNode node) {
+	    String javaBlock = "";
+        for (Attribute a : node.getAttributes()) {
+            javaBlock += translateAttribute(a, node);
+        }
+        return javaBlock;
+	}
+
+    protected String translateAttribute(Attribute attr, AXMLNode node) throws AXMLException {
+        String attrMethod = "";
+        String methodName = transAttrToMethod(attr, node.getType());
+        String methodValue = translateValue(attr);
+        attrMethod = methodName + "(" + methodValue + ")";
+        attrMethod = node.getObjectName() + "." + attrMethod + ";\n";
+        return attrMethod;
+    }
+            
 	/**
 	 * Translate XML element's attribute to Android method without parameters.
 	 * @param attrName	The name of attribute.
@@ -67,9 +98,6 @@ public class BaseTranslator {
 	    String attrName = a.getQualifiedName();
 	    String attrValue = a.getValue();
 	    String key = type.getSimpleName() + "$" + attrName;
-    	if (a.getQualifiedName().equals("android:divider")) {
-    		System.out.println("aa");
-    	}
         if (!map.containsKey(key)) {
             //find the conversion from its super class
             while (Utils.isSupportClass(type.getSuperclass())) {
@@ -125,7 +153,8 @@ public class BaseTranslator {
             value = "ViewGroup.LayoutParams.MATCH_PARENT";
         } else if (value.equals("wrap_content")) {
             value = "ViewGroup.LayoutParams.WRAP_CONTENT";
-        } else if (value.matches("[0-9]+.[0-9]+")) {
+        } else if (value.matches("[0-9]+.[0-9]+") &&
+                !(attrName.contains("text") || attrName.contains("hint"))) {
             value = value + "f";
         }
 	    
@@ -140,7 +169,8 @@ public class BaseTranslator {
 	        value = value.substring(value.indexOf('/') + 1);
             value = "R.string." + value;
             value = Config.RESOURCES_NAME + ".getString(" + value + ")";
-        } else if (attr.getQualifiedName().equals("android:text")) {
+        } else if (attrName.equals("android:text") ||
+                attrName.equals("android:hint")) {
             value = "\"" + value + "\"";
         }
 	    

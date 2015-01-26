@@ -7,6 +7,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 import android.content.res.ColorStateList;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 
@@ -62,7 +63,15 @@ public class AXMLNode implements Cloneable {
                         }
                     }
                 }
-        	}
+        	} else if (getLabelName().equals("shape") ||
+        	        getLabelName().equals("corners") ||
+        	        getLabelName().equals("gradient") ||
+        	        getLabelName().equals("padding") ||
+        	        getLabelName().equals("size") ||
+        	        getLabelName().equals("solid") ||
+        	        getLabelName().equals("stroke")) {
+                type = GradientDrawable.class;
+            }
         }
 	}
 	

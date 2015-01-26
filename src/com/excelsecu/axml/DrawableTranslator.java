@@ -12,12 +12,9 @@ public class DrawableTranslator extends BaseTranslator{
 		super(file);
 	}
 	
+	@Override
 	public String translate() {
 		File file = getFile();
-
-        if (file.getPath().contains("transparent.xml")) {
-        	System.out.println("aa");
-        }
         if (!Utils.getFileExtension(file).equals("xml")) {
             String outPath = file.getPath();
             outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));

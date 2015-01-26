@@ -106,6 +106,13 @@ public class Config {
         ADDITION_MAP.put("LinearLayout$android:weightSum", "setWeightSum(float)");
         //replace setBackgroundResource(int) to setBackground(Drawable)
         ADDITION_MAP.put("View$android:background", "setBackground(Drawable)");
+        
+        //GradientDrawable
+        ADDITION_MAP.put("GradientDrawable$android:shape", "setType(int)");
+        ADDITION_MAP.put("GradientDrawable$android:type", "setGradientType(int)");
+        ADDITION_MAP.put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
+        ADDITION_MAP.put("GradientDrawable$android:angle", "setOrientation(int)");
+        ADDITION_MAP.put("GradientDrawable$android:radius", "setCornerRadius(float)");
     }
 
     /**
