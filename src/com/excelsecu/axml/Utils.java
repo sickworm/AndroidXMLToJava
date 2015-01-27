@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.excelsecu.axml.Config;
-import com.excelsecu.axml.test.AXMLResources;
 
 /**
  * Utils of com.excelsecu.axml package
@@ -204,8 +203,8 @@ public class Utils {
 	        if (importList == null) {
 	        	importList = new ArrayList<String>();
 	        }
-        	if (!Utils.hasString(importList, com.excelsecu.axml.test.R.class.getName())) {
-        		importList.add(com.excelsecu.axml.test.R.class.getName());
+        	if (!Utils.hasString(importList, Config.PACKAGE_NAME + ".R")) {
+        		importList.add(Config.PACKAGE_NAME + ".R");
         	}
         	if (!Utils.hasString(importList, HashMap.class.getName())) {
         		importList.add(HashMap.class.getName());
@@ -232,7 +231,7 @@ public class Utils {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf('=', index + 1);
                     returnClass = str.substring(0, index);
-                    if (returnClass.equals(AXMLResources.class.getSimpleName()) ||
+                    if (returnClass.equals(Config.RESOURCES_CLASS) ||
                             returnClass.equals(InputStream.class.getSimpleName())) {
                         continue;
                     }
@@ -372,7 +371,7 @@ public class Utils {
                 newFilePath.mkdirs();
             }
             if (!newFile.exists()) {
-                if (newFile.createNewFile()) {
+                if (!newFile.createNewFile()) {
                     return false;
                 }
             }
