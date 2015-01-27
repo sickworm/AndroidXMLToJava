@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 import org.dom4j.Attribute;
 
-import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -187,8 +187,8 @@ public class Utils {
         	if (!Utils.hasString(importList, com.excelsecu.axml.test.R.class.getName())) {
         		importList.add(com.excelsecu.axml.test.R.class.getName());
         	}
-        	if (!Utils.hasString(importList, SparseArray.class.getName())) {
-        		importList.add(SparseArray.class.getName());
+        	if (!Utils.hasString(importList, HashMap.class.getName())) {
+        		importList.add(HashMap.class.getName());
         	}
         }
         for (String s : importList) {
@@ -249,7 +249,7 @@ public class Utils {
         		rClass = "string";
         		break;
         	}
-        	String map = "\npublic static final SparseArray<" + type + "> map = new SparseArray<" + type + ">() {\n\t{\n";
+        	String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n\t{\n";
         	for (String id : idList) {
         		map += "\t\tput(R." + rClass + "." + id + ", " + id + ");\n";
         	}

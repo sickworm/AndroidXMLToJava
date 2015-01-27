@@ -22,7 +22,7 @@ public class AXMLResources {
     public Context context = null;
     
     public static void main(String[] argv) {
-        System.out.println(new AXMLResources(null).getLayout(R.layout.base));
+        System.out.println(new AXMLResources(null).getString(R.string.ok));
     }
     
     public AXMLResources(Context context) {

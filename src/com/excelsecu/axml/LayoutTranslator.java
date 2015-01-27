@@ -109,7 +109,7 @@ public class LayoutTranslator extends BaseTranslator {
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
             addImport(Utils.matchClass(parentName).getName());
-            layoutParamName = Utils.classToObject(parentName) + num;
+            layoutParamName = "layoutParams" + num;
         }
         
         public String translate(Attribute attr) throws AXMLException {
