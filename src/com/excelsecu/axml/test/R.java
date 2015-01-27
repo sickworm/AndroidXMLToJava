@@ -18,7 +18,9 @@ public final class R {
 	}
 
 	public static final class drawable{
-		public static final int background = 0x7f080000;
+        public static final int background = 0x7f080000;
+        public static final int navigation_back_on = 0x7f080001;
+        public static final int navigation_back = 0x7f080002;
 	}
 
 	public static final class id{

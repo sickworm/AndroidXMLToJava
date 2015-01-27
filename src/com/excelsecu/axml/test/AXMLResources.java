@@ -19,10 +19,10 @@ import android.view.View;
  *
  */
 public class AXMLResources {
-    public Context context = null;
+    private Context context = null;
     
     public static void main(String[] argv) {
-        System.out.println(new AXMLResources(null).getString(R.string.ok));
+        System.out.println(new AXMLResources(null).getDrawable(R.drawable.background));
     }
     
     public AXMLResources(Context context) {
@@ -34,7 +34,7 @@ public class AXMLResources {
     }
     
     public Drawable getDrawable(int id) {
-        return null;
+        return drawables.get(context, id);
     }
     
     public ColorStateList getColorStateList(int id) {

@@ -2,7 +2,7 @@ package com.excelsecu.axml.test.values;
 
 import android.graphics.Color;
 import com.excelsecu.axml.test.R;
-import android.util.SparseArray;
+import java.util.HashMap;
 
 public final class colors {
 	public static final int testcolor1 = Color.parseColor("#FF9900");
@@ -10,7 +10,7 @@ public final class colors {
 	public static final int testcolor3 = Color.parseColor("#FF9900");
 	public static final int testcolor5 = Color.parseColor("#33CC33");
 	
-	public static final SparseArray<Integer> map = new SparseArray<Integer>() {
+	public static final HashMap<Integer, Integer> map = new HashMap<Integer, Integer>() {
 		{
 			put(R.color.testcolor1, testcolor1);
 			put(R.color.testcolor2, testcolor2);
