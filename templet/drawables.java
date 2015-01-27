@@ -1,7 +1,6 @@
 package <!PACKAGE_NAME>;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
 public class drawables {
     public static final int MIN_DPI = 10;
@@ -13,10 +12,10 @@ public class drawables {
     public static final int MAX_DPI = 1000;
     public static final int[] DPI_LIST = new int[] {MIN_DPI, LDPI, MDPI, HDPI, XHDPI, XXHDPI, MAX_DPI};
     
-    public static Drawable get(Context context, int id) {
+    public static Object get(Context context, int id) {
         int density = findBestDpiOrder((int) (context.getResources().getDisplayMetrics().density));
         
-        Drawable drawable = null;
+        Object drawable = null;
         int dpiOrder = findBestDpiOrder(density);
         
         //first search higher dpi resrouces
@@ -100,7 +99,7 @@ public class drawables {
         return DPI_LIST.length - 1;
     }
     
-    public static Drawable getNoDpi(Context context, int id) {
+    public static Object getNoDpi(Context context, int id) {
         switch(id) {
 <!NODPI_BLOCK>
         default:
@@ -108,7 +107,7 @@ public class drawables {
         }
     }
     
-    public static Drawable getLDpi(Context context, int id) {
+    public static Object getLDpi(Context context, int id) {
         switch(id) {
 <!LDPI_BLOCK>
         default:
@@ -116,7 +115,7 @@ public class drawables {
         }
     }
     
-    public static Drawable getMDpi(Context context, int id) {
+    public static Object getMDpi(Context context, int id) {
         switch(id) {
 <!MDPI_BLOCK>
         default:
@@ -124,7 +123,7 @@ public class drawables {
         }
     }
     
-    public static Drawable getHDpi(Context context, int id) {
+    public static Object getHDpi(Context context, int id) {
         switch(id) {
 <!HDPI_BLOCK>
         default:
@@ -132,7 +131,7 @@ public class drawables {
         }
     }
     
-    public static Drawable getXHDpi(Context context, int id) {
+    public static Object getXHDpi(Context context, int id) {
         switch(id) {
 <!XHDPI_BLOCK>
         default:
@@ -140,7 +139,7 @@ public class drawables {
         }
     }
     
-    public static Drawable getXXHDpi(Context context, int id) {
+    public static Object getXXHDpi(Context context, int id) {
         switch(id) {
 <!XXHDPI_BLOCK>
         default:

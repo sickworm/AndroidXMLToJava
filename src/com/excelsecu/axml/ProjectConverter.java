@@ -45,6 +45,7 @@ public class ProjectConverter {
     			"com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class);
     	CustomWidget.addCustomWidget("com.safeview.safeEditText",
     			"com.safeview.safeEditText", EditText.class);
+        System.out.println();
     	
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
@@ -111,7 +112,7 @@ public class ProjectConverter {
                     e.printStackTrace();
                 }
             }
-            System.out.println("");
+            System.out.println();
         }
         idRList.addAll(LayoutTranslator.getIdList());
     }
@@ -146,7 +147,7 @@ public class ProjectConverter {
                     colorRList.add(e.attributeValue("name"));
                 }
             }
-            System.out.println("");
+            System.out.println();
         }
     }
     
@@ -172,7 +173,7 @@ public class ProjectConverter {
             dpi = dpi.substring(0, dpi.lastIndexOf(File.separatorChar));
             dpi = dpi.substring(dpi.lastIndexOf(File.separatorChar) + 1);
             drawableDpiList.add(dpi + "." + id);
-            System.out.println("");
+            System.out.println();
         }
     }
     
@@ -200,14 +201,14 @@ public class ProjectConverter {
             e.printStackTrace();
             throw new AXMLException(AXMLException.FILE_BUILD_ERROR, rPath);
         }
-        System.out.println("");
+        System.out.println();
     }
     
     private static void GenerateString() {
         File file = new File("res/values/strings.xml");
         stringContent = Utils.buildJavaFile(file, stringContent, null, stringRList);
         Utils.generateFile(file, stringContent);
-        System.out.println("");
+        System.out.println();
     }
     
     private static void GenerateColor() {
@@ -216,7 +217,7 @@ public class ProjectConverter {
         File file = new File("res/values/colors.xml");
         colorContent = Utils.buildJavaFile(file, colorContent, importList, colorRList);
         Utils.generateFile(file, colorContent);
-        System.out.println("");
+        System.out.println();
     }
     
     private static void GenerateManager() {
@@ -225,7 +226,7 @@ public class ProjectConverter {
         String resources = Utils.readFile("templet/AXMLResources.java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         Utils.writeFile(Config.JAVA_OUT_PATH + "AXMLResources.java", resources);
-        System.out.println("");
+        System.out.println();
 
         File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
         System.out.println("Generating " + drawablesFile.getPath());
@@ -254,6 +255,6 @@ public class ProjectConverter {
             drawables = drawables.replace(Config.TEMPLET_DPI_BLOCK_LIST[i], dpiCaseList[i]);
         }
         Utils.writeFile(Config.JAVA_OUT_PATH + "drawables.java", drawables);
-        System.out.println("");
+        System.out.println();
     }
 }

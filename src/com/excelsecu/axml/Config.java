@@ -10,6 +10,7 @@ public class Config {
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.axml.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.axml.dbbuilder.Config.ENCODE;
+    public static final String RESOURCES_CLASS = "AXMLResources";
     public static final String RESOURCES_NAME = "resources";
     public static final int API_LEVEL = 8;
 
