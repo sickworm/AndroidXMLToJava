@@ -15,12 +15,12 @@ public class base {
         relativeLayout1.setLayoutParams(layoutParams1);
         
         RelativeLayout relativeLayout2 = new RelativeLayout(context);
-        relativeLayout2.setId(R.id.main_g_title_bar);
+        relativeLayout2.setId(R.id.title);
         relativeLayout2.setBackgroundColor(0xFF338CD9);
-        ViewGroup.LayoutParams layoutParams2 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (48 / scale + 0.5f));
+        RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (48 / scale + 0.5f));
+        layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
         relativeLayout2.setLayoutParams(layoutParams2);
-        //android:layout_alignParentTop="true";
-        //android:layout_centerHorizontal="true";
         relativeLayout1.addView(relativeLayout2);
         
         return relativeLayout1;

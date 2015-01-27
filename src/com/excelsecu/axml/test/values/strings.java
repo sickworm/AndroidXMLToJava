@@ -1,10 +1,16 @@
 package com.excelsecu.axml.test.values;
 
-/**
- * Output file of ProjectConverter. Here just for test AXMLReources.
- * @author ch
- *
- */
-public class strings {
-	public static final String bluetooth = "string of bluetooth";
+import com.excelsecu.axml.test.R;
+import android.util.SparseArray;
+
+public final class strings {
+	public static final String title = "titleString";
+	public static final String ok = "okString";
+	
+	public static final SparseArray<String> map = new SparseArray<String>() {
+		{
+			put(R.string.title, title);
+			put(R.string.ok, ok);
+		}
+	};
 }
