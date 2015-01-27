@@ -18,14 +18,14 @@ public class DrawableTranslator extends BaseTranslator{
         String content = "";
         if (!Utils.getFileExtension(file).equals("xml")) {
             String outPath = file.getPath();
-            outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar));
+            outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar)).replace('-', '_');
             System.out.println("Copying " + file.getPath() + " to\n\t" +
                     new File(outPath).getPath() + "...");
             Utils.copyFile(file.getPath(), outPath);
             //return object must put in the first line
             String className = Utils.getClassName(file);
             content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
-            		file.getPath().replace("res", "\\assets").replace("\\", "/") + "\"); \n";
+            		file.getPath().replace("res", "\\assets").replace("\\", "/").replace('-', '_') + "\"); \n";
             content += "Drawable drawable = Drawable.createFromStream(inStream" +
                     ", \"" + className +"\");\n";
             addImport(Drawable.class.getName());
