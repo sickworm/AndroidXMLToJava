@@ -1,4 +1,4 @@
-package com.excelsecu.axml.test;
+package <!PACKAGE_NAME>;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -102,12 +102,7 @@ public class drawables {
     
     public static Drawable getNoDpi(Context context, int id) {
         switch(id) {
-        case R.drawable.background:
-            return com.excelsecu.axml.test.drawable.background.get(context);
-        case R.drawable.navigation_back_on:
-            return com.excelsecu.axml.test.drawable.background.get(context);
-        case R.drawable.navigation_back:
-            return com.excelsecu.axml.test.drawable.background.get(context);
+<!NODPI_BLOCK>
         default:
             return null;
         }
@@ -115,6 +110,7 @@ public class drawables {
     
     public static Drawable getLDpi(Context context, int id) {
         switch(id) {
+<!LDPI_BLOCK>
         default:
             return null;
         }
@@ -122,6 +118,7 @@ public class drawables {
     
     public static Drawable getMDpi(Context context, int id) {
         switch(id) {
+<!MDPI_BLOCK>
         default:
             return null;
         }
@@ -129,6 +126,7 @@ public class drawables {
     
     public static Drawable getHDpi(Context context, int id) {
         switch(id) {
+<!HDPI_BLOCK>
         default:
             return null;
         }
@@ -136,6 +134,7 @@ public class drawables {
     
     public static Drawable getXHDpi(Context context, int id) {
         switch(id) {
+<!XHDPI_BLOCK>
         default:
             return null;
         }
@@ -143,6 +142,7 @@ public class drawables {
     
     public static Drawable getXXHDpi(Context context, int id) {
         switch(id) {
+<!XXHDPI_BLOCK>
         default:
             return null;
         }

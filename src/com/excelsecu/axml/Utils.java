@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +64,9 @@ public class Utils {
      * @param fileName
      * @return content of file, return "" if error occurs
      */
-    public static String readFile(String fileName) {
+    public static String readFile(String filePath) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), Config.ENCODE));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
             String content = "";
             String buf;
             
@@ -78,6 +79,25 @@ public class Utils {
         catch( Exception e ) {
             e.printStackTrace();
             return "";
+        }
+    }
+    
+    /**
+     * Write a file
+     * @param fileName
+     * @param content
+     * @return true if success, return false if error occurs
+     */
+    public static boolean writeFile(String filePath, String content) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath)), Config.ENCODE));
+            writer.write(content);
+            writer.close();
+            return true;
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+            return false;
         }
     }
     

@@ -3,6 +3,11 @@ package com.excelsecu.axml;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use for add custom widget
+ * @author ch
+ *
+ */
 public class CustomWidget {
 	public String widgetName;
 	public String className;

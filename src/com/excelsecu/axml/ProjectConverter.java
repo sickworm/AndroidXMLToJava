@@ -33,6 +33,8 @@ public class ProjectConverter {
     private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>(
             Arrays.asList(animRList, attrRList, colorRList, dimenRList, drawableRList,
                     idRList, layoutRList, menuRList, styleRList, stringRList));
+    /** List<dpi + "." + name> use to storage all the resources in different dpi drawable folder **/
+    private static List<String> drawableDpiList = new ArrayList<String>();
     
     private static String stringContent = "";
     private static String colorContent = "";
@@ -73,6 +75,7 @@ public class ProjectConverter {
         GenerateR();
         GenerateString();
         GenerateColor();
+        GenerateManager();
         System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
     
@@ -146,7 +149,7 @@ public class ProjectConverter {
             System.out.println("");
         }
     }
-
+    
     private static void DrawableOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
@@ -165,6 +168,10 @@ public class ProjectConverter {
             File outFile = new File(f.getPath().replace('-', '_'));
             content = Utils.buildJavaFile(outFile, content, translator.getImportList(), drawableRList);
             Utils.generateFile(outFile, content);
+            String dpi = f.getPath();
+            dpi = dpi.substring(0, dpi.lastIndexOf(File.separatorChar));
+            dpi = dpi.substring(dpi.lastIndexOf(File.separatorChar) + 1);
+            drawableDpiList.add(dpi + "." + id);
             System.out.println("");
         }
     }
@@ -209,6 +216,44 @@ public class ProjectConverter {
         File file = new File("res/values/colors.xml");
         colorContent = Utils.buildJavaFile(file, colorContent, importList, colorRList);
         Utils.generateFile(file, colorContent);
+        System.out.println("");
+    }
+    
+    private static void GenerateManager() {
+        File resourcesFile = new File(Config.JAVA_OUT_PATH + "AXMLResources.java");
+        System.out.println("Generating " + resourcesFile.getPath());
+        String resources = Utils.readFile("templet/AXMLResources.java");
+        resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
+        Utils.writeFile(Config.JAVA_OUT_PATH + "AXMLResources.java", resources);
+        System.out.println("");
+
+        File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
+        System.out.println("Generating " + drawablesFile.getPath());
+
+        String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
+        for (int i = 0; i < dpiCaseList.length; i++) {
+            dpiCaseList[i] = "";
+        }
+        
+        for (String dpi : drawableDpiList) {
+            String dpiLevel = dpi.substring(0, dpi.indexOf('.'));
+            String id = dpi.substring(dpi.indexOf('.') + 1);
+            for (int i = 0; i < Config.DPI_DPI_FOLDER_LIST.length; i++) {
+                if (dpiLevel.equals(Config.DPI_DPI_FOLDER_LIST[i])) {
+                    dpi = dpi.replace('-', '_');
+                    dpiCaseList[i] += "\t\tcase R.drawable." + id + ":\n\t\t\treturn " +
+                            Config.PACKAGE_NAME + "." + dpi + ".get(context);\n";
+                    break;
+                }
+            }
+        }
+        
+        String drawables = Utils.readFile("templet/drawables.java");
+        drawables = drawables.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
+        for (int i = 0; i < Config.TEMPLET_DPI_BLOCK_LIST.length; i++) {
+            drawables = drawables.replace(Config.TEMPLET_DPI_BLOCK_LIST[i], dpiCaseList[i]);
+        }
+        Utils.writeFile(Config.JAVA_OUT_PATH + "drawables.java", drawables);
         System.out.println("");
     }
 }

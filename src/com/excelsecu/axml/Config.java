@@ -86,4 +86,16 @@ public class Config {
             put("time", "TYPE_CLASS_DATETIME | TYPE_DATETIME_VARIATION_TIME");
         }
     };
+    
+    public static final String TEMPLET_PACKAGE_NAME = "<!PACKAGE_NAME>";
+    public static final String TEMPLET_NODPI_BLOCK = "<!NODPI_BLOCK>";
+    public static final String TEMPLET_LDPI_BLOCK = "<!LDPI_BLOCK>";
+    public static final String TEMPLET_MDPI_BLOCK = "<!MDPI_BLOCK>";
+    public static final String TEMPLET_HDPI_BLOCK = "<!HDPI_BLOCK>";
+    public static final String TEMPLET_XHDPI_BLOCK = "<!XHDPI_BLOCK>";
+    public static final String TEMPLET_XXHDPI_BLOCK = "<!XXHDPI_BLOCK>";
+    public static final String[] TEMPLET_DPI_BLOCK_LIST = {TEMPLET_NODPI_BLOCK, TEMPLET_LDPI_BLOCK, TEMPLET_MDPI_BLOCK,
+        TEMPLET_HDPI_BLOCK, TEMPLET_XHDPI_BLOCK, TEMPLET_XXHDPI_BLOCK};
+    public static final String[] DPI_DPI_FOLDER_LIST = {"drawable", "drawable-ldpi", "drawable-mdpi",
+        "drawable-hdpi", "drawable-xhdpi", "drawable-xxhdpi"};
 }
