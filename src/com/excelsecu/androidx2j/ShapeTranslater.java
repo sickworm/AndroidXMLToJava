@@ -8,8 +8,8 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 
 public class ShapeTranslater extends BaseTranslator {
-    private static final String[] ORIENTATION = new String[] {"TOP_BOTTOM", "TR_BL", "RIGHT_LEFT", "BR_TL",
-                        "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR"};
+    private static final String[] ORIENTATION = new String[] {"RIGHT_LEFT", "BR_TL",
+                        "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR", "TOP_BOTTOM", "TR_BL"};
     
     public ShapeTranslater(AX2JNode root) {
         super(root);
@@ -18,9 +18,8 @@ public class ShapeTranslater extends BaseTranslator {
     @Override
     public String translate() {
         addImport(GradientDrawable.class.getName());
-        String javaBlock = "";
+        String javaBlock = constructObject();
         getRoot().setObjectName(Utils.classToObject(GradientDrawable.class.getSimpleName()));
-        javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
         javaBlock += super.translate();
         return javaBlock;
     }
@@ -88,10 +87,37 @@ public class ShapeTranslater extends BaseTranslator {
         }
         return attrMethod;
     }
+    
+    private String constructObject() {
+        String javaBlock = "";
+        for (AX2JNode n : getRoot().getChildren()) {
+            if (n.getLabelName().equals("gradient")) {
+                    Attribute attrStartColor = Utils.findAttrByName(n, "android:startColor");
+                    Attribute attrCenterColor = Utils.findAttrByName(n, "android:centerColor");
+                    Attribute attrEndColor = Utils.findAttrByName(n, "android:endColor");
+                    Attribute attrOrientation = Utils.findAttrByName(n, "android:angle");
+                    String startColor = attrStartColor == null? "0" : translateValue(attrStartColor);
+                    String centerColor = attrCenterColor == null? null : translateValue(attrCenterColor);
+                    String endColor = attrEndColor == null? "0" : translateValue(attrEndColor);
+                    String orientation = attrOrientation == null? "GradientDrawable.Orientation." + ORIENTATION[0] : translateValue(attrOrientation);
+                    javaBlock += "int[] colors = new int[] {" + startColor +
+                            (centerColor == null? ", " : ", " + centerColor + ", ") +
+                            endColor + "};\n";
+                    javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
+                            orientation + ", colors);\n";
+                return javaBlock;
+            } else if (n.getLabelName().equals("solid")) {
+                    Attribute solidcolor = Utils.findAttrByName(n, "android:color");
+                    javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
+                    javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
+                return javaBlock;
+            }
+        }
+        throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, "no gradient nor solid");
+    }
 
     public class SpecialTranslator {
         private AX2JNode node;
-        private boolean color = false;
         private List<Attribute> attrList;
         
         public SpecialTranslator(AX2JNode node) {
@@ -100,29 +126,15 @@ public class ShapeTranslater extends BaseTranslator {
         }
         
         public String translate(Attribute attr) throws AX2JException {
-            String javaBlock = "";
-            if (node.getLabelName().equals("gradient")) {
-                if (!color) {
-                    Attribute attrStartColor = findAttrByName("android:startColor");
-                    Attribute attrCenterColor = findAttrByName("android:centerColor");
-                    Attribute attrEndColor = findAttrByName("android:endColor");
-                    String startColor = attrStartColor == null? "0" : translateValue(attrStartColor);
-                    String centerColor = attrCenterColor == null? null : translateValue(attrCenterColor);
-                    String endColor = attrEndColor == null? "0" : translateValue(attrEndColor);
-                    javaBlock += "int[] color = new int[] {" + startColor +
-                            (centerColor == null? ", " : ", " + centerColor + ", ") +
-                            endColor + "};\n";
-                    javaBlock += getRoot().getObjectName() + ".setColors(color);\n";
-                    color = true;
-                }
-                return javaBlock;
+            String attrName = attr.getQualifiedName();
+            if (node.getLabelName().equals("gradient") && 
+                    (attrName.equals("android:startColor") ||
+                    attrName.equals("android:centerColor") ||
+                    attrName.equals("android:endColor") ||
+                    attrName.equals("android:angle"))) {
+                return "";
             } else if (node.getLabelName().equals("solid")) {
-                if (!color) {
-                    Attribute solidcolor = findAttrByName("android:color");
-                    javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, node) + ");\n";
-                    color = true;
-                }
-                return javaBlock;
+                return "";
             }
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.getQualifiedName());
         }

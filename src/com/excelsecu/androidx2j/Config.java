@@ -10,6 +10,7 @@ public class Config {
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.androidx2j.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.androidx2j.dbbuilder.Config.ENCODE;
+    
     public static final String RESOURCES_CLASS = "JResources";
     public static final String R_CLASS = "JR";
     public static final String RESOURCES_NAME = "resources";

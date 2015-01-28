@@ -224,19 +224,19 @@ public class Utils {
             String returnObject = "";
             String returnClass = "";
             Scanner scan = new Scanner(content);
-            while (scan.hasNext()) {
+            finish: while (scan.hasNext()) {
                 String str = scan.nextLine();
                 //find out the element first built
                 if (str.matches("\\w+ \\w+ *= *.+")) {
                     int index = str.indexOf(' ');
                     int index2 = str.indexOf('=', index + 1);
                     returnClass = str.substring(0, index);
-                    if (returnClass.equals(Config.RESOURCES_CLASS) ||
-                            returnClass.equals(InputStream.class.getSimpleName())) {
-                        continue;
+                    for (Class<?> c : Config.CLASSES_LIST) {
+                        if (c.getSimpleName().equals(returnClass)) {
+                            returnObject = str.substring(index + 1, index2).trim();
+                            break finish;
+                        }
                     }
-                    returnObject = str.substring(index + 1, index2).trim();
-                    break;
                 }
             }
             scan.close();
@@ -408,5 +408,22 @@ public class Utils {
         }
         
         return file.getName().substring(0, file.getName().indexOf('.'));
+    }
+    
+
+    /**
+     * Find the attribute according to the attribute name
+     * @param node
+     * @param attrName
+     * @return null if not exists
+     */
+    public static Attribute findAttrByName(AX2JNode node, String attrName) {
+        List<Attribute> attrList = node.getAttributes(); 
+        for (Attribute a : attrList) {
+            if (a.getQualifiedName().equals(attrName)) {
+                return a;
+            }
+        }
+        return null;
     }
 }

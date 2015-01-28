@@ -94,6 +94,13 @@ public class Config {
         android.widget.ActionMenuView.class,
         android.widget.TextClock.class,
         android.widget.Toolbar.class,
+        
+        /** Drawable **/
+        android.graphics.drawable.Drawable.class,
+        android.graphics.drawable.DrawableContainer.class,
+        android.graphics.drawable.GradientDrawable.class,
+        android.content.res.ColorStateList.class,
+        android.graphics.drawable.StateListDrawable.class,
     };
 
     /**
@@ -113,7 +120,8 @@ public class Config {
 	        put("GradientDrawable$android:shape", "setType(int)");
 	        put("GradientDrawable$android:type", "setGradientType(int)");
 	        put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
-	        put("GradientDrawable$android:angle", "setOrientation(int)");
+	        //use in API 16 or higher
+	        //put("GradientDrawable$android:angle", "setOrientation(int)");
 	        put("GradientDrawable$android:radius", "setCornerRadius(float)");
     	}
     };
