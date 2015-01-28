@@ -1,11 +1,7 @@
-package <!PACKAGE_NAME>;
+package com.excelsecu.axml.test;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import <!PACKAGE_NAME>.values.colors;
-import <!PACKAGE_NAME>.values.strings;
+import com.excelsecu.axml.test.values.colors;
+import com.excelsecu.axml.test.values.strings;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -42,42 +38,6 @@ public class AXMLResources {
     }
     
     public View getLayout(int id) {
-        Field[] fieldList = R.layout.class.getFields();
-        for (Field f : fieldList) {
-            try {
-                if (f.getInt(null) == id) {
-                    String name = f.getName();
-                        String packageName = new Object() {  
-                            public String getClassName() {  
-                                String packageName = this.getClass().getName();
-                                return packageName.substring(0, packageName.lastIndexOf('.'));  
-                            }  
-                        }.getClassName();
-                        try {
-                            Class<?> clazz = Thread.currentThread().getContextClassLoader().
-                            loadClass(packageName + ".layout." + name);
-                            try {
-                                Method method = clazz.getMethod("get", Context.class);
-                                try {
-                                    return (View)method.invoke(null, context);
-                                } catch (InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                            } catch (NoSuchMethodException e) {
-                                e.printStackTrace();
-                            } catch (SecurityException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return layouts.get(context, id);
     }
 }

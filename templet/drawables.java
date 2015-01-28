@@ -13,7 +13,8 @@ public class drawables {
     public static final int[] DPI_LIST = new int[] {MIN_DPI, LDPI, MDPI, HDPI, XHDPI, XXHDPI, MAX_DPI};
     
     public static Object get(Context context, int id) {
-        int density = findBestDpiOrder((int) (context.getResources().getDisplayMetrics().density));
+        int density = (int) (context.getResources().getDisplayMetrics().density * 160);
+        density = findBestDpiOrder(density);
         
         Object drawable = null;
         int dpiOrder = findBestDpiOrder(density);
@@ -87,7 +88,7 @@ public class drawables {
     private static int findBestDpiOrder(int density) {
         int bestDpi = 3;
         for (int i = 0; i < DPI_LIST.length - 1; i++) {
-            if (DPI_LIST[i] <= density && density <= DPI_LIST[i + 1]) {
+            if (DPI_LIST[i] < density && density <= DPI_LIST[i + 1]) {
                 if (DPI_LIST[i + 1] == MAX_DPI) {
                     bestDpi = i;
                 } else {

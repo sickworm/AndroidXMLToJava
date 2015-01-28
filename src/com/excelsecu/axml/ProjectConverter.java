@@ -221,16 +221,18 @@ public class ProjectConverter {
     }
     
     private static void GenerateManager() {
+        //AXMLResources.java
         File resourcesFile = new File(Config.JAVA_OUT_PATH + "AXMLResources.java");
         System.out.println("Generating " + resourcesFile.getPath());
         String resources = Utils.readFile("templet/AXMLResources.java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         Utils.writeFile(Config.JAVA_OUT_PATH + "AXMLResources.java", resources);
         System.out.println();
-
+        
+        //drawables.java
         File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
         System.out.println("Generating " + drawablesFile.getPath());
-
+        
         String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
         for (int i = 0; i < dpiCaseList.length; i++) {
             dpiCaseList[i] = "";
@@ -255,6 +257,19 @@ public class ProjectConverter {
             drawables = drawables.replace(Config.TEMPLET_DPI_BLOCK_LIST[i], dpiCaseList[i]);
         }
         Utils.writeFile(Config.JAVA_OUT_PATH + "drawables.java", drawables);
+        System.out.println();
+        
+        //layouts.java
+        String layouts = Utils.readFile("templet/layouts.java");
+        layouts = layouts.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
+        
+        String layoutCaseList = "";
+        for(String id : layoutRList) {
+            layoutCaseList += "\t\tcase R.layout." + id + ":\n\t\t\treturn " +
+                    Config.PACKAGE_NAME + ".layout." + id + ".get(context);\n";
+        }
+        layouts = layouts.replace(Config.TEMPLET_LAYOUT_BLOCK, layoutCaseList);
+        Utils.writeFile(Config.JAVA_OUT_PATH + "layouts.java", layouts);
         System.out.println();
     }
 }

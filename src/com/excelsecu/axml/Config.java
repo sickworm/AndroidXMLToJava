@@ -89,6 +89,7 @@ public class Config {
     };
     
     public static final String TEMPLET_PACKAGE_NAME = "<!PACKAGE_NAME>";
+    public static final String TEMPLET_LAYOUT_BLOCK = "<!LAYOUT_BLOCK>";
     public static final String TEMPLET_NODPI_BLOCK = "<!NODPI_BLOCK>";
     public static final String TEMPLET_LDPI_BLOCK = "<!LDPI_BLOCK>";
     public static final String TEMPLET_MDPI_BLOCK = "<!MDPI_BLOCK>";
