@@ -144,7 +144,7 @@ public class BaseTranslator {
 	    //dp, px, sp, float
 	    if (value.matches("[0-9.]+dp")) {
             value = value.substring(0, value.length() - 2);
-            value = "(int) (" + value + " / scale + 0.5f)";
+            value = "(int) (" + value + " * scale + 0.5f)";
 	    } else if (value.matches("[0-9.]+sp")) {
 	        value = value.substring(0, value.length() - 2);
 	    } else if (value.matches("[0-9]+px")) {
