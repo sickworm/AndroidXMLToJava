@@ -203,8 +203,8 @@ public class Utils {
 	        if (importList == null) {
 	        	importList = new ArrayList<String>();
 	        }
-        	if (!Utils.hasString(importList, Config.PACKAGE_NAME + ".R")) {
-        		importList.add(Config.PACKAGE_NAME + ".R");
+        	if (!Utils.hasString(importList, Config.PACKAGE_NAME + "." + Config.R_CLASS)) {
+        		importList.add(Config.PACKAGE_NAME + "." + Config.R_CLASS);
         	}
         	if (!Utils.hasString(importList, HashMap.class.getName())) {
         		importList.add(HashMap.class.getName());
@@ -270,7 +270,7 @@ public class Utils {
         	}
         	String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n\t{\n";
         	for (String id : idList) {
-        		map += "\t\tput(R." + rClass + "." + id + ", " + id + ");\n";
+        		map += "\t\tput(" + Config.R_CLASS + "." + rClass + "." + id + ", " + id + ");\n";
         	}
         	map += "\t}\n};\n";
         	content = content + map;

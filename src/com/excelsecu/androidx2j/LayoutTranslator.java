@@ -217,7 +217,7 @@ public class LayoutTranslator extends BaseTranslator {
                 } else if (ruleValue.startsWith("@id/.*") ||
                         ruleValue.startsWith("@+id/")){
                     ruleValue = ruleValue.substring(ruleValue.indexOf('/') + 1);
-                    ruleValue = "R.id." + ruleValue;
+                    ruleValue = Config.R_CLASS + ".id." + ruleValue;
                 } else {
                     throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, ruleValue);
                 }

@@ -1,7 +1,7 @@
-package com.excelsecu.axml.test;
+package <!PACKAGE_NAME>;
 
-import com.excelsecu.axml.test.values.colors;
-import com.excelsecu.axml.test.values.strings;
+import <!PACKAGE_NAME>.values.colors;
+import <!PACKAGE_NAME>.values.strings;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -14,10 +14,10 @@ import android.view.View;
  * @author ch
  *
  */
-public class AXMLResources {
+public class Resources {
     private Context context = null;
     
-    public AXMLResources(Context context) {
+    public Resources(Context context) {
         this.context = context;
     }
     

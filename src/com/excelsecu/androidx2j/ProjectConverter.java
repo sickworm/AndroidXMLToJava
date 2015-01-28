@@ -179,7 +179,7 @@ public class ProjectConverter {
     
     private static void GenerateR() {
         String content = "";
-        content += "package " + Config.PACKAGE_NAME + ";\n\npublic final class R {\n";
+        content += "package " + Config.PACKAGE_NAME + ";\n\npublic final class " + Config.R_CLASS + " {\n";
         for (int i =0; i < LIST_ORDER.length; i++) {
             List<String> list = LIST_ORDER_LIST.get(i);
             content += "\tpublic static final class " + LIST_ORDER[i] + "{\n";
@@ -191,7 +191,7 @@ public class ProjectConverter {
         }
         content += "}";
         
-        String rPath = Config.JAVA_OUT_PATH + "R.java";
+        String rPath = Config.JAVA_OUT_PATH + Config.R_CLASS + ".java";
         System.out.println("Generating " + new File(rPath).getPath() + "...");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(rPath));
@@ -224,9 +224,10 @@ public class ProjectConverter {
         //AXMLResources.java
         File resourcesFile = new File(Config.JAVA_OUT_PATH + "AXMLResources.java");
         System.out.println("Generating " + resourcesFile.getPath());
-        String resources = Utils.readFile("templet/AXMLResources.java");
+        String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_NAME + ".java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
-        Utils.writeFile(Config.JAVA_OUT_PATH + "AXMLResources.java", resources);
+        resources = resources.replace(Config.TEMPLAT_RESOURCES_NAME, Config.RESOURCES_CLASS);
+        Utils.writeFile(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java", resources);
         System.out.println();
         
         //drawables.java
@@ -244,7 +245,7 @@ public class ProjectConverter {
             for (int i = 0; i < Config.DPI_DPI_FOLDER_LIST.length; i++) {
                 if (dpiLevel.equals(Config.DPI_DPI_FOLDER_LIST[i])) {
                     dpi = dpi.replace('-', '_');
-                    dpiCaseList[i] += "\t\tcase R.drawable." + id + ":\n\t\t\treturn " +
+                    dpiCaseList[i] += "\t\tcase " + Config.R_CLASS + ".drawable." + id + ":\n\t\t\treturn " +
                             Config.PACKAGE_NAME + "." + dpi + ".get(context);\n";
                     break;
                 }
@@ -265,7 +266,7 @@ public class ProjectConverter {
         
         String layoutCaseList = "";
         for(String id : layoutRList) {
-            layoutCaseList += "\t\tcase R.layout." + id + ":\n\t\t\treturn " +
+            layoutCaseList += "\t\tcase " + Config.R_CLASS + ".layout." + id + ":\n\t\t\treturn " +
                     Config.PACKAGE_NAME + ".layout." + id + ".get(context);\n";
         }
         layouts = layouts.replace(Config.TEMPLET_LAYOUT_BLOCK, layoutCaseList);

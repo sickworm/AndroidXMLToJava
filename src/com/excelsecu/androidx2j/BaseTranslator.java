@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Super class for drawable and layout resources. Translate a AXMLNode to java block.
+ * Super class for drawable and layout resources. Translate a AX2JNode to java block.
  * @author ch
  *
  */
@@ -161,13 +161,13 @@ public class BaseTranslator {
 	    //id
         else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
 	        value = value.substring(value.indexOf('/') + 1);
-	        value = "R.id." + value;
+	        value = Config.R_CLASS + ".id." + value;
 	    }
         
 	    //string
         else if (value.contains("@string/")) {
 	        value = value.substring(value.indexOf('/') + 1);
-            value = "R.string." + value;
+            value = Config.R_CLASS + ".string." + value;
             value = Config.RESOURCES_NAME + ".getString(" + value + ")";
         } else if (attrName.equals("android:text") ||
                 attrName.equals("android:hint")) {
@@ -190,7 +190,7 @@ public class BaseTranslator {
             value = "Color." + value;
         } else if (value.matches("@color/.+")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "R.color." + value;
+            value = Config.R_CLASS + ".color." + value;
             value = Config.RESOURCES_NAME + ".getColor(" + value + ")";
         }
 	    
@@ -203,7 +203,7 @@ public class BaseTranslator {
 	    //drawable
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
-            value = "R.drawable." + value;
+            value = Config.R_CLASS + ".drawable." + value;
             //ColorStateList is not a drawable, should use another method
             if (attrName.contains("Color") ||
                     attrName.contains("TintList")) {
@@ -271,7 +271,7 @@ public class BaseTranslator {
             addImport(View.class.getName());
         } else if (attrName.equals("android:id") &&
                     attrValue.startsWith("@+id/")) {
-            addImport(Config.PACKAGE_NAME + ".R");
+            addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
             String id = attrValue.substring(attrValue.indexOf('/') + 1);
             if (!Utils.hasString(idList, id)) {
                 idList.add(id);
@@ -295,10 +295,10 @@ public class BaseTranslator {
         else if (attrValue.startsWith("@drawable/") ||
                 attrValue.startsWith("@color/") ||
                 attrValue.startsWith("@string/")) {
-            addImport(Config.PACKAGE_NAME + ".AXMLResources");
-            addImport(Config.PACKAGE_NAME + ".R");
+            addImport(Config.PACKAGE_NAME + "." + Config.RESOURCES_CLASS);
+            addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
             if (!resources) {
-                extraMethod += "AXMLResources " + Config.RESOURCES_NAME + " = new AXMLResources(context);\n";
+                extraMethod += Config.RESOURCES_CLASS + " " + Config.RESOURCES_NAME + " = new " + Config.RESOURCES_CLASS + "(context);\n";
                 resources = true;
             }
         }
