@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 import org.dom4j.Attribute;
 
 import android.content.Context;
@@ -8,10 +8,10 @@ import android.graphics.drawable.StateListDrawable;
 public class SelectorTranslator extends BaseTranslator {
     
     public static void main(String[] argv) {
-        System.out.println(new SelectorTranslator(new AXMLParser("res/drawable/color_selector.xml").parse()).translate());
+        System.out.println(new SelectorTranslator(new AX2JParser("res/drawable/color_selector.xml").parse()).translate());
     }
     
-    public SelectorTranslator(AXMLNode node) {
+    public SelectorTranslator(AX2JNode node) {
         super(node);
     }
     
@@ -21,7 +21,7 @@ public class SelectorTranslator extends BaseTranslator {
         } else if (getType() == StateListDrawable.class) {
             return translateToStateListDrawable();
         } else {
-            throw new AXMLException(AXMLException.AXML_PARSE_ERROR, "not a selector type");
+            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, "not a selector type");
         }
     }
     
@@ -31,7 +31,7 @@ public class SelectorTranslator extends BaseTranslator {
         String javaBlock = "";
         String stateSetList = "";
         String colorList = "";
-        for (AXMLNode n : getRoot().getChildren()) {
+        for (AX2JNode n : getRoot().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }
@@ -76,7 +76,7 @@ public class SelectorTranslator extends BaseTranslator {
         int num = 0;
         String javaBlock = "";
         javaBlock += "StateListDrawable stateListDrawable = new StateListDrawable();\n";
-        for (AXMLNode n : getRoot().getChildren()) {
+        for (AX2JNode n : getRoot().getChildren()) {
             if (!n.getLabelName().equals("item")) {
                 continue;
             }

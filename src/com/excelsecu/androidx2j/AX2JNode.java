@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 
-public class AXMLNode implements Cloneable {
-    private AXMLNode parent;
-    private List<AXMLNode> children;
+public class AX2JNode implements Cloneable {
+    private AX2JNode parent;
+    private List<AX2JNode> children;
     /**the layer of AXMLNode tree, start with 0**/
     private int layer;
     private Element element;
@@ -22,9 +22,9 @@ public class AXMLNode implements Cloneable {
     private Class<?> type = null;
     
     @SuppressWarnings("unchecked")
-	public AXMLNode(AXMLNode parent, Element element, int layer) {
+	public AX2JNode(AX2JNode parent, Element element, int layer) {
         if (element == null) {
-            throw new AXMLException(AXMLException.PARAMETER_NOT_INITIALIZE,
+            throw new AX2JException(AX2JException.PARAMETER_NOT_INITIALIZE,
                     "AXMLNode constructor Element object is null");
         } else {
             this.element = element;
@@ -32,7 +32,7 @@ public class AXMLNode implements Cloneable {
         
         this.parent = parent;
         this.layer = layer;
-        this.children = new ArrayList<AXMLNode>();
+        this.children = new ArrayList<AX2JNode>();
         this.attrList = element.attributes();
         //Add it to this parent's children list
         if (parent != null) {
@@ -80,15 +80,15 @@ public class AXMLNode implements Cloneable {
 		return asXML();
 	}
     
-    public void addChild(AXMLNode child) {
+    public void addChild(AX2JNode child) {
         children.add(child);
     }
     
-    public AXMLNode getParent() {
+    public AX2JNode getParent() {
         return parent;
     }
     
-    public List<AXMLNode> getChildren() {
+    public List<AX2JNode> getChildren() {
         return children;
     }
     
@@ -128,7 +128,7 @@ public class AXMLNode implements Cloneable {
         return element.asXML();
     }
     
-    public AXMLNode clone() {
-        return new AXMLNode(this.parent, this.element, this.layer);
+    public AX2JNode clone() {
+        return new AX2JNode(this.parent, this.element, this.layer);
     }
 }

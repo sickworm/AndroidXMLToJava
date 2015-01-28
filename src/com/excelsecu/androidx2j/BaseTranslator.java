@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
-import com.excelsecu.axml.dbbuilder.AndroidDocConverter;
+import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
 
 import android.graphics.Color;
 import android.text.InputType;
@@ -29,7 +29,7 @@ public class BaseTranslator {
     private String extraMethod = "";
     private List<String> importList = new ArrayList<String>();
     
-    private AXMLNode root = null;
+    private AX2JNode root = null;
     private File file = null;
     
     /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
@@ -44,7 +44,7 @@ public class BaseTranslator {
         }
     }
     
-	public BaseTranslator(AXMLNode root) {
+	public BaseTranslator(AX2JNode root) {
 		this.root = root;
         map = AndroidDocConverter.getMap();
         init();
@@ -52,7 +52,7 @@ public class BaseTranslator {
 	
 	protected void init() {
 		if (root == null) {
-	        AXMLParser parser = new AXMLParser(file);
+	        AX2JParser parser = new AX2JParser(file);
 	        root = parser.parse();
 		}
 	}
@@ -61,17 +61,17 @@ public class BaseTranslator {
         return translate(getRoot());
 	}
 	
-	protected String translate(AXMLNode node) {
+	protected String translate(AX2JNode node) {
         String javaBlock = "";
         String nodeJavaBlock = translateNode(node);
         javaBlock += nodeJavaBlock;
-        for (AXMLNode n : node.getChildren()) {
+        for (AX2JNode n : node.getChildren()) {
             javaBlock += translate(n);
         }
         return javaBlock;
     }	
 	
-	protected String translateNode(AXMLNode node) {
+	protected String translateNode(AX2JNode node) {
 	    String javaBlock = "";
         for (Attribute a : node.getAttributes()) {
             javaBlock += translateAttribute(a, node);
@@ -79,7 +79,7 @@ public class BaseTranslator {
         return javaBlock;
 	}
 
-    protected String translateAttribute(Attribute attr, AXMLNode node) throws AXMLException {
+    protected String translateAttribute(Attribute attr, AX2JNode node) throws AX2JException {
         String attrMethod = "";
         String methodName = transAttrToMethod(attr, node.getType());
         String methodValue = translateValue(attr);
@@ -107,12 +107,12 @@ public class BaseTranslator {
                     break;
             }
             if (!map.containsKey(key)) {
-                throw new AXMLException(AXMLException.METHOD_NOT_FOUND, key);
+                throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
             }
         }
         String methodName = map.get(key);
         if (methodName.equals(null) || methodName.equals("")) {
-            throw new AXMLException(AXMLException.METHOD_NOT_FOUND, key);
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
         }
         
         //when attribute has several types of value (like android:background),
@@ -235,7 +235,7 @@ public class BaseTranslator {
             String error = value; 
             value = Config.INPUT_TYPE_MAP.get(value);
             if (value == null) {
-                throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, error);
+                throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, error);
             }
             value = Utils.prefixParams(value, "InputType");
         } else if (attrName.equals("android:ellipsize")) {
@@ -251,7 +251,7 @@ public class BaseTranslator {
 	 * @param attrName
 	 * @param attrValue
 	 */
-	protected void extraHandle(AXMLNode node, Attribute attr) {
+	protected void extraHandle(AX2JNode node, Attribute attr) {
 		addImport(node.getType().getName());
         
         String attrValue = attr.getValue();
@@ -318,7 +318,7 @@ public class BaseTranslator {
         }
     }
     
-    public AXMLNode getRoot() {
+    public AX2JNode getRoot() {
     	return root;
     }
     

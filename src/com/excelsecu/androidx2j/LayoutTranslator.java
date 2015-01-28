@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.io.File;
 import java.util.List;
@@ -24,7 +24,7 @@ public class LayoutTranslator extends BaseTranslator {
      * @return the Java block
      */
     @Override
-	protected String translateNode(AXMLNode node) {
+	protected String translateNode(AX2JNode node) {
         String javaBlock = "";
         String newMethod = "";
         String nodeName = Utils.classToObject(node.getLabelName()) + num;
@@ -57,7 +57,7 @@ public class LayoutTranslator extends BaseTranslator {
         }
         
         javaBlock += specialTranslater.setLayoutParams();
-        AXMLNode parent = node.getParent();
+        AX2JNode parent = node.getParent();
         if (parent != null) {
             String addViewMethod = parent.getObjectName() + ".addView(" + nodeName + ");\n";
             javaBlock += addViewMethod;
@@ -68,16 +68,16 @@ public class LayoutTranslator extends BaseTranslator {
         return javaBlock;
 	}
     
-	private String translateAttribute(Attribute attr, AXMLNode node,
-	        SpecialTranslator specialTranslator) throws AXMLException {
+	private String translateAttribute(Attribute attr, AX2JNode node,
+	        SpecialTranslator specialTranslator) throws AX2JException {
         String attrMethod = "";
         try {
             attrMethod = super.translateAttribute(attr, node);
-        } catch (AXMLException e) {
+        } catch (AX2JException e) {
             try {
                 //deal with the attributes that doesn't match the XML attributes table
                 attrMethod = specialTranslator.translate(attr);
-            } catch (AXMLException e1) {
+            } catch (AX2JException e1) {
                 //translator can not translate this attribute
                 attrMethod = "//" + attr.getQualifiedName() + "=\"" +
                         attr.getValue() + "\";\t//not support\n";
@@ -92,7 +92,7 @@ public class LayoutTranslator extends BaseTranslator {
      *
      */
     public class SpecialTranslator {
-        private AXMLNode node;
+        private AX2JNode node;
         private String parentName;
         private String layoutParamName;
         private List<Attribute> attrList;
@@ -104,7 +104,7 @@ public class LayoutTranslator extends BaseTranslator {
         /** set up padding just need one setting **/
         private boolean padding = false;
         
-        public SpecialTranslator(AXMLNode node) {
+        public SpecialTranslator(AX2JNode node) {
             this.node = node;
             attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
@@ -112,7 +112,7 @@ public class LayoutTranslator extends BaseTranslator {
             layoutParamName = "layoutParams" + num;
         }
         
-        public String translate(Attribute attr) throws AXMLException {
+        public String translate(Attribute attr) throws AX2JException {
             String attrName = attr.getQualifiedName();
             String javaBlock = "";
             
@@ -219,7 +219,7 @@ public class LayoutTranslator extends BaseTranslator {
                     ruleValue = ruleValue.substring(ruleValue.indexOf('/') + 1);
                     ruleValue = "R.id." + ruleValue;
                 } else {
-                    throw new AXMLException(AXMLException.ATTRIBUTE_VALUE_ERROR, ruleValue);
+                    throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, ruleValue);
                 }
                 javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
                 
@@ -232,7 +232,7 @@ public class LayoutTranslator extends BaseTranslator {
                 return "";
             }
             
-            throw new AXMLException(AXMLException.METHOD_NOT_FOUND);
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
         }
         
         private Attribute findAttrByName(String attrName) {

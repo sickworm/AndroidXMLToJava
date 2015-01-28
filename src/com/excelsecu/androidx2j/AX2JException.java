@@ -1,6 +1,6 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
-public class AXMLException extends RuntimeException {
+public class AX2JException extends RuntimeException {
     private static final long serialVersionUID = 4451465808378003847L;
     /**succeed**/
     public static final int NO_ERROR = 0x00000000;
@@ -24,11 +24,11 @@ public class AXMLException extends RuntimeException {
     private int errorCode = NO_ERROR;
     private String details = "";
 
-    public AXMLException(int errorCode) {
+    public AX2JException(int errorCode) {
         this.errorCode = errorCode;
     }
     
-    public AXMLException(int errorCode, String details) {
+    public AX2JException(int errorCode, String details) {
         this.errorCode = errorCode;
         this.details = details;
     }

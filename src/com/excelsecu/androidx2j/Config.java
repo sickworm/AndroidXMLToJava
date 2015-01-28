@@ -1,16 +1,17 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.util.HashMap;
 
 public class Config {
     public static final String PROJECT_RES_PATH = "res/";
     public static final String PROJECT_OUT_ROOT = "res_out/";
-    public static final String PACKAGE_NAME = "com.excelsecu.axml.test";
+    public static final String PACKAGE_NAME = "com.excelsecu.ax2j.test";
     public static final String JAVA_OUT_PATH = PROJECT_OUT_ROOT + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
-    public static final Class<?>[] CLASSES_LIST = com.excelsecu.axml.dbbuilder.Config.CLASSES_LIST;
-    public static final String ENCODE = com.excelsecu.axml.dbbuilder.Config.ENCODE;
-    public static final String RESOURCES_CLASS = "AXMLResources";
+    public static final Class<?>[] CLASSES_LIST = com.excelsecu.androidx2j.dbbuilder.Config.CLASSES_LIST;
+    public static final String ENCODE = com.excelsecu.androidx2j.dbbuilder.Config.ENCODE;
+    public static final String RESOURCES_CLASS = "JResources";
+    public static final String R_CLASS = "JR";
     public static final String RESOURCES_NAME = "resources";
     public static final int API_LEVEL = 8;
 

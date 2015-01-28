@@ -1,4 +1,4 @@
-package com.excelsecu.axml.dbbuilder;
+package com.excelsecu.androidx2j.dbbuilder;
 
 import java.util.HashMap;
 

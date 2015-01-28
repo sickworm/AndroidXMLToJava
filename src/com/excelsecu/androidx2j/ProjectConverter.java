@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,7 +49,7 @@ public class ProjectConverter {
     	
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
-            throw new AXMLException(AXMLException.PROJECT_DIR_NOT_FOUND);
+            throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
         }
         File resOut = new File(Config.PROJECT_OUT_ROOT);
         if (resOut.exists()) {
@@ -97,7 +97,7 @@ public class ProjectConverter {
                     
                     try {
                         content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);
-                    } catch (AXMLException e) {
+                    } catch (AX2JException e) {
                         System.out.println(f.getName() + " build Java file error: " +
                                 e.getErrorCode() + " " + e.getDetails() + "");
                         content = "//Temp file. Error occurred when building this file.\n" +
@@ -106,7 +106,7 @@ public class ProjectConverter {
                     }
                     Utils.generateFile(f, content);
                     layoutRList.add(Utils.getClassName(f));
-                } catch (AXMLException e) {
+                } catch (AX2JException e) {
                     System.out.println(f.getName() + " convert error: " +
                             e.getErrorCode() + " " + e.getDetails() + "");
                     e.printStackTrace();
@@ -126,7 +126,7 @@ public class ProjectConverter {
                 document = new SAXReader().read(f).getDocument();
             } catch (DocumentException e) {
                 e.printStackTrace();
-                throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
+                throw new AX2JException(AX2JException.AXML_PARSE_ERROR);
             }
             Element root = document.getRootElement();
             if (!root.getName().equals("resources"))
@@ -199,7 +199,7 @@ public class ProjectConverter {
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new AXMLException(AXMLException.FILE_BUILD_ERROR, rPath);
+            throw new AX2JException(AX2JException.FILE_BUILD_ERROR, rPath);
         }
         System.out.println();
     }

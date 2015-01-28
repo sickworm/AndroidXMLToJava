@@ -9,6 +9,10 @@
 	<classpathentry kind="lib" path="libs/htmlparser/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/thumbelina.jar"/>
 	<classpathentry kind="lib" path="libs/android/android-support-v7-gridlayout.jar"/>
-	<classpathentry kind="lib" path="libs/android/android.jar" sourcepath="C:/adt-bundle-windows-x86_64-20140702/sdk/sources/android-21"/>
+	<classpathentry kind="lib" path="libs/android/android.jar" sourcepath="C:/adt-bundle-windows-x86_64-20140702/sdk/sources/android-21">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/adt-bundle-windows-x86_64-20140702/sdk/docs/resources/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

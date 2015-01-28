@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.io.File;
 import java.util.List;
@@ -14,21 +14,21 @@ import org.dom4j.io.SAXReader;
  * @author ch
  *
  */
-public class AXMLParser {
+public class AX2JParser {
 	private String path;
     
     public static void main(String[] argv) {
         System.out.println("--------XMLParse start-------");
-        AXMLNode rootNode = new AXMLParser("res/layout/base.xml").parse();
+        AX2JNode rootNode = new AX2JParser("res/layout/base.xml").parse();
         printNode(rootNode, 0);
         System.out.println("--------XMLParse end---------");
     }
 
-    public AXMLParser(File file) {
+    public AX2JParser(File file) {
         this.path = file.getPath();
     }
 
-    public AXMLParser(String path) {
+    public AX2JParser(String path) {
         this.path = path;
     }
     
@@ -36,15 +36,15 @@ public class AXMLParser {
      * Parse Android XML file info AXMLNode structure.
      * @return the root of AXMLNode
      */
-    public AXMLNode parse() {
-        AXMLNode rootNode = null;
+    public AX2JNode parse() {
+        AX2JNode rootNode = null;
         try {
             Document document;
             document = new SAXReader().read(path).getDocument();
             rootNode = parseElements(null, document.getRootElement(), 0);
         } catch (DocumentException e) {
             e.printStackTrace();
-            throw new AXMLException(AXMLException.AXML_PARSE_ERROR);
+            throw new AX2JException(AX2JException.AXML_PARSE_ERROR);
         }
         return rootNode;
     }
@@ -56,8 +56,8 @@ public class AXMLParser {
      * @param layer the layer of this node to be created
      * @return the AXMLNode of the {@param rootElement}, the child of {@param rootElement}
      */
-    private AXMLNode parseElements(AXMLNode parent, Element rootElement, int layer) {
-        AXMLNode node = new AXMLNode(parent, rootElement, layer);
+    private AX2JNode parseElements(AX2JNode parent, Element rootElement, int layer) {
+        AX2JNode node = new AX2JNode(parent, rootElement, layer);
         
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
@@ -75,7 +75,7 @@ public class AXMLParser {
      * @param rootNode the root in this function, the real root elements in the first time
      * @param layer
      */
-    private static void printNode(AXMLNode rootNode, int layer) {
+    private static void printNode(AX2JNode rootNode, int layer) {
         if (rootNode == null) {
             return;
         }
@@ -91,8 +91,8 @@ public class AXMLParser {
             System.out.println(tab + "\t" + a.getQualifiedName() + " = " + a.getValue());
         }
         
-        List<AXMLNode> children = rootNode.getChildren();
-        for (AXMLNode n : children) {
+        List<AX2JNode> children = rootNode.getChildren();
+        for (AX2JNode n : children) {
             printNode(n, layer + 1);
         }
     }

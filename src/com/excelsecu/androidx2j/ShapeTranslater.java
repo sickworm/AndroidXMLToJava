@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class ShapeTranslater extends BaseTranslator {
     private static final String[] ORIENTATION = new String[] {"TOP_BOTTOM", "TR_BL", "RIGHT_LEFT", "BR_TL",
                         "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR"};
     
-    public ShapeTranslater(AXMLNode root) {
+    public ShapeTranslater(AX2JNode root) {
         super(root);
     }
     
@@ -55,7 +55,7 @@ public class ShapeTranslater extends BaseTranslator {
      * @return the Java block
      */
     @Override
-    protected String translateNode(AXMLNode node) {
+    protected String translateNode(AX2JNode node) {
         String javaBlock = "";
         SpecialTranslator specialTranslater = new SpecialTranslator(node);
         addImport(Context.class.getName());
@@ -71,16 +71,16 @@ public class ShapeTranslater extends BaseTranslator {
         return javaBlock;
     }
     
-    private String translateAttribute(Attribute attr, AXMLNode node,
-            SpecialTranslator specialTranslator) throws AXMLException {
+    private String translateAttribute(Attribute attr, AX2JNode node,
+            SpecialTranslator specialTranslator) throws AX2JException {
         String attrMethod = "";
         try {
             attrMethod = super.translateAttribute(attr, node);
-        } catch (AXMLException e) {
+        } catch (AX2JException e) {
             try {
                 //deal with the attributes that doesn't match the XML attributes table
                 attrMethod = specialTranslator.translate(attr);
-            } catch (AXMLException e1) {
+            } catch (AX2JException e1) {
                 //translator can not translate this attribute
                 attrMethod = "//" + attr.getQualifiedName() + "=\"" +
                         attr.getValue() + "\";\t//not support\n";
@@ -90,16 +90,16 @@ public class ShapeTranslater extends BaseTranslator {
     }
 
     public class SpecialTranslator {
-        private AXMLNode node;
+        private AX2JNode node;
         private boolean color = false;
         private List<Attribute> attrList;
         
-        public SpecialTranslator(AXMLNode node) {
+        public SpecialTranslator(AX2JNode node) {
             this.node = node;
             this.attrList = node.getAttributes();
         }
         
-        public String translate(Attribute attr) throws AXMLException {
+        public String translate(Attribute attr) throws AX2JException {
             String javaBlock = "";
             if (node.getLabelName().equals("gradient")) {
                 if (!color) {
@@ -124,7 +124,7 @@ public class ShapeTranslater extends BaseTranslator {
                 }
                 return javaBlock;
             }
-            throw new AXMLException(AXMLException.METHOD_NOT_FOUND, attr.getQualifiedName());
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.getQualifiedName());
         }
         
         private Attribute findAttrByName(String attrName) {

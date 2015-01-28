@@ -1,4 +1,4 @@
-package com.excelsecu.axml;
+package com.excelsecu.androidx2j;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.excelsecu.axml.Config;
+import com.excelsecu.androidx2j.Config;
 
 /**
  * Utils of com.excelsecu.axml package
@@ -136,7 +136,7 @@ public class Utils {
         path = path.replace('\\', '/');
         int index = path.lastIndexOf('/');
         if (index == -1) {
-            throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
+            throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
         }
         String dir = path.substring(0, index);
         File dirFile = new File(dir);
@@ -153,7 +153,7 @@ public class Utils {
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new AXMLException(AXMLException.FILE_BUILD_ERROR, path);
+            throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
         }
     }
     
@@ -241,7 +241,7 @@ public class Utils {
             }
             scan.close();
             if (returnObject.equals("")) {
-                throw new AXMLException(AXMLException.FILE_BUILD_ERROR, "can not find main object");
+                throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
             }
             
             title += "\n\tpublic static final " + returnClass + " get(Context context) {\n";
@@ -309,7 +309,7 @@ public class Utils {
      * @param node
      * @return
      */
-    public static String getParentName(AXMLNode node) {
+    public static String getParentName(AX2JNode node) {
         if (node.getParent() == null) {
             List<Attribute> attrList = node.getAttributes();
             for (Attribute a : attrList) {
