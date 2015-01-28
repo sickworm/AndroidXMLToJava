@@ -176,6 +176,13 @@ public class BaseTranslator {
 	    
 	    //color
 	    else if (value.matches("#[0-9a-fA-F]+")) {
+	        if (value.length() == 4) {
+                value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                        value.charAt(3) + '0';
+	        } else if (value.length() == 5) {
+                value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                        value.charAt(3) + '0' + value.charAt(4) + '0';
+	        }
 	        value = "Color.parseColor(\"" + value + "\")";
 	    } else if (value.matches("@android:color/.+")) {
 	        value = value.substring(value.indexOf('/') + 1);
