@@ -142,8 +142,18 @@ public class ProjectConverter {
                     stringRList.add(e.attributeValue("name"));
                 }
                 if (e.getName().equals("color")) {
-                    colorContent += "public static final int " + e.attributeValue("name") +
-                            " = Color.parseColor(\"" + e.getText() + "\");\n";
+                    String value = e.getText();
+                    if (value.matches("#[0-9a-fA-F]+")) {
+                        if (value.length() == 4) {
+                            value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                                    value.charAt(3) + '0';
+                        } else if (value.length() == 5) {
+                            value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                                    value.charAt(3) + '0' + value.charAt(4) + '0';
+                        }
+                        value = "Color.parseColor(\"" + value + "\")";
+                    }
+                    colorContent += "public static final int " + e.attributeValue("name") + " = " + value + ";\n";
                     colorRList.add(e.attributeValue("name"));
                 }
             }
