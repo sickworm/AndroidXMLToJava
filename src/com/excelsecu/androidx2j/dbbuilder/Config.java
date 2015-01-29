@@ -111,18 +111,19 @@ public class Config {
 		
 		{
 	        put("View$android:enabled", "setEnabled(boolean)");
+            put("View$duplicateParentState", "setDuplicateParentStateEnabled(boolean )");
+            
 	        put("RadioButton$android:checked", "setChecked(boolean)");
 	        put("LinearLayout$android:weightSum", "setWeightSum(float)");
-	        //replace setBackgroundResource(int) to setBackground(Drawable)
-	        put("View$android:background", "setBackground(Drawable)");
+	        put("View$android:background", "setBackground(Drawable)");     //replace setBackgroundResource(int) to setBackground(Drawable)
 	        
-	        //GradientDrawable
 	        put("GradientDrawable$android:shape", "setType(int)");
 	        put("GradientDrawable$android:type", "setGradientType(int)");
 	        put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
-	        //use in API 16 or higher
-	        //put("GradientDrawable$android:angle", "setOrientation(int)");
+	        //put("GradientDrawable$android:angle", "setOrientation(int)");    //use in API 16 or higher
 	        put("GradientDrawable$android:radius", "setCornerRadius(float)");
+	        
+            put("ListView$android:headerDividersEnabled", "setHeaderDividersEnabled(boolean)");
     	}
     };
 
