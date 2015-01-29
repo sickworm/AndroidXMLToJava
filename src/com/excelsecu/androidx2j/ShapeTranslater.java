@@ -92,10 +92,10 @@ public class ShapeTranslater extends BaseTranslator {
         String javaBlock = "";
         for (AX2JNode n : getRoot().getChildren()) {
             if (n.getLabelName().equals("gradient")) {
-                    Attribute attrStartColor = Utils.findAttrByName(n, "android:startColor");
-                    Attribute attrCenterColor = Utils.findAttrByName(n, "android:centerColor");
-                    Attribute attrEndColor = Utils.findAttrByName(n, "android:endColor");
-                    Attribute attrOrientation = Utils.findAttrByName(n, "android:angle");
+                    Attribute attrStartColor = n.findAttrByName("android:startColor");
+                    Attribute attrCenterColor = n.findAttrByName("android:centerColor");
+                    Attribute attrEndColor = n.findAttrByName("android:endColor");
+                    Attribute attrOrientation = n.findAttrByName("android:angle");
                     String startColor = attrStartColor == null? "0" : translateValue(attrStartColor);
                     String centerColor = attrCenterColor == null? null : translateValue(attrCenterColor);
                     String endColor = attrEndColor == null? "0" : translateValue(attrEndColor);
@@ -107,7 +107,7 @@ public class ShapeTranslater extends BaseTranslator {
                             orientation + ", colors);\n";
                 return javaBlock;
             } else if (n.getLabelName().equals("solid")) {
-                    Attribute solidcolor = Utils.findAttrByName(n, "android:color");
+                    Attribute solidcolor = n.findAttrByName("android:color");
                     javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
                     javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
                 return javaBlock;

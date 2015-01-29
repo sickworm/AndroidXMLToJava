@@ -76,6 +76,22 @@ public class AX2JNode implements Cloneable {
         }
 	}
 	
+    /**
+     * Find the attribute according to the attribute name
+     * @param node
+     * @param attrName
+     * @return null if not exists
+     */
+    public Attribute findAttrByName(String attrName) {
+        List<Attribute> attrList = this.getAttributes(); 
+        for (Attribute a : attrList) {
+            if (a.getQualifiedName().equals(attrName)) {
+                return a;
+            }
+        }
+        return null;
+    }
+	
 	public String toString() {
 		return asXML();
 	}

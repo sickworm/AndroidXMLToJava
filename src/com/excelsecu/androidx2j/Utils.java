@@ -409,21 +409,4 @@ public class Utils {
         
         return file.getName().substring(0, file.getName().indexOf('.'));
     }
-    
-
-    /**
-     * Find the attribute according to the attribute name
-     * @param node
-     * @param attrName
-     * @return null if not exists
-     */
-    public static Attribute findAttrByName(AX2JNode node, String attrName) {
-        List<Attribute> attrList = node.getAttributes(); 
-        for (Attribute a : attrList) {
-            if (a.getQualifiedName().equals(attrName)) {
-                return a;
-            }
-        }
-        return null;
-    }
 }

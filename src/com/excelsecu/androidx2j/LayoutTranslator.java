@@ -1,7 +1,6 @@
 package com.excelsecu.androidx2j;
 
 import java.io.File;
-import java.util.List;
 
 import org.dom4j.Attribute;
 
@@ -95,7 +94,6 @@ public class LayoutTranslator extends BaseTranslator {
         private AX2JNode node;
         private String parentName;
         private String layoutParamName;
-        private List<Attribute> attrList;
         private String width;
         private String height;
         
@@ -106,7 +104,6 @@ public class LayoutTranslator extends BaseTranslator {
         
         public SpecialTranslator(AX2JNode node) {
             this.node = node;
-            attrList = node.getAttributes();
             parentName = Utils.getParentName(node);
             addImport(Utils.matchClass(parentName).getName());
             layoutParamName = "layoutParams" + num;
@@ -138,10 +135,10 @@ public class LayoutTranslator extends BaseTranslator {
                     if (attrName.equals("android:layout_margin")) {
                         left = top = right = bottom = translateValue(attr);
                     } else {
-                        Attribute attrLeft = findAttrByName("android:layout_marginLeft");
-                        Attribute attrTop = findAttrByName("android:layout_marginTop");
-                        Attribute attrRight = findAttrByName("android:layout_marginRight");
-                        Attribute attrBottom = findAttrByName("android:layout_marginBottom");
+                        Attribute attrLeft = node.findAttrByName("android:layout_marginLeft");
+                        Attribute attrTop = node.findAttrByName("android:layout_marginTop");
+                        Attribute attrRight = node.findAttrByName("android:layout_marginRight");
+                        Attribute attrBottom = node.findAttrByName("android:layout_marginBottom");
                         left = (attrLeft == null)? "0" : translateValue(attrLeft);
                         top = (attrTop == null)? "0" : translateValue(attrTop);
                         right = (attrRight == null)? "0" : translateValue(attrRight);
@@ -168,12 +165,12 @@ public class LayoutTranslator extends BaseTranslator {
                                 attrValue + ", " + attrValue + ", " +
                                 attrValue + ", " + attrValue + ");\n";
                     } else {
-                        Attribute attrTop = findAttrByName("android:paddingTop");
-                        Attribute attrBottom = findAttrByName("android:paddingBottom");
-                        Attribute attrStart = findAttrByName("android:paddingStart");
-                        Attribute attrEnd = findAttrByName("android:paddingEnd");
-                        Attribute attrLeft = findAttrByName("android:paddingLeft");
-                        Attribute attrRight = findAttrByName("android:paddingRight");
+                        Attribute attrTop = node.findAttrByName("android:paddingTop");
+                        Attribute attrBottom = node.findAttrByName("android:paddingBottom");
+                        Attribute attrStart = node.findAttrByName("android:paddingStart");
+                        Attribute attrEnd = node.findAttrByName("android:paddingEnd");
+                        Attribute attrLeft = node.findAttrByName("android:paddingLeft");
+                        Attribute attrRight = node.findAttrByName("android:paddingRight");
                         String top = (attrTop == null)? "0" : translateValue(attrTop);
                         String bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
                         String start = (attrStart == null)? "0" : translateValue(attrRight);
@@ -235,15 +232,6 @@ public class LayoutTranslator extends BaseTranslator {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
         }
         
-        private Attribute findAttrByName(String attrName) {
-            for (Attribute a : attrList) {
-                if (a.getQualifiedName().equals(attrName)) {
-                    return a;
-                }
-            }
-            return null;
-        }
-        
         public String setLayoutParams() {
             return node.getObjectName() + ".setLayoutParams(" + layoutParamName + ");\n";
         }
@@ -254,8 +242,8 @@ public class LayoutTranslator extends BaseTranslator {
          */
         public String buildLayoutParams() {
             String javaBlock;
-            Attribute attrWidth = findAttrByName("android:layout_width");
-            Attribute attrHeight = findAttrByName("android:layout_height");
+            Attribute attrWidth = node.findAttrByName("android:layout_width");
+            Attribute attrHeight = node.findAttrByName("android:layout_height");
             width = (attrWidth == null)?
                     parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
             height = (attrHeight == null)?
