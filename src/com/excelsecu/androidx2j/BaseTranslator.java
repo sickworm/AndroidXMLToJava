@@ -76,6 +76,7 @@ public class BaseTranslator {
         for (Attribute a : node.getAttributes()) {
             javaBlock += translateAttribute(a, node);
         }
+        
         return javaBlock;
 	}
 
@@ -204,7 +205,6 @@ public class BaseTranslator {
         else if (value.startsWith("@drawable/")) {
             value = value.substring(value.indexOf('/') + 1);
             value = Config.R_CLASS + ".drawable." + value;
-            //ColorStateList is not a drawable, should use another method
             if (attrName.contains("Color") ||
                     attrName.contains("TintList")) {
                 value = "resources.getColorStateList(" + value + ")";

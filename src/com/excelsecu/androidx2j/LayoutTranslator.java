@@ -5,6 +5,7 @@ import java.io.File;
 import org.dom4j.Attribute;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 
 /**
  * Translate Android XML layout resources to Java method block.
@@ -64,6 +65,26 @@ public class LayoutTranslator extends BaseTranslator {
         javaBlock += "\n";
         num++;
         
+	    //divider, the deviderHeight must set after divider in Java
+        if (javaBlock.contains("setDivider(") && javaBlock.contains("setDividerHeight(")) {
+        	if (javaBlock.indexOf("setDivider(") > javaBlock.indexOf("setDividerHeight(")) {
+	        	String[] javaList = javaBlock.split("\\n");
+	        	String divider = "";
+	        	String dividerHeight = "";
+	        	for (String code : javaList) {
+	        		if (code.contains("setDivider(")) {
+	         			divider = code;
+	         		} else if (code.contains("setDividerHeight(")) {
+	         			dividerHeight = code;
+	         		}
+	        	}
+	        	String tmp = "<REPLACE_BLOCK>";
+	        	javaBlock = javaBlock.replace(divider, tmp);
+	        	javaBlock = javaBlock.replace(dividerHeight, divider);
+	        	javaBlock = javaBlock.replace(tmp, dividerHeight);
+        	}
+        }
+        
         return javaBlock;
 	}
     
@@ -84,8 +105,37 @@ public class LayoutTranslator extends BaseTranslator {
         }
         return attrMethod;
 	}
+	
+    @Override
+	protected String translateValue(Attribute attr) {
+		String value = super.translateValue(attr);
+		
+		//divider
+    	String attrName = attr.getQualifiedName();
+		if (attrName.equals("android:divider")) {
+			if (value.matches("Color\\.parseColor\\(\"#[0-9a-fA-F]+\"\\)")) {
+	        		value = "new ColorDrawable(" + value + ")";
+			}
+        }
+		
+		return value;
+	}
     
-    /**
+	@Override
+	protected void extraHandle(AX2JNode node, Attribute attr) {
+		super.extraHandle(node, attr);
+		
+		//divider
+    	String attrName = attr.getQualifiedName();
+		String attrValue = attr.getValue();
+		if (attrName.equals("android:divider")) {
+			if (attrValue.matches("#[0-9a-fA-F]+")) {
+				addImport(ColorDrawable.class.getName());
+			}
+        }
+	}
+
+	/**
      * Handle the method not exists in the attr-to-method map.
      * @author ch
      *
@@ -159,7 +209,7 @@ public class LayoutTranslator extends BaseTranslator {
                 return "";
             }
             
-            //panding
+            //padding
             if (attrName.equals("android:paddingBottom") || attrName.equals("android:paddingTop") ||
                     attrName.equals("android:paddingLeft") || attrName.equals("android:paddingRight") ||
                     attrName.equals("android:paddingStart") || attrName.equals("android:paddingEnd") ||
