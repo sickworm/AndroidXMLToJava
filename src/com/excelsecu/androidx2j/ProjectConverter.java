@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-
 import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -40,12 +35,7 @@ public class ProjectConverter {
     private static String colorContent = "";
     
     public static void main(String[] argv) {
-    	System.out.println("Adding custom widget...");
-    	CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
-    			"com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class);
-    	CustomWidget.addCustomWidget("com.safeview.safeEditText",
-    			"com.safeview.safeEditText", EditText.class);
-        System.out.println();
+        addCustomWidget();
     	
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
@@ -57,6 +47,20 @@ public class ProjectConverter {
         }
         
         File[] dirList = res.listFiles();
+        
+        //First we need to get the build the style list of the project
+        for (File f : dirList) {
+            String path = f.getPath();
+            if (f.isFile()) {
+                continue;
+            }
+            
+            if (path.matches(".+values.*")) {
+                ValueOutput(f);
+            }
+        }
+        
+        //Then we can use AX2JStyle to replace android:style
         for (File f : dirList) {
             String path = f.getPath();
             if (f.isFile()) {
@@ -69,10 +73,9 @@ public class ProjectConverter {
             } else if (path.matches(".+drawable.*")) {
                 DrawableOutput(f);
             } else if (path.matches(".+menu.*")) {
-            } else if (path.matches(".+values.*")) {
-                ValueOutput(f);
             }
         }
+        
         GenerateR();
         GenerateString();
         GenerateColor();
@@ -117,32 +120,35 @@ public class ProjectConverter {
         idRList.addAll(LayoutTranslator.getIdList());
     }
     
+    private static void addCustomWidget() {
+        //for now it don't suport customize settings
+        System.out.println("Adding custom widget...");
+        CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
+                "com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class);
+        CustomWidget.addCustomWidget("com.safeview.safeEditText",
+                "com.safeview.safeEditText", EditText.class);
+        System.out.println();
+    }
+    
     private static void ValueOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
             System.out.println("Analysing " + f.getPath() + "...");
-            Document document = null;
-            try {
-                document = new SAXReader().read(f).getDocument();
-            } catch (DocumentException e) {
-                e.printStackTrace();
-                throw new AX2JException(AX2JException.AXML_PARSE_ERROR);
-            }
-            Element root = document.getRootElement();
-            if (!root.getName().equals("resources"))
+            AX2JNode root = new AX2JParser(f).parse();
+            if (!root.getLabelName().equals("resources"))
                 return;
-            @SuppressWarnings("unchecked")
-            List<Element> list = root.elements();
-            for (Element e : list) {
-                if (e.getName().equals("string")) {
-                    String text = e.getText();
+            
+            for (AX2JNode n : root.getChildren()) {
+                if (n.getLabelName().equals("string")) {
+                    String text = n.getText();
                     text = text.replace("\"", "\\\"");
-                    stringContent += "public static final String " + e.attributeValue("name") +
+                    stringContent += "public static final String " + n.attributeValue("name") +
                             " = \"" + text + "\";\n";
-                    stringRList.add(e.attributeValue("name"));
+                    stringRList.add(n.attributeValue("name"));
                 }
-                if (e.getName().equals("color")) {
-                    String value = e.getText();
+                
+                else if (n.getLabelName().equals("color")) {
+                    String value = n.getText();
                     if (value.matches("#[0-9a-fA-F]+")) {
                         if (value.length() == 4) {
                             value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
@@ -153,8 +159,12 @@ public class ProjectConverter {
                         }
                         value = "Color.parseColor(\"" + value + "\")";
                     }
-                    colorContent += "public static final int " + e.attributeValue("name") + " = " + value + ";\n";
-                    colorRList.add(e.attributeValue("name"));
+                    colorContent += "public static final int " + n.attributeValue("name") + " = " + value + ";\n";
+                    colorRList.add(n.attributeValue("name"));
+                } 
+                
+                else if (n.getLabelName().equals("style")) {
+                    AX2JStyle.addStyle(n);
                 }
             }
             System.out.println();
@@ -164,7 +174,7 @@ public class ProjectConverter {
     private static void DrawableOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
-            System.out.print("Analysing " + f.getPath() + "...");
+            System.out.println("Analysing " + f.getPath() + "...");
         	DrawableTranslator translator = new DrawableTranslator(f);
         	String content = translator.translate();
 

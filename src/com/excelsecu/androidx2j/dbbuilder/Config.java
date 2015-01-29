@@ -137,6 +137,12 @@ public class Config {
         "View$android:paddingEnd",
         "View$android:paddingTop",
         "View$android:paddingBottom",
+        "TextView$android:drawableLeft",
+        "TextView$android:drawableRight",
+        "TextView$android:drawableStart",
+        "TextView$android:drawableEnd",
+        "TextView$android:drawableTop",
+        "TextView$android:drawableBottom",
     };
     
     /**the local Android doc path from SDK Manager**/

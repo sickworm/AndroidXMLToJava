@@ -1,7 +1,5 @@
 package com.excelsecu.androidx2j;
 
-import java.util.List;
-
 import org.dom4j.Attribute;
 
 import android.content.Context;
@@ -118,11 +116,9 @@ public class ShapeTranslater extends BaseTranslator {
 
     public class SpecialTranslator {
         private AX2JNode node;
-        private List<Attribute> attrList;
         
         public SpecialTranslator(AX2JNode node) {
             this.node = node;
-            this.attrList = node.getAttributes();
         }
         
         public String translate(Attribute attr) throws AX2JException {
@@ -137,15 +133,6 @@ public class ShapeTranslater extends BaseTranslator {
                 return "";
             }
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.getQualifiedName());
-        }
-        
-        private Attribute findAttrByName(String attrName) {
-            for (Attribute a : attrList) {
-                if (a.getQualifiedName().equals(attrName)) {
-                    return a;
-                }
-            }
-            return null;
         }
     }
 }

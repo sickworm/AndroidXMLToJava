@@ -45,7 +45,7 @@ public class LayoutTranslator extends BaseTranslator {
 		    
         javaBlock += newMethod;
         SpecialTranslator specialTranslater = new SpecialTranslator(node);
-        javaBlock += specialTranslater.buildLayoutParams();
+        javaBlock += specialTranslater.prebuild();
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
             String attrMethod = translateAttribute(a, node, specialTranslater);
@@ -97,10 +97,11 @@ public class LayoutTranslator extends BaseTranslator {
         private String width;
         private String height;
         
-        /** set up margins just need one setting **/
         private boolean margin = false;
-        /** set up padding just need one setting **/
         private boolean padding = false;
+        private boolean drawable = false;
+        
+        private AX2JNode styleNode = null;
         
         public SpecialTranslator(AX2JNode node) {
             this.node = node;
@@ -117,6 +118,11 @@ public class LayoutTranslator extends BaseTranslator {
             if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
                 return "";
             }
+            //style, handled in buildStyle
+            if (attrName.equals("style")) {
+                return "";
+            }
+            
             //weight
             if (attrName.equals("android:layout_weight")) {
                 return layoutParamName + ".weight = " + attr.getValue() + ";\n";
@@ -135,10 +141,10 @@ public class LayoutTranslator extends BaseTranslator {
                     if (attrName.equals("android:layout_margin")) {
                         left = top = right = bottom = translateValue(attr);
                     } else {
-                        Attribute attrLeft = node.findAttrByName("android:layout_marginLeft");
-                        Attribute attrTop = node.findAttrByName("android:layout_marginTop");
-                        Attribute attrRight = node.findAttrByName("android:layout_marginRight");
-                        Attribute attrBottom = node.findAttrByName("android:layout_marginBottom");
+                        Attribute attrLeft = findAttrByName("android:layout_marginLeft");
+                        Attribute attrTop = findAttrByName("android:layout_marginTop");
+                        Attribute attrRight = findAttrByName("android:layout_marginRight");
+                        Attribute attrBottom = findAttrByName("android:layout_marginBottom");
                         left = (attrLeft == null)? "0" : translateValue(attrLeft);
                         top = (attrTop == null)? "0" : translateValue(attrTop);
                         right = (attrRight == null)? "0" : translateValue(attrRight);
@@ -165,12 +171,12 @@ public class LayoutTranslator extends BaseTranslator {
                                 attrValue + ", " + attrValue + ", " +
                                 attrValue + ", " + attrValue + ");\n";
                     } else {
-                        Attribute attrTop = node.findAttrByName("android:paddingTop");
-                        Attribute attrBottom = node.findAttrByName("android:paddingBottom");
-                        Attribute attrStart = node.findAttrByName("android:paddingStart");
-                        Attribute attrEnd = node.findAttrByName("android:paddingEnd");
-                        Attribute attrLeft = node.findAttrByName("android:paddingLeft");
-                        Attribute attrRight = node.findAttrByName("android:paddingRight");
+                        Attribute attrTop = findAttrByName("android:paddingTop");
+                        Attribute attrBottom = findAttrByName("android:paddingBottom");
+                        Attribute attrStart = findAttrByName("android:paddingStart");
+                        Attribute attrEnd = findAttrByName("android:paddingEnd");
+                        Attribute attrLeft = findAttrByName("android:paddingLeft");
+                        Attribute attrRight = findAttrByName("android:paddingRight");
                         String top = (attrTop == null)? "0" : translateValue(attrTop);
                         String bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
                         String start = (attrStart == null)? "0" : translateValue(attrRight);
@@ -193,6 +199,43 @@ public class LayoutTranslator extends BaseTranslator {
                     }
                     
                     padding = true;
+                    return javaBlock;
+                }
+                return "";
+            }
+            
+            //drawable direction
+            if (attrName.equals("android:drawableBottom") || attrName.equals("android:drawableTop") ||
+                    attrName.equals("android:drawableLeft") || attrName.equals("android:drawableRight") ||
+                    attrName.equals("android:drawableStart") || attrName.equals("android:drawableEnd")) {
+                if (!drawable) {
+                    Attribute attrTop = findAttrByName("android:drawableTop");
+                    Attribute attrBottom = findAttrByName("android:drawableBottom");
+                    Attribute attrStart = findAttrByName("android:drawableStart");
+                    Attribute attrEnd = findAttrByName("android:drawableEnd");
+                    Attribute attrLeft = findAttrByName("android:drawableLeft");
+                    Attribute attrRight = findAttrByName("android:drawableRight");
+                    String top = (attrTop == null)? "null" : translateValue(attrTop);
+                    String bottom = (attrBottom == null)? "null" : translateValue(attrBottom);
+                    String start = (attrStart == null)? "null" : translateValue(attrRight);
+                    String end = (attrEnd == null)? "null" : translateValue(attrBottom);
+                    String left = (attrLeft == null)? "null" : translateValue(attrLeft);
+                    String right = (attrRight == null)? "null" : translateValue(attrRight);
+                    if (left != null || attrBottom != null) {
+                        javaBlock += node.getObjectName() + ".setCompoundDrawablesWithIntrinsicBounds(" +
+                                left + ", " + top + ", " +
+                                right + ", " + bottom + ");\n";
+                    }
+                    //drawable direction should not be set in two ways, It may have translate problem
+                    //here because of the order
+                    //or I should add some warning
+                    if (attrStart != null || attrEnd != null) {
+                        javaBlock += node.getObjectName() + ".setCompoundDrawablesRelativeWithIntrinsicBounds(" +
+                                start + ", " + top + ", " +
+                                end + ", " + bottom + ");\n";
+                    }
+                    
+                    drawable = true;
                     return javaBlock;
                 }
                 return "";
@@ -232,18 +275,41 @@ public class LayoutTranslator extends BaseTranslator {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
         }
         
+        private Attribute findAttrByName(String attrName) {
+            Attribute attrStyle = null;
+            if (styleNode != null) {
+                attrStyle = styleNode.findAttrByName(attrName);
+            }
+            Attribute attrNode = null;
+            attrNode = node.findAttrByName(attrName);
+            
+            //attrNode has priority
+            if (attrNode != null) {
+                return attrNode;
+            } else {
+                return attrStyle;
+            }
+        }
+        
         public String setLayoutParams() {
             return node.getObjectName() + ".setLayoutParams(" + layoutParamName + ");\n";
+        }
+        
+        public String prebuild() {
+            String javaBlock = "";
+            javaBlock += buildLayoutParams();
+            javaBlock += buildStyle();
+            return javaBlock;
         }
         
         /**
          * Initialize LayoutParams object
          * @return
          */
-        public String buildLayoutParams() {
+        private String buildLayoutParams() {
             String javaBlock;
-            Attribute attrWidth = node.findAttrByName("android:layout_width");
-            Attribute attrHeight = node.findAttrByName("android:layout_height");
+            Attribute attrWidth = findAttrByName("android:layout_width");
+            Attribute attrHeight = findAttrByName("android:layout_height");
             width = (attrWidth == null)?
                     parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
             height = (attrHeight == null)?
@@ -252,6 +318,57 @@ public class LayoutTranslator extends BaseTranslator {
             javaBlock = parentName + ".LayoutParams " + layoutParamName +
                     " =\n\t\tnew " + parentName + ".LayoutParams(" + paramValue + ");\n";
             return javaBlock;
+        }
+        
+        /**
+         * Translate style to Java block
+         * @return Java code
+         */
+        private String buildStyle() {
+            String styleValue = node.attributeValue("style");
+            String javaBlock = "";
+            javaBlock = buildStyle(styleValue);
+            return javaBlock;
+        }
+        
+        private String buildStyle(String styleValue) {
+            if (styleValue == null) {
+                return "";
+            } else {
+                String type = styleValue.substring(0, styleValue.indexOf('/'));
+                String styleName = styleValue.substring(styleValue.indexOf('/') + 1);
+                AX2JStyle style = null;
+                String parent = "";
+                //currently not support android:style
+                if (type.equals("@style")) {
+                    style = AX2JStyle.getStyle(styleName);
+                }
+                if (style == null || style.equals("")) {
+                    return "//style=style\"" + styleName + "\"\t\\\\not support\n";
+                }
+                
+                String javaBlock = "";
+                javaBlock += "/** " + styleValue + " block **/\n";
+                
+                //if there is a parent, first handle the parent
+                parent = style.parent;
+                if (parent != null && !parent.equals("")) {
+                    buildStyle(parent);
+                }
+                
+                styleNode = style.styleNode;
+                for (Attribute a : styleNode.getAttributes()) {
+                    String attrMethod = translateAttribute(a, node, this);
+                    if (!attrMethod.startsWith("//")) {
+                        extraHandle(node, a);
+                    }
+                    javaBlock += attrMethod;
+                }
+                javaBlock += "/** " + styleValue + " block **/\n";
+                
+                return javaBlock;
+            }
+            
         }
     }
 }

@@ -41,7 +41,7 @@ public class AX2JParser {
         try {
             Document document;
             document = new SAXReader().read(path).getDocument();
-            rootNode = parseElements(null, document.getRootElement(), 0);
+            rootNode = parseElements(null, document.getRootElement());
         } catch (DocumentException e) {
             e.printStackTrace();
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR);
@@ -56,8 +56,8 @@ public class AX2JParser {
      * @param layer the layer of this node to be created
      * @return the AXMLNode of the {@param rootElement}, the child of {@param rootElement}
      */
-    private AX2JNode parseElements(AX2JNode parent, Element rootElement, int layer) {
-        AX2JNode node = new AX2JNode(parent, rootElement, layer);
+    private AX2JNode parseElements(AX2JNode parent, Element rootElement) {
+        AX2JNode node = new AX2JNode(parent, rootElement);
         
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
@@ -65,7 +65,7 @@ public class AX2JParser {
             return node;
         }
         for(Element e : list){
-            parseElements(node, e, layer + 1);
+            parseElements(node, e);
         }
         return node;
     }

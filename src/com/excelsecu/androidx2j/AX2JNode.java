@@ -14,15 +14,13 @@ import android.view.View;
 public class AX2JNode implements Cloneable {
     private AX2JNode parent;
     private List<AX2JNode> children;
-    /**the layer of AXMLNode tree, start with 0**/
-    private int layer;
     private Element element;
     private List<Attribute> attrList;
     private String objectName = "object";
     private Class<?> type = null;
     
     @SuppressWarnings("unchecked")
-	public AX2JNode(AX2JNode parent, Element element, int layer) {
+	public AX2JNode(AX2JNode parent, Element element) {
         if (element == null) {
             throw new AX2JException(AX2JException.PARAMETER_NOT_INITIALIZE,
                     "AXMLNode constructor Element object is null");
@@ -31,7 +29,6 @@ public class AX2JNode implements Cloneable {
         }
         
         this.parent = parent;
-        this.layer = layer;
         this.children = new ArrayList<AX2JNode>();
         this.attrList = element.attributes();
         //Add it to this parent's children list
@@ -76,12 +73,6 @@ public class AX2JNode implements Cloneable {
         }
 	}
 	
-    /**
-     * Find the attribute according to the attribute name
-     * @param node
-     * @param attrName
-     * @return null if not exists
-     */
     public Attribute findAttrByName(String attrName) {
         List<Attribute> attrList = this.getAttributes(); 
         for (Attribute a : attrList) {
@@ -132,19 +123,23 @@ public class AX2JNode implements Cloneable {
         return attrList;
     }
     
-    public String attributeValue(String name) {
-        return element.attributeValue(name);
+    public String getText() {
+        return element.getText();
     }
     
-    public int getLayer() {
-        return layer;
+    public String attributeValue(String name) {
+        return element.attributeValue(name);
     }
     
     public String asXML() {
         return element.asXML();
     }
     
+    public Element getElement() {
+        return element;
+    }
+    
     public AX2JNode clone() {
-        return new AX2JNode(this.parent, this.element, this.layer);
+        return new AX2JNode(this.parent, this.element);
     }
 }
