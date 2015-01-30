@@ -17,7 +17,7 @@ public class ShapeTranslater extends BaseTranslator {
     @Override
     public String translate() {
         addImport(GradientDrawable.class.getName());
-        String javaBlock = constructObject();
+        String javaBlock = construct();
         javaBlock += super.translate();
         return javaBlock;
     }
@@ -86,34 +86,49 @@ public class ShapeTranslater extends BaseTranslator {
         return attrMethod;
     }
     
-    private String constructObject() {
+    private String construct() {
         String javaBlock = "";
         for (AX2JNode n : getRoot().getChildren()) {
             if (n.getLabelName().equals("gradient")) {
-                    Attribute attrStartColor = n.findAttrByName("android:startColor");
-                    Attribute attrCenterColor = n.findAttrByName("android:centerColor");
-                    Attribute attrEndColor = n.findAttrByName("android:endColor");
-                    Attribute attrOrientation = n.findAttrByName("android:angle");
-                    String startColor = attrStartColor == null? "0" : translateValue(attrStartColor);
-                    String centerColor = attrCenterColor == null? null : translateValue(attrCenterColor);
-                    String endColor = attrEndColor == null? "0" : translateValue(attrEndColor);
-                    String orientation = attrOrientation == null? "GradientDrawable.Orientation." + ORIENTATION[0] : translateValue(attrOrientation);
-                    javaBlock += "int[] colors = new int[] {" + startColor +
-                            (centerColor == null? ", " : ", " + centerColor + ", ") +
-                            endColor + "};\n";
-                    javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
-                            orientation + ", colors);\n";
-                return javaBlock;
+                Attribute attrStartColor = n.findAttrByName("android:startColor");
+                Attribute attrCenterColor = n.findAttrByName("android:centerColor");
+                Attribute attrEndColor = n.findAttrByName("android:endColor");
+                Attribute attrOrientation = n.findAttrByName("android:angle");
+                String startColor = attrStartColor == null? "0" : translateValue(attrStartColor);
+                String centerColor = attrCenterColor == null? null : translateValue(attrCenterColor);
+                String endColor = attrEndColor == null? "0" : translateValue(attrEndColor);
+                String orientation = attrOrientation == null? "GradientDrawable.Orientation." + ORIENTATION[0] : translateValue(attrOrientation);
+                javaBlock += "int[] colors = new int[] {" + startColor +
+                        (centerColor == null? ", " : ", " + centerColor + ", ") +
+                        endColor + "};\n";
+                javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
+                        orientation + ", colors);\n";
             } else if (n.getLabelName().equals("solid")) {
-                    Attribute solidcolor = n.findAttrByName("android:color");
-                    javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
-                    javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
-                return javaBlock;
+                Attribute solidcolor = n.findAttrByName("android:color");
+                javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
+                javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
+            } else if (n.getLabelName().equals("stroke")) {
+                Attribute attrWidth = n.findAttrByName("android:width");
+                Attribute attrColor = n.findAttrByName("android:color");
+                Attribute attrDashWidth = n.findAttrByName("android:dashWidth");
+                Attribute attrDashGap = n.findAttrByName("android:dashGap");
+                String width = attrWidth == null? null : translateValue(attrWidth);
+                String color = attrColor == null? null : translateValue(attrColor);
+                String dashWidth = attrDashWidth == null? null : translateValue(attrDashWidth);
+                String dashGap = attrDashGap == null? null : translateValue(attrDashGap);
+                
+                //in fact, dash gap and dash width must set both
+                if (dashGap == null || dashWidth == null) {
+                    javaBlock += getRoot().getObjectName() + ".setStroke(" + width + ", " + color + ");\n";
+                } else {
+                    javaBlock += getRoot().getObjectName() + ".setStroke(" + width + ", " + color + ", " +
+                            dashWidth + "," + dashGap + ");\n";
+                }
             }
         }
-        throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, "no gradient nor solid");
+        return javaBlock;
     }
-
+    
     public class SpecialTranslator {
         private AX2JNode node;
         
@@ -130,6 +145,8 @@ public class ShapeTranslater extends BaseTranslator {
                     attrName.equals("android:angle"))) {
                 return "";
             } else if (node.getLabelName().equals("solid")) {
+                return "";
+            } else if (node.getLabelName().equals("stroke")) {
                 return "";
             }
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.getQualifiedName());

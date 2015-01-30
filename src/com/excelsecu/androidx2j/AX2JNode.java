@@ -73,8 +73,6 @@ public class AX2JNode implements Cloneable {
         	        getLabelName().equals("stroke")) {
                 type = GradientDrawable.class;
                 setObjectName(getParent().getObjectName());
-                System.out.println(getObjectName());
-                System.out.println(getObjectName());
             }
         }
 	}
