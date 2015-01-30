@@ -19,7 +19,9 @@ public class ShapeTranslater extends BaseTranslator {
         addImport(GradientDrawable.class.getName());
         String javaBlock = construct();
         javaBlock += super.translate();
-        return javaBlock;
+        String extraMethod = getExtraMethod();
+        extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
+        return extraMethod + javaBlock;
     }
     
     @Override
@@ -91,6 +93,7 @@ public class ShapeTranslater extends BaseTranslator {
         String javaBlock = "";
         for (AX2JNode n : getRoot().getChildren()) {
             if (n.getLabelName().equals("gradient")) {
+                //color
                 Attribute attrStartColor = n.findAttrByName("android:startColor");
                 Attribute attrCenterColor = n.findAttrByName("android:centerColor");
                 Attribute attrEndColor = n.findAttrByName("android:endColor");
@@ -105,6 +108,7 @@ public class ShapeTranslater extends BaseTranslator {
                 javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
                         orientation + ", colors);\n";
                 
+                //center
                 Attribute attrCenterX = n.findAttrByName("android:centerX");
                 Attribute attrCenterY = n.findAttrByName("android:centerY");
                 if (attrCenterX == null && attrCenterY == null) {
@@ -118,8 +122,6 @@ public class ShapeTranslater extends BaseTranslator {
                 String centerX = attrCenterX == null? "0.5f" : translateValue(attrCenterX);
                 String centerY = attrCenterY == null? "0.5f" : translateValue(attrCenterY);
                 javaBlock += getRoot().getObjectName() + ".setGradientCenter(" + centerX + ", " + centerY + ");\n";
-                
-                
             } else if (n.getLabelName().equals("solid")) {
                 Attribute solidcolor = n.findAttrByName("android:color");
                 javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
@@ -141,6 +143,27 @@ public class ShapeTranslater extends BaseTranslator {
                     javaBlock += getRoot().getObjectName() + ".setStroke(" + width + ", " + color + ", " +
                             dashWidth + "," + dashGap + ");\n";
                 }
+            } else if (n.getLabelName().equals("corners")) {
+                Attribute attrRadius = n.findAttrByName("android:radius");
+                if (attrRadius != null) {
+                    String radius = translateValue(attrRadius);
+                    javaBlock += getRoot().getObjectName() + ".setCornerRadius(" + radius + ");\n";
+                }
+                Attribute attrTL = n.findAttrByName("android:topLeftRadius");
+                Attribute attrTR = n.findAttrByName("android:topRightRadius");
+                Attribute attrBR = n.findAttrByName("android:bottomRightRadius");
+                Attribute attrBL = n.findAttrByName("android:bottomLeftRadius");
+                if (attrTL != null || attrTR != null || attrBR != null || attrBL != null) {
+                    continue;
+                }
+                String stringTL = attrTL == null? "0" : translateValue(attrTL);
+                String stringTR = attrTR == null? "0" : translateValue(attrTR);
+                String stringBR = attrBR == null? "0" : translateValue(attrBR);
+                String stringBL = attrBL == null? "0" : translateValue(attrBL);
+                javaBlock += "float[] radii = new float[] {" + stringTL + ", " + stringTL + ", " +
+                        stringTR + ", " + stringTR + ", " + stringBR + ", " + stringBR + ", " +
+                        stringBL + ", " + stringBL + "};\n";
+                javaBlock += getRoot().getObjectName() + ".setCornerRadii(radii);\n";
             }
         }
         return javaBlock;

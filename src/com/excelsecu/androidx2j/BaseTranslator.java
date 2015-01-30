@@ -66,6 +66,7 @@ public class BaseTranslator {
         for (AX2JNode n : node.getChildren()) {
             javaBlock += translate(n);
         }
+        
         return javaBlock;
     }	
 	
@@ -95,7 +96,6 @@ public class BaseTranslator {
 	protected String transAttrToMethod(Attribute a, Class<?> type) {
 	    //find the conversion between XML attribute and Java method in the match map.
 	    String attrName = a.getQualifiedName();
-	    String attrValue = a.getValue();
 	    String key = type.getSimpleName() + "$" + attrName;
         if (!map.containsKey(key)) {
             //find the conversion from its super class
@@ -114,18 +114,6 @@ public class BaseTranslator {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
         }
         
-        //when attribute has several types of value (like android:background),
-        //change the method if necessary.
-        if (methodName.equals("setBackground(Drawable)")) {
-            if (attrValue.matches("#[0-9a-fA-F]+") ||
-                    attrValue.matches("@android:color/.+") ||
-                    attrValue.matches("@color/.+")) {
-                methodName = "setBackgroundColor(int)";
-            } else if (Config.API_LEVEL <= 8) {
-            	methodName = "setBackgroundDrawable(Drawable)";
-            }
-        }
-
         methodName = methodName.substring(0, methodName.indexOf("("));
         return methodName;
 	}

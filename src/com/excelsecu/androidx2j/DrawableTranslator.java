@@ -40,7 +40,6 @@ public class DrawableTranslator extends BaseTranslator{
                 translator = new ShapeTranslater(getRoot());
             }
             content = translator.translate();
-            content = translator.getExtraMethod() + "\n" + content;
             setImportList(translator.getImportList());
         }
         return content;

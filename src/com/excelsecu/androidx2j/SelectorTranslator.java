@@ -18,9 +18,15 @@ public class SelectorTranslator extends BaseTranslator {
     
     public String translate() {
         if (getType() == ColorStateList.class) {
-            return translateToColorStateList();
+            String javaBlock = translateToColorStateList();
+            String extraMethod = getExtraMethod();
+            extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
+            return extraMethod + javaBlock;
         } else if (getType() == StateListDrawable.class) {
-            return translateToStateListDrawable();
+            String javaBlock = translateToStateListDrawable();
+            String extraMethod = getExtraMethod();
+            extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
+            return extraMethod + javaBlock;
         } else {
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR, "not a selector type");
         }

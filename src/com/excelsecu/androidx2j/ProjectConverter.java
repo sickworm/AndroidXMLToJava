@@ -94,9 +94,6 @@ public class ProjectConverter {
                 try {
                 	LayoutTranslator translator = new LayoutTranslator(f);
                     String content = translator.translate();
-                    if (!translator.getExtraMethod().equals("")) {
-                        content = translator.getExtraMethod() + "\n" + content;
-                    }
                     
                     try {
                         content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);

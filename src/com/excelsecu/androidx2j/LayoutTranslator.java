@@ -18,11 +18,15 @@ public class LayoutTranslator extends BaseTranslator {
 		super(file);
 		AX2JNode.resetOrder();
 	}
+
+    @Override
+    public String translate() {
+        String javaBlock = super.translate();
+        String extraMethod = getExtraMethod();
+        extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
+        return extraMethod + javaBlock;
+    }
     
-    /**
-	 * Translate a Android XML Node to a Java method block.
-     * @return the Java block
-     */
     @Override
 	protected String translateNode(AX2JNode node) {
         String javaBlock = "";
@@ -76,7 +80,7 @@ public class LayoutTranslator extends BaseTranslator {
 	         			dividerHeight = code;
 	         		}
 	        	}
-	        	String tmp = "<REPLACE_BLOCK>";
+	        	String tmp = "<!REPLACE_BLOCK>";
 	        	javaBlock = javaBlock.replace(divider, tmp);
 	        	javaBlock = javaBlock.replace(dividerHeight, divider);
 	        	javaBlock = javaBlock.replace(tmp, dividerHeight);
@@ -101,9 +105,32 @@ public class LayoutTranslator extends BaseTranslator {
                         attr.getValue() + "\";\t//not support\n";
             }
         }
+        
         return attrMethod;
 	}
 	
+	
+	
+    @Override
+    protected String transAttrToMethod(Attribute a, Class<?> type) {
+        String methodName = super.transAttrToMethod(a, type);
+        
+        //when attribute has several types of value (like android:background),
+        //change the method if necessary.
+        String attrValue = a.getValue();
+        if (methodName.equals("setBackground")) {
+            if (attrValue.matches("#[0-9a-fA-F]+") ||
+                    attrValue.matches("@android:color/.+") ||
+                    attrValue.matches("@color/.+")) {
+                methodName = "setBackgroundColor";
+            } else if (Config.API_LEVEL <= 8) {
+                methodName = "setBackgroundDrawable";
+            }
+        }
+        
+        return methodName;
+    }
+
     @Override
 	protected String translateValue(Attribute attr) {
 		String value = super.translateValue(attr);
