@@ -13,6 +13,7 @@ public class SelectorTranslator extends BaseTranslator {
     
     public SelectorTranslator(AX2JNode node) {
         super(node);
+        AX2JNode.resetOrder();
     }
     
     public String translate() {

@@ -29,22 +29,6 @@ import com.excelsecu.androidx2j.Config;
  *
  */
 public class Utils {
-    /**
-     * Transform a class name to a class object name. Change the first letter to lower case.
-     */
-    public static String classToObject(String className) {
-        if (className == null || className.length() < 1) {
-            return null;
-        }
-        if (className.indexOf('.') != -1) {
-        	className = className.substring(className.lastIndexOf('.') + 1);
-        }
-        char firstLetter = className.charAt(0);
-        firstLetter = Character.toLowerCase(firstLetter);
-        String objectName = className.substring(1);
-        objectName = firstLetter + objectName;
-        return objectName;
-    }
     
     /**
      * Check the class if it's in the support list CLASSES_LIST.

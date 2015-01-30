@@ -32,11 +32,9 @@ public class BaseTranslator {
     private AX2JNode root = null;
     private File file = null;
     
-    /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
     private boolean scale = false;
-    /** record of {@link LayoutTranslator#extraHandle(String attrName , String attrValue)} **/
     private boolean resources = false;
-
+    
     public BaseTranslator(File file) {
         this.file = file;
         if (Utils.getFileExtension(file).equals("xml")) {

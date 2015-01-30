@@ -12,11 +12,13 @@ import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 
 public class AX2JNode implements Cloneable {
+    private static int order = 0;
+    
     private AX2JNode parent;
     private List<AX2JNode> children;
     private Element element;
     private List<Attribute> attrList;
-    private String objectName = "object";
+    private String objectName = "";
     private Class<?> type = null;
     
     @SuppressWarnings("unchecked")
@@ -60,7 +62,9 @@ public class AX2JNode implements Cloneable {
                         }
                     }
                 }
-        	} else if (getLabelName().equals("shape") ||
+        	} else if (getLabelName().equals("shape")) {
+                type = GradientDrawable.class;
+        	} else if (
         	        getLabelName().equals("corners") ||
         	        getLabelName().equals("gradient") ||
         	        getLabelName().equals("padding") ||
@@ -68,7 +72,9 @@ public class AX2JNode implements Cloneable {
         	        getLabelName().equals("solid") ||
         	        getLabelName().equals("stroke")) {
                 type = GradientDrawable.class;
-                setObjectName(Utils.classToObject(GradientDrawable.class.getSimpleName()));
+                setObjectName(getParent().getObjectName());
+                System.out.println(getObjectName());
+                System.out.println(getObjectName());
             }
         }
 	}
@@ -115,8 +121,40 @@ public class AX2JNode implements Cloneable {
         this.objectName = objectName;
     }
     
+    /**
+     * If the node has android:id, use id name. If not, transform a class name to a class object name. Change the first letter to lower case.
+     * @param node
+     * @return
+     */
     public String getObjectName() {
-        return objectName;
+        if (objectName != null && !objectName.equals(""))
+            return objectName;
+        else {
+            for (Attribute a : getAttributes()) {
+                if (a.getQualifiedName().equals("android:id")) {
+                    objectName = a.getValue();
+                    if (objectName.indexOf('/') != -1) {
+                        objectName = objectName.substring(objectName.indexOf('/') + 1);
+                    }
+                }
+            }
+            
+            if (objectName.equals("")) {
+                String className = getLabelName();
+                if (className == null || className.length() < 1) {
+                    return null;
+                }
+                if (className.indexOf('.') != -1) {
+                    className = className.substring(className.lastIndexOf('.') + 1);
+                }
+                char firstLetter = className.charAt(0);
+                firstLetter = Character.toLowerCase(firstLetter);
+                objectName = className.substring(1);
+                objectName = firstLetter + objectName + ((order == 0)? "" : order);
+                order++;
+            }
+            return objectName;
+        }
     }
     
     public List<Attribute> getAttributes() {
@@ -137,6 +175,10 @@ public class AX2JNode implements Cloneable {
     
     public Element getElement() {
         return element;
+    }
+    
+    public static void resetOrder() {
+        order = 0;
     }
     
     public AX2JNode clone() {

@@ -11,13 +11,13 @@ public class ShapeTranslater extends BaseTranslator {
     
     public ShapeTranslater(AX2JNode root) {
         super(root);
+        AX2JNode.resetOrder();
     }
     
     @Override
     public String translate() {
         addImport(GradientDrawable.class.getName());
         String javaBlock = constructObject();
-        getRoot().setObjectName(Utils.classToObject(GradientDrawable.class.getSimpleName()));
         javaBlock += super.translate();
         return javaBlock;
     }

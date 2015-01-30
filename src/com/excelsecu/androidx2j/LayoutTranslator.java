@@ -13,10 +13,10 @@ import android.graphics.drawable.ColorDrawable;
  *
  */
 public class LayoutTranslator extends BaseTranslator {
-	private int num = 1;
 
     public LayoutTranslator(File file) {
 		super(file);
+		AX2JNode.resetOrder();
 	}
     
     /**
@@ -27,7 +27,7 @@ public class LayoutTranslator extends BaseTranslator {
 	protected String translateNode(AX2JNode node) {
         String javaBlock = "";
         String newMethod = "";
-        String nodeName = Utils.classToObject(node.getLabelName()) + num;
+        String nodeName = node.getObjectName();
         node.setObjectName(nodeName);
         
         //include label
@@ -36,9 +36,8 @@ public class LayoutTranslator extends BaseTranslator {
             layout = layout.substring(layout.indexOf('/') + 1);
             if (layout != null) {
                 newMethod = "View " + nodeName + " = " +
-                        layout + ".get(context);\n";
+                        Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
             }
-            addImport(Config.PACKAGE_NAME + ".layout." + layout);
         } else {
 	        newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
 	                node.getLabelName() + "(context);\n";
@@ -63,7 +62,6 @@ public class LayoutTranslator extends BaseTranslator {
             javaBlock += addViewMethod;
         }
         javaBlock += "\n";
-        num++;
         
 	    //divider, the deviderHeight must set after divider in Java
         if (javaBlock.contains("setDivider(") && javaBlock.contains("setDividerHeight(")) {
@@ -157,7 +155,7 @@ public class LayoutTranslator extends BaseTranslator {
             this.node = node;
             parentName = Utils.getParentName(node);
             addImport(Utils.matchClass(parentName).getName());
-            layoutParamName = "layoutParams" + num;
+            layoutParamName = node.getObjectName() + "Params";
         }
         
         public String translate(Attribute attr) throws AX2JException {
