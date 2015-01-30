@@ -61,9 +61,10 @@ public class ShapeTranslater extends BaseTranslator {
             if (!attrMethod.startsWith("//")) {
                 extraHandle(node, a);
             }
-            javaBlock += attrMethod;
+            if (!javaBlock.equals("")) {
+                javaBlock += attrMethod + "\n";
+            }
         }
-        javaBlock += "\n";
         
         return javaBlock;
     }
@@ -103,6 +104,22 @@ public class ShapeTranslater extends BaseTranslator {
                         endColor + "};\n";
                 javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
                         orientation + ", colors);\n";
+                
+                Attribute attrCenterX = n.findAttrByName("android:centerX");
+                Attribute attrCenterY = n.findAttrByName("android:centerY");
+                if (attrCenterX == null && attrCenterY == null) {
+                    continue;
+                }
+                Attribute attrType = n.findAttrByName("android:type");
+                String type = attrType == null? "linear" : attrType.getValue();
+                if (type.equals("linear")) {
+                    javaBlock += "//Attention GradientDrawable.setGradientCenter doesn't support setting center when the type is linear, but XML does. Weird\n";
+                }
+                String centerX = attrCenterX == null? "0.5f" : translateValue(attrCenterX);
+                String centerY = attrCenterY == null? "0.5f" : translateValue(attrCenterY);
+                javaBlock += getRoot().getObjectName() + ".setGradientCenter(" + centerX + ", " + centerY + ");\n";
+                
+                
             } else if (n.getLabelName().equals("solid")) {
                 Attribute solidcolor = n.findAttrByName("android:color");
                 javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
@@ -137,12 +154,7 @@ public class ShapeTranslater extends BaseTranslator {
         }
         
         public String translate(Attribute attr) throws AX2JException {
-            String attrName = attr.getQualifiedName();
-            if (node.getLabelName().equals("gradient") && 
-                    (attrName.equals("android:startColor") ||
-                    attrName.equals("android:centerColor") ||
-                    attrName.equals("android:endColor") ||
-                    attrName.equals("android:angle"))) {
+            if (node.getLabelName().equals("gradient")) {
                 return "";
             } else if (node.getLabelName().equals("solid")) {
                 return "";

@@ -119,6 +119,7 @@ public class Config {
 	        
 	        put("GradientDrawable$android:shape", "setType(int)");
 	        put("GradientDrawable$android:type", "setGradientType(int)");
+            put("GradientDrawable$android:gradientRadius", "setGradientRadius(float)");
 	        put("GradientDrawable$android:useLevel", "setUseLevel(boolean)");
 	        //put("GradientDrawable$android:angle", "setOrientation(int)");    //use in API 16 or higher
 	        put("GradientDrawable$android:radius", "setCornerRadius(float)");
