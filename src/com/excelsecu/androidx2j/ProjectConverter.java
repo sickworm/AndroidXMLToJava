@@ -37,6 +37,7 @@ public class ProjectConverter {
     private static String colorContent = "";
     
     public static void main(String[] argv) {
+        System.out.println("Initializing resources...\n");
         try {
             AndroidDocConverter.getMap();
         } catch (Exception e) {
@@ -250,8 +251,8 @@ public class ProjectConverter {
     
     private static void GenerateManager() {
         //AXMLResources.java
-        File resourcesFile = new File(Config.JAVA_OUT_PATH + "AXMLResources.java");
-        System.out.println("Generating " + resourcesFile.getPath());
+        File resourcesFile = new File(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java");
+        System.out.println("Generating " + resourcesFile.getPath() + "...");
         String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_NAME + ".java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         resources = resources.replace(Config.TEMPLAT_RESOURCES_NAME, Config.RESOURCES_CLASS);
@@ -260,7 +261,7 @@ public class ProjectConverter {
         
         //drawables.java
         File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
-        System.out.println("Generating " + drawablesFile.getPath());
+        System.out.println("Generating " + drawablesFile.getPath() + "...");
         
         String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
         for (int i = 0; i < dpiCaseList.length; i++) {
@@ -289,6 +290,9 @@ public class ProjectConverter {
         System.out.println();
         
         //layouts.java
+        File layoutsFile = new File(Config.JAVA_OUT_PATH + "layouts.java");
+        System.out.println("Generating " + layoutsFile.getPath() + "...");
+        
         String layouts = Utils.readFile("templet/layouts.java");
         layouts = layouts.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         
@@ -298,7 +302,7 @@ public class ProjectConverter {
                     Config.PACKAGE_NAME + ".layout." + id + ".get(context);\n";
         }
         layouts = layouts.replace(Config.TEMPLET_LAYOUT_BLOCK, layoutCaseList);
-        Utils.writeFile(Config.JAVA_OUT_PATH + "layouts.java", layouts);
+        Utils.writeFile(layoutsFile.getPath(), layouts);
         System.out.println();
     }
 }

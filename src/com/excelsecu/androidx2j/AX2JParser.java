@@ -16,13 +16,6 @@ import org.dom4j.io.SAXReader;
  */
 public class AX2JParser {
 	private String path;
-    
-    public static void main(String[] argv) {
-        System.out.println("--------XMLParse start-------");
-        AX2JNode rootNode = new AX2JParser("res/layout/base.xml").parse();
-        printNode(rootNode, 0);
-        System.out.println("--------XMLParse end---------");
-    }
 
     public AX2JParser(File file) {
         this.path = file.getPath();
@@ -72,8 +65,20 @@ public class AX2JParser {
     
     /**
      * Print the Android XML tree structure.
-     * @param rootNode the root in this function, the real root elements in the first time
-     * @param layer
+     * @param the root elements
+     */
+    public static void printNode(AX2JNode rootNode) {
+        if (rootNode == null) {
+            return;
+        }
+        printNode(rootNode, 0);
+    }
+
+    
+    /**
+     * Print the Android XML tree structure.
+     * @param the root elements
+     * @param layer in the root element
      */
     private static void printNode(AX2JNode rootNode, int layer) {
         if (rootNode == null) {

@@ -4,7 +4,13 @@ import java.util.HashMap;
 
 public class Config {
     public static final String DAT_PATH = "data.dat";
-    public static final String DAT_COMMAND = "/** TRANSLATION TABLE. DO NOT EDIT **/";
+    public static final String DAT_COMMENT = "/** TRANSLATION TABLE. DO NOT EDIT **/";
+    public static final String DAT_BLOCK_START = "<DAT_BLOCK>";
+    public static final String DAT_BLOCK_END = "</DAT_BLOCK>";
+    public static final String STYLE_BLOCK_START = "<STYLE_BLOCK>";
+    public static final String STYLE_BLOCK_END = "</STYLE_BLOCK>";
+    public static final String THEME_BLOCK_START = "<THEME_BLOCK>";
+    public static final String THEME_BLOCK_END = "</THEME_BLOCK>";
     
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {
@@ -153,10 +159,11 @@ public class Config {
     };
     
     /**the local Android doc path from SDK Manager**/
-    public static final String BASE_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";
-    
-    /**for test**/
-    public static final String VIEW_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/android/view/View.html";
+    public static final String ANDROID_DOCS_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";
+    /**the local style.xml path from AOSP code**/
+    public static final String SYSTEM_STYLES_PATH = "F:/SDK4.4.4/frameworks/base/core/res/res/values/styles.xml";
+    /**the local themes.xml path from AOSP code**/
+    public static final String SYSTEM_THEMES_PATH = "F:/SDK4.4.4/frameworks/base/core/res/res/values/themes.xml";
     
     public static String ENCODE = "UTF8";
 }
