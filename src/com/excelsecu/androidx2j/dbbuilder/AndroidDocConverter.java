@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import com.excelsecu.androidx2j.Utils;
 
 /**
- * Convert Offline Androd Doc in SDK manager to the conversion table(HashMap<String, String>).
- * In current test version, this program will run everytime to generate the HashMap.<p>
+ * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
+ * In current test version, this program will run every time to generate the HashMap.<p>
  * The table will storage like "View$set.orientation=setOrientation(int)".
  * 
  * @author ch

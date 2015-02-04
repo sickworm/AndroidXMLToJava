@@ -113,7 +113,7 @@ public class Utils {
      */
     public static void generateFile(File f, String content) {
         String subPath = f.getPath();
-        subPath = subPath.substring(4);
+        subPath = subPath.substring(subPath.indexOf(File.separatorChar) + 1);
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.indexOf('.')) + ".java";
         String path = Config.JAVA_OUT_PATH + subPath;
@@ -156,7 +156,7 @@ public class Utils {
     }
     
     /**
-     * Delete dir with files.
+     * Delete directory with files.
      * @param file directory to be deleted
      */
     public static void deleteDir(File file) {

@@ -3,8 +3,9 @@ package com.excelsecu.androidx2j;
 import java.util.HashMap;
 
 public class Config {
-    public static final String PROJECT_RES_PATH = "res/";
-    public static final String PROJECT_OUT_ROOT = "res_out/";
+    public static final String PROJECT_PATH = "project/";
+    public static final String PROJECT_RES_PATH = PROJECT_PATH + "res/";
+    public static final String PROJECT_OUT_ROOT = "project_out/";
     public static final String PACKAGE_NAME = "com.excelsecu.ax2j.test";
     public static final String JAVA_OUT_PATH = PROJECT_OUT_ROOT + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
