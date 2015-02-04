@@ -139,7 +139,7 @@ public class LayoutTranslator extends BaseTranslator {
     	String attrName = attr.getQualifiedName();
 		if (attrName.equals("android:divider")) {
 			if (value.matches("Color\\.parseColor\\(\"#[0-9a-fA-F]+\"\\)")) {
-	        		value = "new ColorDrawable(" + value + ")";
+        		value = "new ColorDrawable(" + value + ")";
 			}
         }
 		

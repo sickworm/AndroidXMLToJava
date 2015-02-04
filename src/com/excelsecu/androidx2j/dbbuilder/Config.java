@@ -128,6 +128,8 @@ public class Config {
 	        put("GradientDrawable$android:radius", "setCornerRadius(float)");
 	        
             put("ListView$android:headerDividersEnabled", "setHeaderDividersEnabled(boolean)");
+            put("ListView$android:divider", "setDivider(Drawable)");
+            put("ListView$android:dividerHeight", "setDividerHeight(float)");
     	}
     };
 
