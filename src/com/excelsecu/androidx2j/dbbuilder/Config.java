@@ -114,7 +114,7 @@ public class Config {
 		
 		{
 	        put("View$android:enabled", "setEnabled(boolean)");
-            put("View$duplicateParentState", "setDuplicateParentStateEnabled(boolean )");
+            put("View$android:duplicateParentState", "setDuplicateParentStateEnabled(boolean)");
             
 	        put("RadioButton$android:checked", "setChecked(boolean)");
 	        put("LinearLayout$android:weightSum", "setWeightSum(float)");
