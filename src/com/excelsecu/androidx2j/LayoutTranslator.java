@@ -320,6 +320,9 @@ public class LayoutTranslator extends BaseTranslator {
             //RelativeLayout rules
             String rule = Utils.findRule(attrName);
             if (rule != null) {
+                if (!parentName.equals("RelativeLayout")) {
+                    throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
+                }
                 rule = "RelativeLayout." + rule;
                 String ruleValue = attr.getValue();
                 String className = Utils.getParentName(node);
@@ -419,7 +422,7 @@ public class LayoutTranslator extends BaseTranslator {
                     style = AX2JStyle.getStyle(styleName);
                 }
                 if (style == null || style.equals("")) {
-                    return "//style=style\"" + styleName + "\"\t\\\\not support\n";
+                    return "//style=\"@style/" + styleName + "\"\t//not support\n";
                 }
                 
                 String javaBlock = "";
