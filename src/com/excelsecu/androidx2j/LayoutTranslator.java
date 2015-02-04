@@ -43,8 +43,11 @@ public class LayoutTranslator extends BaseTranslator {
                         Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
             }
         } else {
+            if (node.getLabelName().contains("safe")) {
+                System.out.println("aa");
+            }
 	        newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
-	                node.getLabelName() + "(context);\n";
+	                node.getLabelName() + "(" + node.constructorParams() + ");\n";
         }
 		    
         javaBlock += newMethod;

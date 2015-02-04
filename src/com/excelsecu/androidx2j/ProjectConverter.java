@@ -130,9 +130,11 @@ public class ProjectConverter {
         //for now it don't suport customize settings
         System.out.println("Adding custom widget...");
         CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
-                "com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class);
+                "com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class,
+                "context");
         CustomWidget.addCustomWidget("com.safeview.safeEditText",
-                "com.safeview.safeEditText", EditText.class);
+                "com.safeview.safeEditText", EditText.class,
+                "context, true");
         System.out.println();
     }
     

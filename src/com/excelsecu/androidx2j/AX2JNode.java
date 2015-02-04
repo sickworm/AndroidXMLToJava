@@ -182,4 +182,12 @@ public class AX2JNode implements Cloneable {
     public AX2JNode clone() {
         return new AX2JNode(this.parent, this.element);
     }
+    
+    public String constructorParams() {
+        CustomWidget customWidget = CustomWidget.findCustomWidget(getLabelName());
+        if (customWidget != null) {
+            return customWidget.constructorParam;
+        }
+        return "context";
+    }
 }
