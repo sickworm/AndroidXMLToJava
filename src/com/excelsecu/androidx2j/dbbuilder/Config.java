@@ -3,6 +3,9 @@ package com.excelsecu.androidx2j.dbbuilder;
 import java.util.HashMap;
 
 public class Config {
+    public static final String DAT_PATH = "data.dat";
+    public static final String DAT_COMMAND = "/** TRANSLATION TABLE. DO NOT EDIT **/";
+    
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {
     	/** Super **/

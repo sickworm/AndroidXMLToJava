@@ -1,9 +1,12 @@
 package com.excelsecu.androidx2j.dbbuilder;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.excelsecu.androidx2j.Utils;
 
 /**
  * Convert Offline Androd Doc in SDK manager to the conversion table(HashMap<String, String>).
@@ -33,8 +36,9 @@ public class AndroidDocConverter {
             attrToMethodMap.putAll(sublist);
 		}
         
+        //some attributes don't shown in Android doc (like setEnabled), add them in here.
         attrToMethodMap.putAll(Config.ADDITION_MAP);
-        Iterator<Entry<String, String>> iter = Config.ADDITION_MAP.entrySet().iterator(); 
+        Iterator<Entry<String, String>> iter = Config.ADDITION_MAP.entrySet().iterator();
         System.out.println("Additional\n");
         while (iter.hasNext()) {
             Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
@@ -42,25 +46,54 @@ public class AndroidDocConverter {
             String value = (String) entry.getValue();
             System.out.println(key + "\n\t" + value + "\n");
         }
-	}
-	
-	public static HashMap<String, String> getMap() {
-	    if (attrToMethodMap.size() == 0) {
-	        String[] listPage = listPage();
-	        for (int i = 0; i < listPage.length; i++) {
-	            String path = listPage[i];
-	            HashMap<String, String> sublist = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
-	            attrToMethodMap.putAll(sublist);
-	        }
-	    }
-        //some attributes don't shown in Android doc (like setEnabled), add them in here.
-        attrToMethodMap.putAll(Config.ADDITION_MAP);
+        
         //some attributes can't translate directly (like padding), remove them in here.
         for (String removal : Config.REMOVAL_LIST) {
             attrToMethodMap.remove(removal);
         }
+        
+        System.out.println("Generating data.dat...\n");
+        generateDat();
+        System.out.println("Done!\n");
+	}
+	
+	private static void generateDat() {
+	    File dat = new File(Config.DAT_PATH);
+	    if (dat.isFile()) {
+	        dat.delete();
+	    }
+	    Utils.writeFile(dat.getPath(), Config.DAT_COMMAND + "\n" + attrToMethodMap.toString());
+	}
+	
+	public static HashMap<String, String> getMap() throws AndroidDocException {
+        if (attrToMethodMap.size() == 0) {
+            attrToMethodMap = getMapFromDat();
+        }
+        
         return attrToMethodMap;
-    }
+	}
+	
+	private static HashMap<String, String> getMapFromDat() {
+        HashMap<String, String> map = new HashMap<String, String>(); 
+        File dat = new File(Config.DAT_PATH);
+        if (!dat.isFile()) {
+            throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+        }
+        
+        String content = Utils.readFile(dat.getPath());
+        content = content.substring(content.indexOf('{') + 1, content.indexOf('}'));
+        String[] list = content.split(", ");
+        for (String s : list) {
+            String[] split = s.split("=");
+            if (split.length == 1) {
+                map.put(split[0], "");
+            } else {
+                map.put(split[0], split[1]);
+            }
+        }
+        
+        return map;
+	}
 	
 	/**
 	 * Include all the html path which has xml attribute to java method table.

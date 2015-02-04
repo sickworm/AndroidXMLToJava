@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -21,25 +18,12 @@ import org.htmlparser.util.ParserException;
 
 public class Filter {
     private Class<?> type;
-    
-	public static void main(String[] argc) {
-		String path = Config.VIEW_PATH;
-		Filter docFilter = new Filter(android.view.View.class);
-		HashMap<String, String> attrToMethodList = docFilter.filterDoc(path);
-		Iterator<Entry<String, String>> iter = attrToMethodList.entrySet().iterator();
-		while (iter.hasNext()) {
-		    Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
-		    String key = (String) entry.getKey();
-		    Object value = (String) entry.getValue();
-		    System.out.println(key + "\n\t" + value + "\n");
-		}
-	}
 	
 	public Filter(Class<?> type) {
 	    this.type = type;
 	}
 	
-	public HashMap<String, String> filterDoc(String fileName) {
+	public HashMap<String, String> filterDoc(String fileName) throws AndroidDocException {
         String docContent = readDoc(fileName);
         HashMap<String, String> attrToMethodList = filter(docContent);
         return attrToMethodList;
@@ -74,8 +58,7 @@ public class Filter {
             return content;
         }
         catch( Exception e ) {
-        	e.printStackTrace();
-            return "";
+            throw new AndroidDocException(AndroidDocException.DOC_READ_ERROR);
         }
     }
 	

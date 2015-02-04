@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
+
 import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -35,6 +37,13 @@ public class ProjectConverter {
     private static String colorContent = "";
     
     public static void main(String[] argv) {
+        try {
+            AndroidDocConverter.getMap();
+        } catch (Exception e) {
+            System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
+            return;
+        }
+        
         addCustomWidget();
     	
         File res = new File(Config.PROJECT_RES_PATH);

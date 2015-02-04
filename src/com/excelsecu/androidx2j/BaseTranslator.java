@@ -110,7 +110,7 @@ public class BaseTranslator {
             }
         }
         String methodName = map.get(key);
-        if (methodName.equals(null) || methodName.equals("")) {
+        if (methodName == null || methodName.equals("")) {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
         }
         
