@@ -52,7 +52,6 @@ public class Utils {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
             String content = "";
             String buf;
-            
             while ((buf = reader.readLine())!= null) {
                 content += buf + "\n";
             }
@@ -113,11 +112,11 @@ public class Utils {
      */
     public static void generateFile(File f, String content) {
         String subPath = f.getPath();
-        subPath = subPath.substring(subPath.indexOf(File.separatorChar) + 1);
+        subPath = subPath.replace('\\', '/');
+        subPath = subPath.substring(subPath.indexOf("res/") + "res/".length());
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.indexOf('.')) + ".java";
         String path = Config.JAVA_OUT_PATH + subPath;
-        path = path.replace('\\', '/');
         int index = path.lastIndexOf('/');
         if (index == -1) {
             throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
