@@ -5,12 +5,9 @@ import java.util.HashMap;
 public class Config {
     public static final String DAT_PATH = "data.dat";
     public static final String DAT_COMMENT = "/** TRANSLATION TABLE. DO NOT EDIT **/";
-    public static final String DAT_BLOCK_START = "<DAT_BLOCK>";
-    public static final String DAT_BLOCK_END = "</DAT_BLOCK>";
-    public static final String STYLE_BLOCK_START = "<STYLE_BLOCK>";
-    public static final String STYLE_BLOCK_END = "</STYLE_BLOCK>";
-    public static final String THEME_BLOCK_START = "<THEME_BLOCK>";
-    public static final String THEME_BLOCK_END = "</THEME_BLOCK>";
+    public static final String DAT_BLOCK = "<DAT_BLOCK>";
+    public static final String STYLE_BLOCK = "<STYLE_BLOCK>";
+    public static final String THEME_BLOCK = "<THEME_BLOCK>";
     
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {

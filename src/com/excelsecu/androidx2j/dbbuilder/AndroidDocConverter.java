@@ -83,16 +83,16 @@ public class AndroidDocConverter {
 	    writeFile(dat.getPath(), Config.DAT_COMMENT + "\n", false);
 	    
 	    String mapString = attrToMethodMap.toString();
-	    mapString = mapString.replace("{", Config.DAT_BLOCK_START);
-	    mapString = mapString.replace("}", Config.DAT_BLOCK_END);
+	    mapString = mapString.replace("{", Config.DAT_BLOCK + "\n");
+	    mapString = mapString.replace("}", "\n" + Config.DAT_BLOCK);
 	    writeFile(dat.getPath(), mapString + "\n\n", true);
 	    
 	    String styleString = systemStyles.asXML();
-	    styleString = Config.STYLE_BLOCK_START + styleString + Config.STYLE_BLOCK_END;
+	    styleString = Config.STYLE_BLOCK + "\n" + styleString + "\n" + Config.STYLE_BLOCK;
 	    writeFile(dat.getPath(), styleString + "\n\n", true);
 
 	    String themeString = systemThemes.asXML();
-	    themeString = Config.THEME_BLOCK_START + themeString + Config.THEME_BLOCK_END;
+	    themeString = Config.THEME_BLOCK + "\n" + themeString + "\n" + Config.THEME_BLOCK;
 	    writeFile(dat.getPath(), themeString, true);
 	}
 	
@@ -103,9 +103,7 @@ public class AndroidDocConverter {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
             
-            String content = readFile(dat.getPath());
-            content = content.substring(content.indexOf(Config.DAT_BLOCK_START) +
-            		Config.DAT_BLOCK_START.length(), content.indexOf(Config.DAT_BLOCK_END));
+            String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split(", ");
             for (String s : list) {
                 String[] split = s.split("=");
@@ -169,18 +167,30 @@ public class AndroidDocConverter {
     }
     
     /**
-     * Read a file
-     * @param fileName
-     * @return content of file, return "" if error occurs
+     * Read a file between the specific block
+     * @param filePath
+     * @param block
+     * @return content of file between the block, return "" if error occurs
      */
-    public static String readFile(String filePath) {
+    public static String readFile(String filePath, String block) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
             String content = "";
             String buf;
             
+            boolean start = false;
             while ((buf = reader.readLine())!= null) {
-                content += buf + "\n";
+                if (buf.equals(block)) {
+                    if (start) {
+                        break;
+                    } else {
+                        start = true;
+                        continue;
+                    }
+                }
+                if (start) {
+                    content += buf + "\n";
+                }
             }
             reader.close();
             return content;
