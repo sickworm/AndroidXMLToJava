@@ -16,6 +16,7 @@ import org.dom4j.io.SAXReader;
  */
 public class AX2JParser {
 	private String path;
+    private Element rootElement;
 
     public AX2JParser(File file) {
         this.path = file.getPath();
@@ -23,6 +24,10 @@ public class AX2JParser {
 
     public AX2JParser(String path) {
         this.path = path;
+    }
+
+    public AX2JParser(Element rootElement) {
+        this.rootElement = rootElement;
     }
     
     /**
@@ -32,9 +37,12 @@ public class AX2JParser {
     public AX2JNode parse() {
         AX2JNode rootNode = null;
         try {
-            Document document;
-            document = new SAXReader().read(path).getDocument();
-            rootNode = parseElements(null, document.getRootElement());
+            if (rootElement == null) {
+                Document document;
+                document = new SAXReader().read(path).getDocument();
+                rootElement = document.getRootElement();
+            }
+            rootNode = parseElements(null, rootElement);
         } catch (DocumentException e) {
             e.printStackTrace();
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR);

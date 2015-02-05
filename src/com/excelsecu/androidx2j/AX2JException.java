@@ -20,6 +20,10 @@ public class AX2JException extends RuntimeException {
     public static final int FILE_BUILD_ERROR = 0x00020001;
     /**the value of attribute is not correct**/
     public static final int ATTRIBUTE_VALUE_ERROR = 0x00020002;
+    /**system style block in data.dat error**/
+    public static final int DAT_SYSTEM_STYLE_ERROR = 0x00030001;
+    /**system theme block in data.dat error**/
+    public static final int DAT_SYSTEM_THEME_ERROR = 0x00030002;
 
     private int errorCode = NO_ERROR;
     private String details = "";

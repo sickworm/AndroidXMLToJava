@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -96,7 +97,7 @@ public class AndroidDocConverter {
 	    writeFile(dat.getPath(), themeString, true);
 	}
 	
-	public static HashMap<String, String> getMap() throws AndroidDocException {
+	public static HashMap<String, String> getMap() {
         if (attrToMethodMap.size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
@@ -118,15 +119,43 @@ public class AndroidDocConverter {
         return attrToMethodMap;
 	}
 	
-	public static Element getSystemStyles() throws AndroidDocException {
+	public static Element getSystemStyles() {
         if (systemStyles == null) {
+            File dat = new File(Config.DAT_PATH);
+            if (!dat.isFile()) {
+                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+            }
+            
+            String content = readFile(dat.getPath(), Config.STYLE_BLOCK);
+            Document document;
+            try {
+                document = DocumentHelper.parseText(content);
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+            }
+            systemStyles = document.getRootElement();
         }
         
         return systemStyles;
 	}
 	
-	public static Element getSystemThemes() throws AndroidDocException {
+	public static Element getSystemThemes() {
         if (systemThemes == null) {
+            File dat = new File(Config.DAT_PATH);
+            if (!dat.isFile()) {
+                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+            }
+            
+            String content = readFile(dat.getPath(), Config.THEME_BLOCK);
+            Document document;
+            try {
+                document = DocumentHelper.parseText(content);
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+            }
+            systemStyles = document.getRootElement();
         }
         
         return systemThemes;

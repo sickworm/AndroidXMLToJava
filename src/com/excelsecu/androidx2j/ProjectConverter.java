@@ -40,6 +40,8 @@ public class ProjectConverter {
         System.out.println("Initializing resources...\n");
         try {
             AndroidDocConverter.getMap();
+            AX2JStyle.buildSystemStyle();
+            AX2JStyle.buildSystemTheme();
         } catch (Exception e) {
             System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
             return;
