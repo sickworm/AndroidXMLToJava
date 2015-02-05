@@ -17,6 +17,8 @@ public class Config {
     public static final String R_CLASS = "JR";
     public static final String RESOURCES_NAME = "resources";
     public static final int API_LEVEL = 8;
+    
+    public static final String DEFAULT_THEME = "Theme";
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

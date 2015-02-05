@@ -413,23 +413,16 @@ public class LayoutTranslator extends BaseTranslator {
             if (styleValue == null) {
                 return "";
             } else {
-                String type = styleValue.substring(0, styleValue.indexOf('/'));
-                String styleName = styleValue.substring(styleValue.indexOf('/') + 1);
-                AX2JStyle style = null;
-                String parent = "";
-                //currently not support android:style
-                if (type.equals("@style")) {
-                    style = AX2JStyle.getStyle(styleName);
-                }
+                AX2JStyle style = AX2JStyle.getStyle(styleValue);
                 if (style == null || style.equals("")) {
-                    return "//style=\"@style/" + styleName + "\"\t//not support\n";
+                    return "//style=\"" + styleValue + "\"\t//not support\n";
                 }
                 
                 String javaBlock = "";
                 javaBlock += "/** " + styleValue + " block **/\n";
                 
                 //if there is a parent, first handle the parent
-                parent = style.parent;
+                String parent = style.parent;
                 if (parent != null && !parent.equals("")) {
                     buildStyle(parent);
                 }
