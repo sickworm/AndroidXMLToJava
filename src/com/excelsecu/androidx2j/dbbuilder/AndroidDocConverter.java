@@ -155,7 +155,7 @@ public class AndroidDocConverter {
                 e.printStackTrace();
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
-            systemStyles = document.getRootElement();
+            systemThemes = document.getRootElement();
         }
         
         return systemThemes;

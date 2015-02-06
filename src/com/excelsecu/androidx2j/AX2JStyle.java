@@ -82,13 +82,12 @@ public class AX2JStyle {
         	style = getSystemStyle(styleValue);
         } else if (type.equals("@style")) {
 	    	style = styleMap.get(styleValue);
-	    	if (style == null) {
-	        	//if it's not in the project style map, maybe it's in the project theme map
-	    		styleName = getProjectThemeStyleName(styleName);
-	    		if (styleName != null) {
-	    			style = getStyle(styleName);
-	    		}
-	    	}
+        } else if (type.equals("?android:attr")) {
+            //it's a project theme attribute
+            styleName = getProjectThemeStyleName(styleName);
+            if (styleName != null) {
+                style = getStyle(styleName);
+            }
         }
         return style;
     }
@@ -112,10 +111,6 @@ public class AX2JStyle {
                 continue;
             }
             addSystemStyle(n);
-        }
-        projectTheme = getSystemTheme(Config.DEFAULT_THEME);
-        if (projectTheme == null) {
-    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, "Theme");
         }
     }
     
@@ -151,19 +146,23 @@ public class AX2JStyle {
     }
     
     public static void buildSystemThemes() {
-        Element systemStyleElement = AndroidDocConverter.getSystemStyles();
-        if (systemStyleElement == null) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "can not get it from data.dat");
+        Element systemThemeElement = AndroidDocConverter.getSystemThemes();
+        if (systemThemeElement == null) {
+            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "can not get it from data.dat");
         }
-        AX2JNode systemStyle = new AX2JParser(systemStyleElement).parse();
-        if (!systemStyle.getLabelName().equals("resources")) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "not a resources block");
+        AX2JNode systemTheme = new AX2JParser(systemThemeElement).parse();
+        if (!systemTheme.getLabelName().equals("resources")) {
+            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "not a resources block");
         }
-        for (AX2JNode n : systemStyle.getChildren()) {
+        for (AX2JNode n : systemTheme.getChildren()) {
             if (!n.getLabelName().equals("style")) {
                 continue;
             }
             addTheme(n);
+        }
+        projectTheme = getSystemTheme(Config.DEFAULT_THEME);
+        if (projectTheme == null) {
+            throw new AX2JException(AX2JException.THEME_NOT_FOUND, Config.DEFAULT_THEME);
         }
     }
 
