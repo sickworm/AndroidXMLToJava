@@ -12,20 +12,17 @@ import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
 
 public class AX2JStyle {
     private static HashMap<String, AX2JStyle> styleMap = new HashMap<String, AX2JStyle>();
-    private static HashMap<String, AX2JStyle> systemStyleMap = new HashMap<String, AX2JStyle>();
-    private static HashMap<String, AX2JStyle> systemThemeMap = new HashMap<String, AX2JStyle>();
+    private static HashMap<String, AX2JStyle> systemStyleMap = AndroidDocConverter.getSystemStyles();
+    private static HashMap<String, AX2JStyle> systemThemeMap = AndroidDocConverter.getSystemThemes();
     private static AX2JStyle projectTheme = null;
     
-    /** origin node. e.g. <style><item name="android:textSize">16sp</item></style> **/
-    public AX2JNode originNode;
     /** style node with normal attribute. e.g. <container>android:textSize="16sp"</container> **/
     public AX2JNode styleNode;
     public String parent;
     public String name;
     public List<Attribute> attrList;
     
-    public AX2JStyle(AX2JNode originNode, String name, String parent, AX2JNode styleNode) {
-        this.originNode = originNode;
+    public AX2JStyle(String name, String parent, AX2JNode styleNode) {
         this.name = name;
         this.parent = parent;
         this.styleNode = styleNode;
@@ -60,7 +57,7 @@ public class AX2JStyle {
             element.addAttribute(attrName, n.getText());
         }
         
-        return new AX2JStyle(node, name, parent, new AX2JNode(null, element));
+        return new AX2JStyle(name, parent, new AX2JNode(null, element));
     }
     
     /** project styles **/
@@ -97,31 +94,6 @@ public class AX2JStyle {
     }
     
     /** system styles **/
-    public static void buildSystemStyles() {
-        Element systemStyleElement = AndroidDocConverter.getSystemStyles();
-        if (systemStyleElement == null) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "can not get it from data.dat");
-        }
-        AX2JNode systemStyle = new AX2JParser(systemStyleElement).parse();
-        if (!systemStyle.getLabelName().equals("resources")) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "not a resources block");
-        }
-        for (AX2JNode n : systemStyle.getChildren()) {
-            if (!n.getLabelName().equals("style")) {
-                continue;
-            }
-            addSystemStyle(n);
-        }
-    }
-    
-    public static void addSystemStyle(AX2JNode originNode) {
-        AX2JStyle styleNode = buildNode(originNode);
-        if (styleNode == null) {
-            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, originNode.asXML());
-        }
-        systemStyleMap.put(styleNode.name, styleNode);
-    }
-    
     public static AX2JStyle getSystemStyle(String styleValue) {
         String type = styleValue.substring(0, styleValue.indexOf('/'));
         String styleName = styleValue.substring(styleValue.indexOf('/') + 1);
@@ -132,64 +104,33 @@ public class AX2JStyle {
         return null;
     }
     
-    public static HashMap<String, AX2JStyle> getSystemStyles() {
-        return systemStyleMap;
-    }
-
     /** system themes **/
-    public static void addTheme(AX2JNode originNode) {
-        AX2JStyle styleNode = buildNode(originNode);
-        if (styleNode == null) {
-            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, originNode.asXML());
-        }
-        systemThemeMap.put(styleNode.name, styleNode);
-    }
     
-    public static void buildSystemThemes() {
-        Element systemThemeElement = AndroidDocConverter.getSystemThemes();
-        if (systemThemeElement == null) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "can not get it from data.dat");
-        }
-        AX2JNode systemTheme = new AX2JParser(systemThemeElement).parse();
-        if (!systemTheme.getLabelName().equals("resources")) {
-            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "not a resources block");
-        }
-        for (AX2JNode n : systemTheme.getChildren()) {
-            if (!n.getLabelName().equals("style")) {
-                continue;
-            }
-            addTheme(n);
-        }
-        projectTheme = getSystemTheme(Config.DEFAULT_THEME);
-        if (projectTheme == null) {
-            throw new AX2JException(AX2JException.THEME_NOT_FOUND, Config.DEFAULT_THEME);
-        }
-    }
-
     public static AX2JStyle getSystemTheme(String name) {
         return systemThemeMap.get(name);
     }
     
-    public static HashMap<String, AX2JStyle> getSystemThemes() {
-        return systemThemeMap;
-    }
-    
+    /** project theme **/
     public static String getProjectThemeStyleName(String itemName) {
     	if (projectTheme == null) {
     		throw new AX2JException(AX2JException.THEME_NOT_FOUND, itemName);
     	}
-    	return getProjectThemeStyleName(projectTheme, itemName);
+    	String projectThemeName = getProjectThemeStyleName(projectTheme, itemName);
+    	if (projectThemeName == null) {
+    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, itemName);
+    	}
+    	return projectThemeName;
     }
     
     public static String getProjectThemeStyleName(AX2JStyle theme, String itemName) {
-		String styleName = projectTheme.styleNode.attributeValue(itemName);
-		if (styleName == null) {
+		String themeName = projectTheme.styleNode.attributeValue(itemName);
+		if (themeName == null) {
 			if (theme.parent != null) {
 				AX2JStyle parentTheme = getSystemTheme(theme.parent);
-				styleName = getProjectThemeStyleName(parentTheme, itemName);
+				themeName = getProjectThemeStyleName(parentTheme, itemName);
 			}
 		}
-    	return styleName;
+    	return themeName;
     }
     
     public static void setProjectTheme(String projectThemeName) {
@@ -206,5 +147,16 @@ public class AX2JStyle {
     
     public static AX2JStyle getProjectTheme() {
     	return projectTheme;
+    }
+    
+    public String toString() {
+    	StringBuffer attrString = new StringBuffer();
+    	if (attrList.size() != 0) {
+	        for (Attribute a : attrList) {
+	        	attrString.append(a.asXML() + ",");
+	        }
+	        attrString.deleteCharAt(attrString.length() - 1);
+    	}
+        return name + "," + parent + "," + attrString;
     }
 }
