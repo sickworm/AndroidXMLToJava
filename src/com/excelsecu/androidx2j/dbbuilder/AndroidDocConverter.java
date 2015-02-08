@@ -9,12 +9,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.excelsecu.androidx2j.AX2JNode;
@@ -83,7 +86,20 @@ public class AndroidDocConverter {
 	            if (!(style.parent.equals("") && style.parent.startsWith("android:"))) {
 	            	style.parent = "android:" + style.parent;
 	            }
-	        	systemStylesMap.put(style.parent, style);
+	            //some items don't add "android" package in value, add for recognition
+	            List<Attribute> attrList = style.attrList;
+	            for (Attribute a : attrList) {
+	            	String value = a.getValue();
+	            	if (value.matches("@\\w+/\\w+")) {
+	            		a.setValue(value.replaceFirst("@", "@android:"));
+	            	} else if (value.matches("\\?\\w+")) {
+	            		a.setValue(value.replaceFirst("\\?", "\\?android:attr/"));
+	            	}
+	            	if (value.contains("\n")) {
+	            		a.setValue(value.replace("\n", ""));
+	            	}
+	            }
+	        	systemStylesMap.put(style.name, style);
         	}
         }
         
@@ -97,10 +113,23 @@ public class AndroidDocConverter {
 	        	if (theme == null) {
 	        		System.out.println("Parse style failed. XML:" + n.asXML());
 	        	}
-	            if (!(theme.parent.equals("") && theme.parent.startsWith("android:"))) {
+	            if (!(theme.parent.equals("") || theme.parent.startsWith("android:"))) {
 	            	theme.parent = "android:" + theme.parent;
 	            }
-	        	systemThemesMap.put(theme.parent, theme);
+	            //some items don't add "android" package in value, add for recognition
+	            List<Attribute> attrList = theme.attrList;
+	            for (Attribute a : attrList) {
+	            	String value = a.getValue();
+	            	if (value.matches("@\\w+/\\w+")) {
+	            		a.setValue(value.replaceFirst("@", "@android:"));
+	            	} else if (value.matches("\\?\\w+")) {
+	            		a.setValue(value.replaceFirst("?", "?android:attr/"));
+	            	}
+	            	if (value.contains("\n")) {
+	            		a.setValue(value.replace("\n", ""));
+	            	}
+	            }
+	        	systemThemesMap.put(theme.name, theme);
         	}
         }
         
@@ -167,80 +196,53 @@ public class AndroidDocConverter {
 	}
 	
 	public static HashMap<String, AX2JStyle> getSystemStyles() {
-        if (systemStylesMap == null) {
-            File dat = new File(Config.DAT_PATH);
-            if (!dat.isFile()) {
-                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
-            }
-            
-            String content = readFile(dat.getPath(), Config.STYLE_BLOCK);
-            Document document;
-            try {
-                document = DocumentHelper.parseText(content);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
-            }
-        }
-        
-        return systemStylesMap;
+		return getSystem(systemStylesMap, Config.STYLE_BLOCK);
 	}
-//    public static void buildSystemStyles() {
-//        Element systemStyleElement = AndroidDocConverter.getSystemStyles();
-//        if (systemStyleElement == null) {
-//            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "can not get it from data.dat");
-//        }
-//        AX2JNode systemStyle = new AX2JParser(systemStyleElement).parse();
-//        if (!systemStyle.getLabelName().equals("resources")) {
-//            throw new AX2JException(AX2JException.DAT_SYSTEM_STYLE_ERROR, "not a resources block");
-//        }
-//        for (AX2JNode n : systemStyle.getChildren()) {
-//            if (!n.getLabelName().equals("style")) {
-//                continue;
-//            }
-//            addSystemStyle(n);
-//        }
-//    }
 	
 	public static HashMap<String, AX2JStyle> getSystemThemes() {
-        if (systemThemesMap == null) {
+		return getSystem(systemThemesMap, Config.THEME_BLOCK);
+	}
+	
+	public static HashMap<String, AX2JStyle> getSystem(HashMap<String, AX2JStyle> map, String block) {
+        if (map.size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
             
-            String content = readFile(dat.getPath(), Config.THEME_BLOCK);
-            Document document;
-            try {
-                document = DocumentHelper.parseText(content);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-                throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
+            Document document = DocumentHelper.createDocument();
+            String content = readFile(dat.getPath(), block);
+            String[] stylesString = content.split("\n");
+            for (String styleString : stylesString) {
+            	int index1 = styleString.indexOf(',');
+            	int index2 = styleString.indexOf(',', index1 + 1);
+            	String name = styleString.substring(0, index1);
+            	String parent = styleString.substring(index1 + 1, index2);
+            	String attrs = styleString.substring(index2 + 1);
+            	
+            	if (attrs.equals("")) {
+            		continue;
+            	}
+            	String[] attrsArray = attrs.split(",");
+                Element element = document.addElement("container");
+                for (int i = 0; i < attrsArray.length; i++) {
+                	if (attrsArray[i].equals("android:textColorLink=\"?android:attr/textColorLinkInverse\"")) {
+                		System.out.println(attrsArray[i]);
+                	}
+                	String attrName = attrsArray[i].substring(0, attrsArray[i].indexOf('='));
+                	String attrValue = attrsArray[i].substring(attrsArray[i].indexOf('=') + 1);
+                	attrValue = attrValue.substring(1, attrValue.length() - 1);
+                    element.addAttribute(attrName, attrValue);
+                }
+                @SuppressWarnings("unchecked")
+				AX2JStyle theme = new AX2JStyle(name, parent, element.attributes());
+                map.put(name, theme);
+                document.remove(element);
             }
         }
         
-        return systemThemesMap;
+        return map;
 	}
-//    public static void buildSystemThemes() {
-//        Element systemThemeElement = AndroidDocConverter.getSystemThemes();
-//        if (systemThemeElement == null) {
-//            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "can not get it from data.dat");
-//        }
-//        AX2JNode systemTheme = new AX2JParser(systemThemeElement).parse();
-//        if (!systemTheme.getLabelName().equals("resources")) {
-//            throw new AX2JException(AX2JException.DAT_SYSTEM_THEME_ERROR, "not a resources block");
-//        }
-//        for (AX2JNode n : systemTheme.getChildren()) {
-//            if (!n.getLabelName().equals("style")) {
-//                continue;
-//            }
-//            addSystemTheme(n);
-//        }
-//        projectTheme = getSystemTheme(Config.DEFAULT_THEME);
-//        if (projectTheme == null) {
-//            throw new AX2JException(AX2JException.THEME_NOT_FOUND, Config.DEFAULT_THEME);
-//        }
-//    }
 	
 	/**
 	 * Include all the HTML path which has XML attribute to java method table.

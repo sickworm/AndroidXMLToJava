@@ -18,7 +18,7 @@ public class Config {
     public static final String RESOURCES_NAME = "resources";
     public static final int API_LEVEL = 8;
     
-    public static final String DEFAULT_THEME = "Theme";
+    public static final String DEFAULT_THEME = "@android:style/Theme";
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

@@ -12,24 +12,22 @@ import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
 
 public class AX2JStyle {
     private static HashMap<String, AX2JStyle> styleMap = new HashMap<String, AX2JStyle>();
-    private static HashMap<String, AX2JStyle> systemStyleMap = AndroidDocConverter.getSystemStyles();
-    private static HashMap<String, AX2JStyle> systemThemeMap = AndroidDocConverter.getSystemThemes();
+    private static HashMap<String, AX2JStyle> systemStyleMap = new HashMap<String, AX2JStyle>();
+    private static HashMap<String, AX2JStyle> systemThemeMap = new HashMap<String, AX2JStyle>();
     private static AX2JStyle projectTheme = null;
     
-    /** style node with normal attribute. e.g. <container>android:textSize="16sp"</container> **/
-    public AX2JNode styleNode;
     public String parent;
     public String name;
     public List<Attribute> attrList;
     
-    public AX2JStyle(String name, String parent, AX2JNode styleNode) {
+    public AX2JStyle(String name, String parent, List<Attribute> attrList) {
         this.name = name;
         this.parent = parent;
-        this.styleNode = styleNode;
-        this.attrList = styleNode.getAttributes();
+        this.attrList = attrList;
     }
     
-    public static AX2JStyle buildNode(AX2JNode node) {
+    @SuppressWarnings("unchecked")
+	public static AX2JStyle buildNode(AX2JNode node) {
         if (!node.getLabelName().equals("style")) {
             return null;
         }
@@ -57,16 +55,7 @@ public class AX2JStyle {
             element.addAttribute(attrName, n.getText());
         }
         
-        return new AX2JStyle(name, parent, new AX2JNode(null, element));
-    }
-    
-    /** project styles **/
-    public static void addStyle(AX2JNode originNode) {
-        AX2JStyle styleNode = buildNode(originNode);
-        if (styleNode == null) {
-            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, originNode.asXML());
-        }
-        styleMap.put(styleNode.name, styleNode);
+        return new AX2JStyle(name, parent, element.attributes());
     }
     
     /** get the style from project style and system style **/
@@ -76,9 +65,9 @@ public class AX2JStyle {
         AX2JStyle style = null;
         
         if (type.equals("@android:style")) {
-        	style = getSystemStyle(styleValue);
+        	style = getSystemStyle(styleName);
         } else if (type.equals("@style")) {
-	    	style = styleMap.get(styleValue);
+	    	style = styleMap.get(styleName);
         } else if (type.equals("?android:attr")) {
             //it's a project theme attribute
             styleName = getProjectThemeStyleName(styleName);
@@ -89,25 +78,34 @@ public class AX2JStyle {
         return style;
     }
     
-    public static HashMap<String, AX2JStyle> getStyles() {
-        return styleMap;
+    /** custom styles **/
+    public static void addStyle(AX2JNode originNode) {
+        AX2JStyle styleNode = buildNode(originNode);
+        if (styleNode == null) {
+            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, originNode.asXML());
+        }
+        styleMap.put(styleNode.name, styleNode);
+    }
+    
+    public static AX2JStyle getCustomStyle(String styleName) {
+        return styleMap.get(styleName);
     }
     
     /** system styles **/
-    public static AX2JStyle getSystemStyle(String styleValue) {
-        String type = styleValue.substring(0, styleValue.indexOf('/'));
-        String styleName = styleValue.substring(styleValue.indexOf('/') + 1);
-        
-        if (type.equals("@android:style")) {
-            return systemStyleMap.get(styleName);
-        }
-        return null;
+    public static AX2JStyle getSystemStyle(String styleName) {
+    	if (systemStyleMap.size() == 0) {
+    		systemStyleMap = AndroidDocConverter.getSystemStyles();
+    	}
+        return systemStyleMap.get(styleName);
     }
     
     /** system themes **/
     
-    public static AX2JStyle getSystemTheme(String name) {
-        return systemThemeMap.get(name);
+    public static AX2JStyle getSystemTheme(String themeName) {
+    	if (systemThemeMap.size() == 0) {
+    		systemThemeMap = AndroidDocConverter.getSystemThemes();
+    	}
+        return systemThemeMap.get(themeName);
     }
     
     /** project theme **/
@@ -123,7 +121,7 @@ public class AX2JStyle {
     }
     
     public static String getProjectThemeStyleName(AX2JStyle theme, String itemName) {
-		String themeName = projectTheme.styleNode.attributeValue(itemName);
+		String themeName = projectTheme.attributeValue(itemName);
 		if (themeName == null) {
 			if (theme.parent != null) {
 				AX2JStyle parentTheme = getSystemTheme(theme.parent);
@@ -133,13 +131,27 @@ public class AX2JStyle {
     	return themeName;
     }
     
-    public static void setProjectTheme(String projectThemeName) {
-    	AX2JStyle newProjectTheme = getStyle(projectThemeName);
-    	if (newProjectTheme == null) {
-    		newProjectTheme = getSystemTheme(projectThemeName);
+    public String attributeValue(String itemName) {
+    	for (Attribute a : attrList) {
+    		if (a.getQualifiedName().equals(itemName)) {
+    			return a.getValue();
+    		}
     	}
+    	return null;
+    }
+    
+    public static void setProjectTheme(String projectThemeValue) {
+        String type = projectThemeValue.substring(0, projectThemeValue.indexOf('/'));
+        String themeName = projectThemeValue.substring(projectThemeValue.indexOf('/') + 1);
+        AX2JStyle newProjectTheme = null;
+        if (type.equals("@android:style")) {
+        	newProjectTheme = getSystemTheme(themeName);
+        } else if (type.equals("@style")) {
+	    	newProjectTheme = getCustomStyle(themeName);
+        }
+        
     	if (newProjectTheme == null) {
-    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, projectThemeName);
+    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, themeName);
     	}
     	
     	projectTheme = newProjectTheme;

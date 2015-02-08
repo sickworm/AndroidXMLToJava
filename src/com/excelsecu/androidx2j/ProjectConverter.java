@@ -30,7 +30,7 @@ public class ProjectConverter {
     private static final List<List<String>> LIST_ORDER_LIST = new ArrayList<List<String>>(
             Arrays.asList(animRList, attrRList, colorRList, dimenRList, drawableRList,
                     idRList, layoutRList, menuRList, styleRList, stringRList));
-    /** List<dpi + "." + name> use to storage all the resources in different dpi drawable folder **/
+    /** List<dpi + "." + name> use to storage all the resources in different dpi-drawable folder **/
     private static List<String> drawableDpiList = new ArrayList<String>();
     
     private static String stringContent = "";
@@ -42,6 +42,7 @@ public class ProjectConverter {
             AndroidDocConverter.getMap();
             AndroidDocConverter.getSystemStyles();
             AndroidDocConverter.getSystemThemes();
+            AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
         } catch (Exception e) {
             System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
             return;
@@ -130,7 +131,7 @@ public class ProjectConverter {
     }
     
     private static void addCustomWidget() {
-        //for now it don't suport customize settings
+        //for now it don't support customize settings
         System.out.println("Adding custom widget...");
         CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
                 "com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class,

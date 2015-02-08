@@ -8,6 +8,7 @@ public class Config {
     public static final String DAT_BLOCK = "<DAT_BLOCK>";
     public static final String STYLE_BLOCK = "<STYLE_BLOCK>";
     public static final String THEME_BLOCK = "<THEME_BLOCK>";
+    public static final String NOTHING = " ";
     
     @SuppressWarnings("deprecation")
 	public static final Class<?>[] CLASSES_LIST = {

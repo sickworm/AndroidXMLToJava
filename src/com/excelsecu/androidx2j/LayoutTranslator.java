@@ -1,6 +1,8 @@
 package com.excelsecu.androidx2j;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dom4j.Attribute;
 
@@ -405,41 +407,54 @@ public class LayoutTranslator extends BaseTranslator {
         private String buildStyle() {
             String styleValue = node.attributeValue("style");
             String javaBlock = "";
-            javaBlock = buildStyle(styleValue);
+            javaBlock += "/** " + styleValue + " block **/\n";
+            List<Attribute> styleAttrList = new ArrayList<Attribute>();
+            buildStyleAttrList(styleValue, styleAttrList);
+            for (Attribute a : styleAttrList) {
+                String attrMethod = translateAttribute(a, node, this);
+                if (!attrMethod.startsWith("//")) {
+                    extraHandle(node, a);
+                }
+                javaBlock += attrMethod;
+            }
+            javaBlock += "/** " + styleValue + " block **/\n";
             return javaBlock;
         }
         
-        private String buildStyle(String styleValue) {
+        private void buildStyleAttrList(String styleValue, List<Attribute> styleAttrList) {
             if (styleValue == null) {
-                return "";
-            } else {
-                AX2JStyle style = AX2JStyle.getStyle(styleValue);
-                if (style == null || style.equals("")) {
-                    return "//style=\"" + styleValue + "\"\t//not support\n";
-                }
-                
-                String javaBlock = "";
-                javaBlock += "/** " + styleValue + " block **/\n";
-                
-                //if there is a parent, first handle the parent
-                String parent = style.parent;
-                if (parent != null && !parent.equals("")) {
-                    buildStyle(parent);
-                }
-                
-                styleNode = style.styleNode;
-                for (Attribute a : styleNode.getAttributes()) {
-                    String attrMethod = translateAttribute(a, node, this);
-                    if (!attrMethod.startsWith("//")) {
-                        extraHandle(node, a);
-                    }
-                    javaBlock += attrMethod;
-                }
-                javaBlock += "/** " + styleValue + " block **/\n";
-                
-                return javaBlock;
+            	return;
             }
             
+            AX2JStyle style = AX2JStyle.getStyle(styleValue);
+            
+            //if there is a parent, first handle the parent
+            String parent = style.parent;
+            if (parent != null && !parent.equals("")) {
+            	int oldSize = styleAttrList.size();
+            	buildStyleAttrList(parent, styleAttrList);
+            	
+            	//remove the same attribute, the new replace the old
+            	int newSize = styleAttrList.size();
+            	int removeCount = 0;
+                for (int i = 0; i < oldSize - removeCount;) {
+                	int j = oldSize - removeCount;
+                    for (; j < newSize - removeCount; j++) {
+                    	if (styleAttrList.get(i).getQualifiedName().equals(
+                    			styleAttrList.get(j).getQualifiedName())) {
+                    		break;
+                    	}
+                    	if (j != newSize - removeCount) {
+                    		styleAttrList.remove(i);
+                    		removeCount++;
+                    	} else {
+                    		i++;
+                    	}
+                    }
+                }
+            }
+            
+            styleAttrList.addAll(style.attrList);
         }
     }
 }
