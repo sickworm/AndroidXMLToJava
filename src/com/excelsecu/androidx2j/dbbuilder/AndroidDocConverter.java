@@ -220,20 +220,16 @@ public class AndroidDocConverter {
             	String parent = styleString.substring(index1 + 1, index2);
             	String attrs = styleString.substring(index2 + 1);
             	
-            	if (attrs.equals("")) {
-            		continue;
-            	}
-            	String[] attrsArray = attrs.split(",");
                 Element element = document.addElement("container");
-                for (int i = 0; i < attrsArray.length; i++) {
-                	if (attrsArray[i].equals("android:textColorLink=\"?android:attr/textColorLinkInverse\"")) {
-                		System.out.println(attrsArray[i]);
-                	}
-                	String attrName = attrsArray[i].substring(0, attrsArray[i].indexOf('='));
-                	String attrValue = attrsArray[i].substring(attrsArray[i].indexOf('=') + 1);
-                	attrValue = attrValue.substring(1, attrValue.length() - 1);
-                    element.addAttribute(attrName, attrValue);
-                }
+            	if (!attrs.equals("")) {
+                	String[] attrsArray = attrs.split(",");
+                    for (int i = 0; i < attrsArray.length; i++) {
+                    	String attrName = attrsArray[i].substring(0, attrsArray[i].indexOf('='));
+                    	String attrValue = attrsArray[i].substring(attrsArray[i].indexOf('=') + 1);
+                    	attrValue = attrValue.substring(1, attrValue.length() - 1);
+                        element.addAttribute(attrName, attrValue);
+                    }
+            	}
                 @SuppressWarnings("unchecked")
 				AX2JStyle theme = new AX2JStyle(name, parent, element.attributes());
                 map.put(name, theme);
