@@ -60,11 +60,20 @@ public class AX2JStyle {
     
     /** get the style from project style and system style **/
     public static AX2JStyle getStyle(String styleValue) {
-        String type = styleValue.substring(0, styleValue.indexOf('/'));
-        String styleName = styleValue.substring(styleValue.indexOf('/') + 1);
+    	String type = "";
+        String styleName = "";
+        //e.g. style="@android:style/Animation.PopupWindow"
+    	if (styleValue.indexOf('/') != -1) {
+            type = styleValue.substring(0, styleValue.indexOf('/'));
+            styleName = styleValue.substring(styleValue.indexOf('/') + 1);
+        //e.g. parent="android:Animation.PopupWindow"
+    	} else {
+            type = styleValue.substring(0, styleValue.indexOf(':'));
+            styleName = styleValue.substring(styleValue.indexOf(':') + 1);
+    	}
+    	
         AX2JStyle style = null;
-        
-        if (type.equals("@android:style")) {
+        if (type.equals("@android:style") || type.equals("android")) {
         	style = getSystemStyle(styleName);
         } else if (type.equals("@style")) {
 	    	style = styleMap.get(styleName);
@@ -74,6 +83,10 @@ public class AX2JStyle {
             if (styleName != null) {
                 style = getStyle(styleName);
             }
+        }
+        
+        if (style == null) {
+        	throw new AX2JException(AX2JException.STYLE_NOT_FOUND, styleValue);
         }
         return style;
     }

@@ -406,28 +406,31 @@ public class LayoutTranslator extends BaseTranslator {
          */
         private String buildStyle() {
             String styleValue = node.attributeValue("style");
-            String javaBlock = "";
-            javaBlock += "/** " + styleValue + " block **/\n";
-            List<Attribute> styleAttrList = new ArrayList<Attribute>();
-            buildStyleAttrList(styleValue, styleAttrList);
-            for (Attribute a : styleAttrList) {
-                String attrMethod = translateAttribute(a, node, this);
-                if (!attrMethod.startsWith("//")) {
-                    extraHandle(node, a);
-                }
-                javaBlock += attrMethod;
+            if (styleValue == null) {
+            	return "";
             }
-            javaBlock += "/** " + styleValue + " block **/\n";
+            
+            String javaBlock = "";
+            try {
+                javaBlock += "/** " + styleValue + " block **/\n";
+                List<Attribute> styleAttrList = new ArrayList<Attribute>();
+            	buildStyleAttrList(styleValue, styleAttrList);
+                for (Attribute a : styleAttrList) {
+                    String attrMethod = translateAttribute(a, node, this);
+                    if (!attrMethod.startsWith("//")) {
+                        extraHandle(node, a);
+                    }
+                    javaBlock += attrMethod;
+                }
+                javaBlock += "/** " + styleValue + " block **/\n";
+            } catch (AX2JException e) {
+                javaBlock = "// style=\"" + styleValue + "\"not support\n";
+            }
             return javaBlock;
         }
         
         private void buildStyleAttrList(String styleValue, List<Attribute> styleAttrList) {
-            if (styleValue == null) {
-            	return;
-            }
-            
             AX2JStyle style = AX2JStyle.getStyle(styleValue);
-            
             //if there is a parent, first handle the parent
             String parent = style.parent;
             if (parent != null && !parent.equals("")) {

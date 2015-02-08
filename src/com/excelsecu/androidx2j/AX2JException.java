@@ -16,6 +16,8 @@ public class AX2JException extends RuntimeException {
     public static final int PROJECT_DIR_NOT_FOUND = 0x00000005;
     /**can not find the attribute in the XML node**/
     public static final int THEME_NOT_FOUND = 0x00000006;
+    /**can not find the attribute in the XML node**/
+    public static final int STYLE_NOT_FOUND = 0x00000007;
     
     /**the parameter haven't initialize**/
     public static final int PARAMETER_NOT_INITIALIZE = 0x00010001;
