@@ -200,13 +200,27 @@ public class LayoutTranslator extends BaseTranslator {
                 return "";
             }
             
+            //include
+            if (attrName.equals("layout")) {
+                //handled in newMethod
+                return "";
+            }
+            
             //weight
             if (attrName.equals("android:layout_weight")) {
                 return layoutParamName + ".weight = " + attr.getValue() + ";\n";
             }
+            
             //layout_gravity
             if (attrName.equals("android:layout_gravity")) {
                 return layoutParamName + ".gravity = " + translateValue(attr) + ";\n";
+            }
+            
+            //textAppearance
+            if (attrName.equals("android:textAppearance")) {
+                String style = AX2JStyle.getStyle(attr.getValue()).name;
+                style = "android.R.style." + style;
+                return node.getObjectName() + ".setTextAppearance(context," + style + ");\n";
             }
             
             //MarginLayoutParams
@@ -344,12 +358,6 @@ public class LayoutTranslator extends BaseTranslator {
                 javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
                 
                 return javaBlock;
-            }
-            
-            //include
-            if (attrName.equals("layout")) {
-                //handled in newMethod
-                return "";
             }
             
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
