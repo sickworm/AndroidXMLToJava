@@ -73,19 +73,19 @@ public class AndroidDocConverter {
         }
 
         System.out.println("Prasering system styles XML...\n");
-        buildSystem(systemStylesMap);
+        buildSystem(Config.SYSTEM_STYLES_PATH, systemStylesMap);
         
         System.out.println("Prasering system themes XML...\n");
-        buildSystem(systemThemesMap);
+        buildSystem(Config.SYSTEM_THEMES_PATH, systemThemesMap);
         
         System.out.println("Generating data.dat...\n");
         generateDat();
         System.out.println("Done!");
 	}
 	
-	private static void buildSystem(HashMap<String, AX2JStyle> map) throws DocumentException {
+	private static void buildSystem(String path, HashMap<String, AX2JStyle> map) throws DocumentException {
 	    Document document;
-        document = new SAXReader().read(Config.SYSTEM_STYLES_PATH).getDocument();
+        document = new SAXReader().read(path).getDocument();
         AX2JNode systemStylesNode = new AX2JParser(document.getRootElement()).parse();
         for (AX2JNode n : systemStylesNode.getChildren()) {
             if (n.getLabelName().equals("style")) {

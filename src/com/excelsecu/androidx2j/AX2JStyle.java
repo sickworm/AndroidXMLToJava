@@ -154,17 +154,16 @@ public class AX2JStyle {
     }
     
     public static void setProjectTheme(String projectThemeValue) {
-        String type = projectThemeValue.substring(0, projectThemeValue.indexOf('/'));
-        String themeName = projectThemeValue.substring(projectThemeValue.indexOf('/') + 1);
         AX2JStyle newProjectTheme = null;
-        if (type.equals("@android:style")) {
-        	newProjectTheme = getSystemTheme(themeName);
-        } else if (type.equals("@style")) {
-	    	newProjectTheme = getCustomStyle(themeName);
+        int index = projectThemeValue.indexOf(':');
+        if (index == -1) {
+            newProjectTheme = getCustomStyle(projectThemeValue);
+        } else {
+            newProjectTheme = getSystemTheme(projectThemeValue.substring(index + 1));
         }
         
     	if (newProjectTheme == null) {
-    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, themeName);
+    		throw new AX2JException(AX2JException.THEME_NOT_FOUND, projectThemeValue);
     	}
     	
     	projectTheme = newProjectTheme;
