@@ -13,9 +13,11 @@ public class Config {
     public static final String ENCODE = com.excelsecu.androidx2j.dbbuilder.Config.ENCODE;
     
     public static final String RESOURCES_CLASS = "JResources";
-    public static final String TEMPLAT_RESOURCES_NAME = "Resources";
+    public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
     public static final String R_CLASS = "JR";
     public static final String RESOURCES_NAME = "resources";
+    public static final String UTILS_CLASS = "Utils";
+    public static final String TEMPLAT_UTILS_CLASS = "Utils";
     public static final int API_LEVEL = 8;
     
     public static final String DEFAULT_THEME = "@android:Theme";

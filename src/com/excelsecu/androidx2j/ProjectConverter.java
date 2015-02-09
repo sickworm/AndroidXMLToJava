@@ -93,6 +93,7 @@ public class ProjectConverter {
         GenerateString();
         GenerateColor();
         GenerateManager();
+        GenerateUtils();
         System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
     
@@ -253,12 +254,12 @@ public class ProjectConverter {
     }
     
     private static void GenerateManager() {
-        //AXMLResources.java
+        //Resources.java
         File resourcesFile = new File(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java");
         System.out.println("Generating " + resourcesFile.getPath() + "...");
-        String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_NAME + ".java");
+        String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_CLASS + ".java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
-        resources = resources.replace(Config.TEMPLAT_RESOURCES_NAME, Config.RESOURCES_CLASS);
+        resources = resources.replace(Config.TEMPLAT_RESOURCES_CLASS, Config.RESOURCES_CLASS);
         Utils.writeFile(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java", resources);
         System.out.println();
         
@@ -306,6 +307,15 @@ public class ProjectConverter {
         }
         layouts = layouts.replace(Config.TEMPLET_LAYOUT_BLOCK, layoutCaseList);
         Utils.writeFile(layoutsFile.getPath(), layouts);
+        System.out.println();
+    }
+    
+    private static void GenerateUtils() {
+        File utilsFile = new File(Config.JAVA_OUT_PATH + Config.UTILS_CLASS + ".java");
+        String content = Utils.readFile("templet/" + Config.TEMPLAT_UTILS_CLASS + ".java");
+        content = content.replace(Config.TEMPLAT_UTILS_CLASS, Config.UTILS_CLASS);
+        content = content.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
+        Utils.writeFile(utilsFile.getPath(), content);
         System.out.println();
     }
 }
