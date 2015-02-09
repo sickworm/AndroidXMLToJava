@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,12 +46,21 @@ public class AndroidDocConverter {
             String path = listPage[i];
 		    System.out.println(path + "\n");
 		    HashMap<String, String> sublist = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
-		    Iterator<Entry<String, String>> iter = sublist.entrySet().iterator(); 
+		    //remove the empty method, some methods were shown in super class but were not shown in this class. e.g. ProgressBar$minWidth
+            List<String> removelist = new ArrayList<String>();
+		    Iterator<Entry<String, String>> iter = sublist.entrySet().iterator();
 	            while (iter.hasNext()) {
 	                Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
 	                String key = (String) entry.getKey();
 	                String value = (String) entry.getValue();
-	                System.out.println(key + "\n\t" + value + "\n");
+	                if (value.equals("")) {
+	                    removelist.add(key);
+	                } else {
+	                    System.out.println(key + "\n\t" + value + "\n");
+	                }
+	            }
+	            for (String key : removelist) {
+	                sublist.remove(key);
 	            }
             System.out.println("");
             attrToMethodMap.putAll(sublist);

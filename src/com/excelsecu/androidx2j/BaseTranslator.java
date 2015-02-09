@@ -97,6 +97,9 @@ public class BaseTranslator {
 	    //find the conversion between XML attribute and Java method in the match map.
 	    String attrName = a.getQualifiedName();
 	    String key = type.getSimpleName() + "$" + attrName;
+        if (a.getQualifiedName().equals("android:minWidth")) {
+            System.out.println();
+        }
         if (!map.containsKey(key)) {
             //find the conversion from its super class
             while (Utils.isSupportClass(type.getSuperclass())) {
@@ -104,9 +107,6 @@ public class BaseTranslator {
                 key = type.getSimpleName() + "$" + attrName;
                 if (map.containsKey(key))
                     break;
-            }
-            if (!map.containsKey(key)) {
-                throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
             }
         }
         String methodName = map.get(key);
