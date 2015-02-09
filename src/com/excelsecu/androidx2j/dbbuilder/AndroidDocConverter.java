@@ -73,69 +73,45 @@ public class AndroidDocConverter {
         }
 
         System.out.println("Prasering system styles XML...\n");
-        
-        Document document;
-        document = new SAXReader().read(Config.SYSTEM_STYLES_PATH).getDocument();
-        AX2JNode systemStylesNode = new AX2JParser(document.getRootElement()).parse();
-        for (AX2JNode n : systemStylesNode.getChildren()) {
-        	if (n.getLabelName().equals("style")) {
-	        	AX2JStyle style = AX2JStyle.buildNode(n);
-	        	if (style == null) {
-	        		System.out.println("Parse style failed. XML:" + n.asXML());
-	        	}
-	            if (!(style.parent.equals("") && style.parent.startsWith("android:"))) {
-	            	style.parent = "android:" + style.parent;
-	            }
-	            //some items don't add "android" package in value, add for recognition
-	            List<Attribute> attrList = style.attrList;
-	            for (Attribute a : attrList) {
-	            	String value = a.getValue();
-	            	if (value.matches("@\\w+/\\w+")) {
-	            		a.setValue(value.replaceFirst("@", "@android:"));
-	            	} else if (value.matches("\\?\\w+")) {
-	            		a.setValue(value.replaceFirst("\\?", "\\?android:attr/"));
-	            	}
-	            	if (value.contains("\n")) {
-	            		a.setValue(value.replace("\n", ""));
-	            	}
-	            }
-	        	systemStylesMap.put(style.name, style);
-        	}
-        }
+        buildSystem(systemStylesMap);
         
         System.out.println("Prasering system themes XML...\n");
-        
-        document = new SAXReader().read(Config.SYSTEM_THEMES_PATH).getDocument();
-        AX2JNode systemThemesNode = new AX2JParser(document.getRootElement()).parse();
-        for (AX2JNode n : systemThemesNode.getChildren()) {
-        	if (n.getLabelName().equals("style")) {
-	        	AX2JStyle theme = AX2JStyle.buildNode(n);
-	        	if (theme == null) {
-	        		System.out.println("Parse style failed. XML:" + n.asXML());
-	        	}
-	            if (!(theme.parent.equals("") || theme.parent.startsWith("android:"))) {
-	            	theme.parent = "android:" + theme.parent;
-	            }
-	            //some items don't add "android" package in value, add for recognition
-	            List<Attribute> attrList = theme.attrList;
-	            for (Attribute a : attrList) {
-	            	String value = a.getValue();
-	            	if (value.matches("@\\w+/\\w+")) {
-	            		a.setValue(value.replaceFirst("@", "@android:"));
-	            	} else if (value.matches("\\?\\w+")) {
-	            		a.setValue(value.replaceFirst("?", "?android:attr/"));
-	            	}
-	            	if (value.contains("\n")) {
-	            		a.setValue(value.replace("\n", ""));
-	            	}
-	            }
-	        	systemThemesMap.put(theme.name, theme);
-        	}
-        }
+        buildSystem(systemThemesMap);
         
         System.out.println("Generating data.dat...\n");
         generateDat();
         System.out.println("Done!");
+	}
+	
+	private static void buildSystem(HashMap<String, AX2JStyle> map) throws DocumentException {
+	    Document document;
+        document = new SAXReader().read(Config.SYSTEM_STYLES_PATH).getDocument();
+        AX2JNode systemStylesNode = new AX2JParser(document.getRootElement()).parse();
+        for (AX2JNode n : systemStylesNode.getChildren()) {
+            if (n.getLabelName().equals("style")) {
+                AX2JStyle style = AX2JStyle.buildNode(n);
+                if (style == null) {
+                    System.out.println("Parse style failed. XML:" + n.asXML());
+                }
+                if (!(style.parent.equals("") || style.parent.startsWith("android:"))) {
+                    style.parent = "android:" + style.parent;
+                }
+                //some items don't add "android" package in value, add for recognition
+                List<Attribute> attrList = style.attrList;
+                for (Attribute a : attrList) {
+                    String value = a.getValue();
+                    if (value.matches("@\\w+/\\w+")) {
+                        a.setValue(value.replaceFirst("@", "@android:"));
+                    } else if (value.matches("\\?\\w+")) {
+                        a.setValue(value.replaceFirst("\\?", "\\?android:attr/"));
+                    }
+                    if (value.contains("\n")) {
+                        a.setValue(value.replace("\n", ""));
+                    }
+                }
+                map.put(style.name, style);
+            }
+        }
 	}
 	
 	private static void generateDat() {
