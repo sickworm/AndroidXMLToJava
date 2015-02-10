@@ -24,8 +24,8 @@ public class DrawableTranslator extends BaseTranslator{
             Utils.copyFile(file.getPath(), outPath);
             //return object must put in the first line
             String className = Utils.getClassName(file);
-            content += "InputStream inStream = " + className+ ".class.getResourceAsStream(\"" +
-            		file.getPath().replace("res", "\\assets").replace("\\", "/").replace('-', '_') + "\"); \n";
+            content += "InputStream inStream = " + className + ".class.getResourceAsStream(\"" +
+            		file.getPath().replace(Config.PROJECT_RES_PATH.replace('/', File.separatorChar), "/assets/").replace("\\", "/").replace('-', '_') + "\"); \n";
             content += "Drawable drawable = Drawable.createFromStream(inStream" +
                     ", \"" + className +"\");\n";
             addImport(Drawable.class.getName());
