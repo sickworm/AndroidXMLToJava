@@ -217,10 +217,11 @@ public class LayoutTranslator extends BaseTranslator {
             }
             
             //textAppearance
-            if (attrName.equals("android:textAppearance")) {
+            if (attrName.equals("android:textAppearance") && node.getLabelName().equals("TextView")) {
                 String style = AX2JStyle.getStyle(attr.getValue()).name;
+                style = style.replace('.', '_');
                 style = "android.R.style." + style;
-                return node.getObjectName() + ".setTextAppearance(context," + style + ");\n";
+                return node.getObjectName() + ".setTextAppearance(context, " + style + ");\n";
             }
             
             //MarginLayoutParams
@@ -439,29 +440,24 @@ public class LayoutTranslator extends BaseTranslator {
         
         private void buildStyleAttrList(String styleValue, List<Attribute> styleAttrList) {
             AX2JStyle style = AX2JStyle.getStyle(styleValue);
+            
             //if there is a parent, first handle the parent
             String parent = style.parent;
             if (parent != null && !parent.equals("")) {
-            	int oldSize = styleAttrList.size();
             	buildStyleAttrList(parent, styleAttrList);
-            	
-            	//remove the same attribute, the new replace the old
-            	int newSize = styleAttrList.size();
-            	int removeCount = 0;
-                for (int i = 0; i < oldSize - removeCount;) {
-                	int j = oldSize - removeCount;
-                    for (; j < newSize - removeCount; j++) {
-                    	if (styleAttrList.get(i).getQualifiedName().equals(
-                    			styleAttrList.get(j).getQualifiedName())) {
-                    		break;
-                    	}
-                    	if (j != newSize - removeCount) {
-                    		styleAttrList.remove(i);
-                    		removeCount++;
-                    	} else {
-                    		i++;
-                    	}
+            }
+            
+            //remove the same attribute, the new replace the old
+            for (int i = 0; i < styleAttrList.size(); i++) {
+                int j = 0;
+                for (j = 0; j < style.attrList.size(); j++) {
+                    if (styleAttrList.get(i).getQualifiedName().equals(
+                            style.attrList.get(j).getQualifiedName())) {
+                        break;
                     }
+                }
+                if (j != style.attrList.size()) {
+                    styleAttrList.remove(i);
                 }
             }
             

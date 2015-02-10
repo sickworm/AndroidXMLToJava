@@ -97,9 +97,6 @@ public class BaseTranslator {
 	    //find the conversion between XML attribute and Java method in the match map.
 	    String attrName = a.getQualifiedName();
 	    String key = type.getSimpleName() + "$" + attrName;
-        if (a.getQualifiedName().equals("android:minWidth")) {
-            System.out.println();
-        }
         if (!map.containsKey(key)) {
             //find the conversion from its super class
             while (Utils.isSupportClass(type.getSuperclass())) {
