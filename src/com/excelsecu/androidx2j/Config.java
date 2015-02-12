@@ -2,6 +2,8 @@ package com.excelsecu.androidx2j;
 
 import java.util.HashMap;
 
+import org.dom4j.Namespace;
+
 public class Config {
     public static final String PROJECT_PATH = "project/";
     public static final String PROJECT_RES_PATH = PROJECT_PATH + "res/";
@@ -108,4 +110,6 @@ public class Config {
         TEMPLET_HDPI_BLOCK, TEMPLET_XHDPI_BLOCK, TEMPLET_XXHDPI_BLOCK};
     public static final String[] DPI_DPI_FOLDER_LIST = {"drawable", "drawable-ldpi", "drawable-mdpi",
         "drawable-hdpi", "drawable-xhdpi", "drawable-xxhdpi"};
+
+    public static final Namespace ANDROID_NAMESPACE = com.excelsecu.androidx2j.dbbuilder.Config.ANDROID_NAMESPACE;
 }

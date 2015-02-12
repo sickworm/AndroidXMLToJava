@@ -43,7 +43,8 @@ public class ProjectConverter {
             AndroidDocConverter.getSystemStyles();
             AndroidDocConverter.getSystemThemes();
             AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
-        } catch (Exception e) {
+        } catch (AX2JException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ", error: " + e.getDetails());
             System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
             return;
         }

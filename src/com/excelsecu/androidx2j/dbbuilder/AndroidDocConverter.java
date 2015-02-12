@@ -24,6 +24,10 @@ import org.dom4j.io.SAXReader;
 import com.excelsecu.androidx2j.AX2JNode;
 import com.excelsecu.androidx2j.AX2JParser;
 import com.excelsecu.androidx2j.AX2JStyle;
+import com.excelsecu.androidx2j.AX2JTranslator;
+import com.excelsecu.androidx2j.AX2JTranslatorMap;
+import com.excelsecu.androidx2j.AX2JTranslator.AX2JAttribute;
+import com.excelsecu.androidx2j.AX2JTranslator.AX2JMethod;
 
 /**
  * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
@@ -34,7 +38,7 @@ import com.excelsecu.androidx2j.AX2JStyle;
  *
  */
 public class AndroidDocConverter {
-    private static HashMap<String, String> attrToMethodMap = new HashMap<String, String>();
+    private static AX2JTranslatorMap attrToMethodMap = AX2JTranslatorMap.getInstance();
     private static HashMap<String, AX2JStyle> systemStylesMap = new HashMap<String, AX2JStyle>();
     private static HashMap<String, AX2JStyle> systemThemesMap = new HashMap<String, AX2JStyle>();
     
@@ -45,29 +49,24 @@ public class AndroidDocConverter {
         for (int i = 0; i < listPage.length; i++) {
             String path = listPage[i];
 		    System.out.println(path + "\n");
-		    HashMap<String, String> sublist = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
-		    //remove the empty method, some methods were shown in super class but were not shown in this class. e.g. ProgressBar$minWidth
-            List<String> removelist = new ArrayList<String>();
-		    Iterator<Entry<String, String>> iter = sublist.entrySet().iterator();
-	            while (iter.hasNext()) {
-	                Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
-	                String key = (String) entry.getKey();
-	                String value = (String) entry.getValue();
-	                if (value.equals("")) {
-	                    removelist.add(key);
-	                } else {
-	                    System.out.println(key + "\n\t" + value + "\n");
-	                }
-	            }
-	            for (String key : removelist) {
-	                sublist.remove(key);
-	            }
+		    AX2JTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
+		    List<AX2JAttribute> attributelist = translator.getAttributeList();
+            for (AX2JAttribute attribute : attributelist) {
+                for (AX2JMethod method : attribute.getRelativeMethodList()) {
+                    String argsString = "";
+                    for (Class<?> clazz : method.getArgsType()) {
+                        argsString += clazz.getSimpleName() + ", ";
+                    }
+                    argsString.substring(0, argsString.length() - 2);
+                    System.out.println(attribute.getName().getQualifiedName() +
+                            " " + method.getMethodName() + "(" + argsString +")");
+                }
+            }
             System.out.println("");
-            attrToMethodMap.putAll(sublist);
+            attrToMethodMap.put(translator.getType(), translator);
 		}
         
         //some attributes don't shown in Android doc (like setEnabled), add them in here.
-        attrToMethodMap.putAll(Config.ADDITION_MAP);
         Iterator<Entry<String, String>> iter = Config.ADDITION_MAP.entrySet().iterator();
         System.out.println("Additional\n");
         while (iter.hasNext()) {
@@ -75,11 +74,6 @@ public class AndroidDocConverter {
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
             System.out.println(key + "\n\t" + value + "\n");
-        }
-        
-        //some attributes can't translate directly (like padding), remove them in here.
-        for (String removal : Config.REMOVAL_LIST) {
-            attrToMethodMap.remove(removal);
         }
 
         System.out.println("Prasering system styles XML...\n");
@@ -159,8 +153,8 @@ public class AndroidDocConverter {
 	    writeFile(dat.getPath(), themeString.toString(), true);
 	}
 	
-	public static HashMap<String, String> getMap() {
-        if (attrToMethodMap.size() == 0) {
+	public static AX2JTranslatorMap getMap() {
+        if (attrToMethodMap.getMap().size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);

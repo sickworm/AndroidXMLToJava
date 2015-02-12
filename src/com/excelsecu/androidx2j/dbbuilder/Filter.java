@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import org.dom4j.QName;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.AndFilter;
@@ -16,6 +17,8 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import com.excelsecu.androidx2j.AX2JTranslator;
+
 public class Filter {
     private Class<?> type;
 	
@@ -23,9 +26,9 @@ public class Filter {
 	    this.type = type;
 	}
 	
-	public HashMap<String, String> filterDoc(String fileName) throws AndroidDocException {
+	public AX2JTranslator filterDoc(String fileName) throws AndroidDocException {
         String docContent = readDoc(fileName);
-        HashMap<String, String> attrToMethodList = filter(docContent);
+        AX2JTranslator attrToMethodList = filter(docContent);
         return attrToMethodList;
 	}
 	
@@ -62,9 +65,8 @@ public class Filter {
         }
     }
 	
-    private HashMap<String, String> filter(String content) {
+    private AX2JTranslator filter(String content) {
         try {
-        	HashMap<String, String> attrMap = new HashMap<String, String>();
             Parser parser = Parser.createParser(content, Config.ENCODE);
             AndFilter andFilter1 =
                     new AndFilter(new TagNameFilter("tr"), new HasAttributeFilter("class","alt-color api apilevel-"));
@@ -74,6 +76,8 @@ public class Filter {
             OrFilter orFilter = new OrFilter(andFilter1, andFilter2);
             NodeList tableNodeList = parser.parse(orFilter);
             NodeIterator tableIt = tableNodeList.elements();
+            
+            AX2JTranslator map = new AX2JTranslator(type);
             while(tableIt.hasMoreNodes()) {
             	Node trNode = tableIt.nextNode();
             	NodeList trNodeList = trNode.getChildren();
@@ -100,15 +104,14 @@ public class Filter {
                 if (trNodeList.size() != 7) {
                 	throw new AndroidDocException(AndroidDocException.ATM_FORMAT_ERROR);
                 }
-                String className = type.getSimpleName();
+                
                 String attr = trNodeList.elementAt(1).toPlainTextString();
                 attr = attr.replace("\n", "");
                 String method = trNodeList.elementAt(3).toPlainTextString();
-                method = method.replace("\n", "");
-                attrMap.put(className + "$" + attr, method);
-                //System.out.println(attr + " " + method);
+                QName name = new QName(attr.substring(attr.indexOf(':') + 1), Config.ANDROID_NAMESPACE);
+                map.add(name, method);
             }
-			return attrMap;
+			return map;
 		} catch (ParserException e) {
         	throw new AndroidDocException(AndroidDocException.AXML_FORMAT_ERROR);
 		}

@@ -2,7 +2,13 @@ package com.excelsecu.androidx2j.dbbuilder;
 
 import java.util.HashMap;
 
+import org.dom4j.Namespace;
+
 public class Config {
+    public static final String ANDROID_URI = "http://schemas.android.com/apk/res/android";
+    public static final String ANDROID_PRIFIX = "http://schemas.android.com/apk/res/android";
+    public static final Namespace ANDROID_NAMESPACE = new Namespace(ANDROID_PRIFIX, ANDROID_URI);
+    
     public static final String DAT_PATH = "data.dat";
     public static final String DAT_COMMENT = "/** TRANSLATION TABLE. DO NOT EDIT **/";
     public static final String DAT_BLOCK = "<DAT_BLOCK>";
