@@ -6,11 +6,20 @@ import java.util.List;
 
 import org.dom4j.QName;
 
+import android.animation.LayoutTransition;
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.method.KeyListener;
+import android.text.method.TransformationMethod;
 import android.transition.Transition;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class AX2JTranslator {
     public static HashMap<String, Class<?>> typeMap = new HashMap<String, Class<?>>() {
@@ -22,19 +31,42 @@ public class AX2JTranslator {
             put("boolean", Boolean.class);
             put("long", Long.class);
             put("PorterDuff.Mode", PorterDuff.Mode.class);
-            put(String.class.getSimpleName(), String.class);
-            put(Drawable.class.getSimpleName(), Drawable.class);
-            put(ColorStateList.class.getSimpleName(), ColorStateList.class);
-            put(Transition.class.getSimpleName(), Transition.class);
-            put(CharSequence.class.getSimpleName(), CharSequence.class);
-            put(KeyListener.class.getSimpleName(), KeyListener.class);
+            put("TextView.BufferType", TextView.BufferType.class);
+            put("TextUtils.TruncateAt", TextUtils.TruncateAt.class);
+            put("ImageView.ScaleType", TextUtils.TruncateAt.class);
+            
+            put(Integer.class);
+            put(Float.class);
+            put(Boolean.class);
+            put(Long.class);
+            put(PorterDuff.Mode.class);
+            put(TextView.BufferType.class);
+            put(TextUtils.TruncateAt.class);
+            put(ImageView.ScaleType.class);
+            
+            put(String.class);
+            put(Drawable.class);
+            put(ColorStateList.class);
+            put(Transition.class);
+            put(CharSequence.class);
+            put(KeyListener.class);
+            put(Paint.class);
+            put(LayoutTransition.class);
+            put(Context.class);
+            put(Typeface.class);
+            put(InputFilter.class);
+            put(TransformationMethod.class);
+        }
+        
+        private void put(Class<?> type) {
+            put(type.getSimpleName(), type);
         }
         
     };
     
     private Class<?> type;
-    private List<AX2JAttribute> attributeList;
-    private List<AX2JMethod> methodList;
+    private List<AX2JAttribute> attributeList = new ArrayList<AX2JAttribute>();
+    private List<AX2JMethod> methodList = new ArrayList<AX2JMethod>();
     
     public AX2JTranslator(Class<?> type) {
         this.type = type;
@@ -62,15 +94,15 @@ public class AX2JTranslator {
     public AX2JMethod findMethod(AX2JMethod method2) {
         for (AX2JMethod method : methodList) {
             if (method.getName().equals(method2.getName())) {
-                Class<?>[] argsType = method.getArgsType();
-                Class<?>[] argsType2 = method2.getArgsType();
+                Class<?>[] argTypes = method.getArgTypes();
+                Class<?>[] argTypes2 = method2.getArgTypes();
                 int i = 0;
-                for (; i < argsType.length; i++) {
-                    if (!argsType[i].equals(argsType2[i])) {
+                for (; i < argTypes.length; i++) {
+                    if (!argTypes[i].equals(argTypes2[i])) {
                         break;
                     }
                 }
-                if (i == argsType.length) {
+                if (i == argTypes.length) {
                     return method;
                 }
             }
@@ -87,10 +119,11 @@ public class AX2JTranslator {
         
         AX2JMethod oldMethod = findMethod(method);
         if (oldMethod != null) {
-            oldMethod.addRelativeAttribute(attribute);
+            method = oldMethod;
         } else {
             methodList.add(method);
         }
+        method.addRelativeAttribute(attribute);
         
         attribute.addRelativeMethod(method);
     }
@@ -105,6 +138,14 @@ public class AX2JTranslator {
             name = new QName(nameString);
         }
         return name;
+    }
+    
+    public static Class<?> getType(String typeString) {
+        Class<?> type = typeMap.get(typeString);
+        if (type == null) {
+            throw new AX2JException(AX2JException.CLASS_NOT_FOUND, typeString);
+        }
+        return type;
     }
     
     public String translate(AX2JNode node) {
@@ -149,23 +190,41 @@ public class AX2JTranslator {
         public List<AX2JMethod> getRelativeMethodList() {
             return relativeMethodList;
         }
+        
+        public String toString() {
+            StringBuffer stringBuffer = new StringBuffer();
+            for (AX2JMethod method : relativeMethodList) {
+                stringBuffer.append(type.getSimpleName() + "," + name.getQualifiedName() +
+                        "," + method.toString());
+            }
+            return stringBuffer.toString();
+        }
     }
     
     public class AX2JMethod {
         private String methodName;
-        private Class<?>[] argsType;
+        private Class<?>[] argTypes;
         private List<AX2JAttribute> relativeAttributeList;
         
         public AX2JMethod(QName attributeName, String method) {
             relativeAttributeList = new ArrayList<AX2JAttribute>();
-            methodName = method.substring(0, method.indexOf('('));
             
-            String[] args = method.substring(method.indexOf('(') + 1, method.indexOf(')')).split(",");
-            argsType = new Class<?>[args.length];
-            for (int i = 0; i < args.length; i++) {
-                argsType[i] = typeMap.get(args[i]);
-                if (argsType[i] == null) {
-                    throw new AX2JException(AX2JException.CLASS_NOT_FOUND, argsType[i].toString());
+            //no relative method
+            if (method.indexOf('(') == -1) {
+                methodName = "";
+                argTypes = new Class<?>[0];
+            } else {
+                methodName = method.substring(0, method.indexOf('('));
+                methodName = methodName.replace("\n", "");
+                
+                String[] args = method.substring(method.indexOf('(') + 1, method.indexOf(')')).split(",");
+                if (!args[0].equals("")) {
+                    argTypes = new Class<?>[args.length];
+                    for (int i = 0; i < args.length; i++) {
+                        argTypes[i] = getType(args[i]);
+                    }
+                } else {
+                    argTypes = new Class<?>[0];
                 }
             }
         }
@@ -174,8 +233,8 @@ public class AX2JTranslator {
             return methodName;
         }
         
-        public Class<?>[] getArgsType() {
-            return argsType;
+        public Class<?>[] getArgTypes() {
+            return argTypes;
         }
         
         public void addRelativeAttribute(AX2JAttribute attribute) {
@@ -188,6 +247,20 @@ public class AX2JTranslator {
         
         public List<AX2JAttribute> getRelativeAttributeList() {
             return relativeAttributeList;
+        }
+        
+        public String toString() {
+            StringBuffer clazzBuffer = new StringBuffer();
+            for (Class<?> clazz : this.getArgTypes()) {
+                clazzBuffer.append(clazz.getSimpleName() + ",");
+            }
+            if (clazzBuffer.length() > 1) {
+                clazzBuffer.deleteCharAt(clazzBuffer.length() - 1);
+            }
+            String methodString = this.getMethodName() == ""? "" :
+                this.getMethodName() + "(" + clazzBuffer +")";
+            
+            return methodString;
         }
     }
 

@@ -7,11 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.dom4j.Attribute;
@@ -27,7 +25,6 @@ import com.excelsecu.androidx2j.AX2JStyle;
 import com.excelsecu.androidx2j.AX2JTranslator;
 import com.excelsecu.androidx2j.AX2JTranslatorMap;
 import com.excelsecu.androidx2j.AX2JTranslator.AX2JAttribute;
-import com.excelsecu.androidx2j.AX2JTranslator.AX2JMethod;
 
 /**
  * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
@@ -52,30 +49,18 @@ public class AndroidDocConverter {
 		    AX2JTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
 		    List<AX2JAttribute> attributelist = translator.getAttributeList();
             for (AX2JAttribute attribute : attributelist) {
-                for (AX2JMethod method : attribute.getRelativeMethodList()) {
-                    String argsString = "";
-                    for (Class<?> clazz : method.getArgsType()) {
-                        argsString += clazz.getSimpleName() + ", ";
-                    }
-                    argsString.substring(0, argsString.length() - 2);
-                    System.out.println(attribute.getName().getQualifiedName() +
-                            " " + method.getMethodName() + "(" + argsString +")");
-                }
+                System.out.println(attribute.toString());
             }
             System.out.println("");
             attrToMethodMap.put(translator.getType(), translator);
 		}
         
         //some attributes don't shown in Android doc (like setEnabled), add them in here.
-        Iterator<Entry<String, String>> iter = Config.ADDITION_MAP.entrySet().iterator();
         System.out.println("Additional\n");
-        while (iter.hasNext()) {
-            Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            System.out.println(key + "\n\t" + value + "\n");
+        for (String attribute : Config.ADDITION_LIST) {
+            attrToMethodMap.put(attribute);
         }
-
+        
         System.out.println("Prasering system styles XML...\n");
         buildSystem(Config.SYSTEM_STYLES_PATH, systemStylesMap);
         
@@ -124,33 +109,30 @@ public class AndroidDocConverter {
 	        dat.delete();
 	    }
 	    
-	    writeFile(dat.getPath(), Config.DAT_COMMENT + "\n", false);
+	    appendFile(dat.getPath(), Config.DAT_COMMENT + "\n");
 	    
 	    String mapString = attrToMethodMap.toString();
 	    mapString = mapString.replace("{", Config.DAT_BLOCK + "\n");
 	    mapString = mapString.replace("}", "\n" + Config.DAT_BLOCK);
 	    mapString = mapString.replace(" ", "");
-	    writeFile(dat.getPath(), mapString + "\n\n", true);
+	    appendFile(dat.getPath(), mapString + "\n\n");
 	    
-	    Iterator<Entry<String, AX2JStyle>> styleIterator = systemStylesMap.entrySet().iterator();
-	    StringBuffer styleString = new StringBuffer();
-	    while (styleIterator.hasNext()) {
-	    	AX2JStyle style = styleIterator.next().getValue();
-	    	styleString.append(style.toString() + "\n");
-	    }
-	    styleString.insert(0, Config.STYLE_BLOCK + "\n");
-	    styleString.insert(styleString.length(), Config.STYLE_BLOCK);
-	    writeFile(dat.getPath(), styleString + "\n\n", true);
+        generateSystem(systemStylesMap, Config.SYSTEM_THEMES_PATH);
 	    
-	    Iterator<Entry<String, AX2JStyle>> themeIterator = systemThemesMap.entrySet().iterator();
-	    StringBuffer themeString = new StringBuffer();
-	    while (themeIterator.hasNext()) {
-	    	AX2JStyle theme = themeIterator.next().getValue();
-	    	themeString.append(theme.toString() + "\n");
-	    }
-	    themeString.insert(0, Config.THEME_BLOCK + "\n");
-	    themeString.insert(themeString.length(), Config.THEME_BLOCK);
-	    writeFile(dat.getPath(), themeString.toString(), true);
+	    generateSystem(systemThemesMap, Config.SYSTEM_THEMES_PATH);
+	}
+	
+	private static void generateSystem(HashMap<String, AX2JStyle> map, String block) {
+	    File dat = new File(Config.DAT_PATH);
+	    Iterator<Entry<String, AX2JStyle>> styleIterator = map.entrySet().iterator();
+        StringBuffer styleString = new StringBuffer();
+        while (styleIterator.hasNext()) {
+            AX2JStyle style = styleIterator.next().getValue();
+            styleString.append(style.toString() + "\n");
+        }
+        styleString.insert(0, block + "\n");
+        styleString.insert(styleString.length(), block);
+        appendFile(dat.getPath(), styleString + "\n\n");
 	}
 	
 	public static AX2JTranslatorMap getMap() {
@@ -163,12 +145,7 @@ public class AndroidDocConverter {
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split(",");
             for (String s : list) {
-                String[] split = s.split("=");
-                if (split.length == 1) {
-                	attrToMethodMap.put(split[0], "");
-                } else {
-                	attrToMethodMap.put(split[0], split[1]);
-                }
+            	attrToMethodMap.put(s);
             }
         }
         
@@ -241,9 +218,9 @@ public class AndroidDocConverter {
      * @param content
      * @return true if success, return false if error occurs
      */
-    public static boolean writeFile(String filePath, String content, boolean append) {
+    public static boolean appendFile(String filePath, String content) {
         try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath), append), Config.ENCODE));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath), true), Config.ENCODE));
             writer.write(content);
             writer.close();
             return true;
