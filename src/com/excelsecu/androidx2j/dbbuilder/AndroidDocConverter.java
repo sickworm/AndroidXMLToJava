@@ -144,9 +144,11 @@ public class AndroidDocConverter {
             }
             
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
-            String[] list = content.split(",");
+            String[] list = content.split("\n");
             for (String s : list) {
-            	attrToMethodMap.put(s);
+            	if (!(s.startsWith("//") || s.equals(""))) {
+                	attrToMethodMap.put(s);
+            	}
             }
         }
         

@@ -23,9 +23,14 @@ public class AX2JTranslatorMap{
     public void put(String attributeString) {
         int index1 = attributeString.indexOf(',');
         int index2 = attributeString.indexOf(',', index1 + 1);
+        
         String type = attributeString.substring(0, index1);
-        String name = attributeString.substring(index1 + 1, index2);
-        String method = attributeString.substring(index2 + 1);
+        String name = attributeString.substring(index1 + 1);
+        String method = "";
+        if (index2 != -1) { 
+        	method = attributeString.substring(index2 + 1);
+        	name = attributeString.substring(index1 + 1, index2);
+        }
         
         put(getType(type), name, method);
     }
