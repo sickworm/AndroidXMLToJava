@@ -131,7 +131,7 @@ public class AX2JTranslator {
     public static QName string2QName(String qNameString) {
         QName name = null;
         String prefixString = qNameString.substring(0, qNameString.indexOf(':'));
-        String nameString = qNameString.substring(0, qNameString.indexOf(':'));
+        String nameString = qNameString.substring(qNameString.indexOf(':') + 1);
         if (prefixString.equals("android")) {
             name = new QName(nameString, Config.ANDROID_NAMESPACE);
         } else {
@@ -162,6 +162,14 @@ public class AX2JTranslator {
     
     public List<AX2JMethod> getMethodList() {
         return methodList;
+    }
+    
+    public String toString() {
+    	StringBuffer content = new StringBuffer();
+    	for (AX2JAttribute attribute : attributeList) {
+    		content.append(attribute.toString());
+    	}
+    	return content.toString();
     }
     
     public final class AX2JAttribute {
@@ -195,7 +203,7 @@ public class AX2JTranslator {
             StringBuffer stringBuffer = new StringBuffer();
             for (AX2JMethod method : relativeMethodList) {
                 stringBuffer.append(type.getSimpleName() + "," + name.getQualifiedName() +
-                        "," + method.toString());
+                        "," + method.toString() + "\n");
             }
             return stringBuffer.toString();
         }

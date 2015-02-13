@@ -1,10 +1,13 @@
 package com.excelsecu.androidx2j;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 public class AX2JTranslatorMap{
     private static AX2JTranslatorMap translatorMap = null;
-    private HashMap<Class<?>, AX2JTranslator> attribute2MethodMap = new HashMap<Class<?>, AX2JTranslator>();
+    private HashMap<Class<?>, AX2JTranslator> attribute2MethodMap = new LinkedHashMap<Class<?>, AX2JTranslator>();
     
     public static AX2JTranslatorMap getInstance() {
         if (translatorMap == null) {
@@ -48,5 +51,17 @@ public class AX2JTranslatorMap{
             }
         }
         throw new AX2JException(AX2JException.CLASS_NOT_FOUND, typeString);
+    }
+    
+    public String toString() {
+    	StringBuffer content = new StringBuffer();
+    	Iterator<Entry<Class<?>, AX2JTranslator>> iterator = attribute2MethodMap.entrySet().iterator();
+    	while (iterator.hasNext()) {
+    		Entry<Class<?>, AX2JTranslator> entry = iterator.next();
+    		AX2JTranslator translator = entry.getValue();
+    		content.append("//" + translator.getType().getSimpleName() + "\n");
+    		content.append(translator.toString() + "\n");
+    	}
+    	return content.toString();
     }
 }

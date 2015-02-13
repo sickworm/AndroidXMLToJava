@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -36,8 +37,8 @@ import com.excelsecu.androidx2j.AX2JTranslator.AX2JAttribute;
  */
 public class AndroidDocConverter {
     private static AX2JTranslatorMap attrToMethodMap = AX2JTranslatorMap.getInstance();
-    private static HashMap<String, AX2JStyle> systemStylesMap = new HashMap<String, AX2JStyle>();
-    private static HashMap<String, AX2JStyle> systemThemesMap = new HashMap<String, AX2JStyle>();
+    private static HashMap<String, AX2JStyle> systemStylesMap = new LinkedHashMap<String, AX2JStyle>();
+    private static HashMap<String, AX2JStyle> systemThemesMap = new LinkedHashMap<String, AX2JStyle>();
     
 	public static void main(String[] argv) throws DocumentException {
         System.out.println("Prasering Android documents...\n");
@@ -111,15 +112,15 @@ public class AndroidDocConverter {
 	    
 	    appendFile(dat.getPath(), Config.DAT_COMMENT + "\n");
 	    
-	    String mapString = attrToMethodMap.toString();
-	    mapString = mapString.replace("{", Config.DAT_BLOCK + "\n");
-	    mapString = mapString.replace("}", "\n" + Config.DAT_BLOCK);
-	    mapString = mapString.replace(" ", "");
+	    StringBuffer mapString = new StringBuffer();
+	    mapString.append(attrToMethodMap.toString());
+	    mapString = mapString.insert(0, Config.DAT_BLOCK + "\n");
+	    mapString = mapString.insert(mapString.length(), "\n" + Config.DAT_BLOCK);
 	    appendFile(dat.getPath(), mapString + "\n\n");
 	    
-        generateSystem(systemStylesMap, Config.SYSTEM_THEMES_PATH);
+        generateSystem(systemStylesMap, Config.STYLE_BLOCK);
 	    
-	    generateSystem(systemThemesMap, Config.SYSTEM_THEMES_PATH);
+	    generateSystem(systemThemesMap, Config.THEME_BLOCK);
 	}
 	
 	private static void generateSystem(HashMap<String, AX2JStyle> map, String block) {
