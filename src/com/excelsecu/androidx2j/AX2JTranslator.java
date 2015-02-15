@@ -102,20 +102,10 @@ public class AX2JTranslator {
     }
     
     
-    public AX2JMethod findMethod(AX2JMethod method2) {
+    public AX2JMethod findMethod(AX2JMethod oldMethod) {
         for (AX2JMethod method : methodList) {
-            if (method.getName().equals(method2.getName())) {
-                Class<?>[] argTypes = method.getArgTypes();
-                Class<?>[] argTypes2 = method2.getArgTypes();
-                int i = 0;
-                for (; i < argTypes.length; i++) {
-                    if (!argTypes[i].equals(argTypes2[i])) {
-                        break;
-                    }
-                }
-                if (i == argTypes.length) {
-                    return method.clone();
-                }
+            if (method.equals(oldMethod)) {
+                return method;
             }
         }
         return null;
@@ -344,12 +334,34 @@ public class AX2JTranslator {
             value = null;
         }
         
+        public AX2JMethod findMethod(AX2JMethod oldMethod) {
+            for (AX2JMethod method : relativeMethodList) {
+                if (method.equals(oldMethod)) {
+                    return method;
+                }
+            }
+            return null;
+        }
+        
         public void setValue(String value) {
             this.value = value;
         }
         
         public void addRelativeMethod(AX2JMethod method) {
-            relativeMethodList.add(method);
+            if (method.getName().equals("setType")) {
+                System.out.println();
+            }
+            if (relativeMethodList.size() == 1) {
+                if (relativeMethodList.get(0).getName().equals("")
+                    && !method.getName().equals("")) {
+                    relativeMethodList = new ArrayList<AX2JMethod>();
+                    relativeMethodList.add(method);
+                } else if (!method.getName().equals("")) {
+                    relativeMethodList.add(method);
+                }
+            } else {
+                relativeMethodList.add(method);
+            }
         }
         
         public QName getName() {
@@ -396,9 +408,12 @@ public class AX2JTranslator {
         private String[] args;
         
         public AX2JMethod(QName attributeName, String methodString) {
+            setMethod(methodString);
             relativeAttributeList = new ArrayList<AX2JAttribute>();
             args = null;
-            
+        }
+        
+        public void setMethod(String methodString) {
             //no relative method
             if (methodString.indexOf('(') == -1) {
                 methodName = "";
@@ -418,6 +433,12 @@ public class AX2JTranslator {
                     argTypes = new Class<?>[0];
                 }
             }
+        }
+        
+        public void setMethod(AX2JMethod newMethod) {
+            methodName = newMethod.getMethodName();
+            argTypes = newMethod.getArgTypes();
+            relativeAttributeList = newMethod.getRelativeAttributeList();
         }
         
         public void setArgs(String[] args) {
@@ -476,6 +497,22 @@ public class AX2JTranslator {
                 this.getMethodName() + "(" + argsBuffer +")";
             
             return methodString;
+        }
+        
+        public boolean equals(AX2JMethod method2) {
+            if (methodName.equals(method2.getName())) {
+                Class<?>[] argTypes2 = method2.getArgTypes();
+                int i = 0;
+                for (; i < argTypes.length; i++) {
+                    if (!argTypes[i].equals(argTypes2[i])) {
+                        break;
+                    }
+                }
+                if (i == argTypes.length) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
     

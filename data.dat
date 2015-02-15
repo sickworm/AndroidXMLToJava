@@ -10,7 +10,6 @@ View,android:backgroundTintMode,setBackgroundTintMode(Mode)
 View,android:clickable,setClickable(Boolean)
 View,android:contentDescription,setContentDescription(CharSequence)
 View,android:drawingCacheQuality,setDrawingCacheQuality(Integer)
-View,android:duplicateParentState,
 View,android:duplicateParentState,setDuplicateParentStateEnabled(Boolean)
 View,android:elevation,setElevation(Float)
 View,android:fadeScrollbars,setScrollbarFadingEnabled(Boolean)
@@ -287,7 +286,6 @@ LinearLayout,android:divider,setDividerDrawable(Drawable)
 LinearLayout,android:gravity,setGravity(Integer)
 LinearLayout,android:measureWithLargestChild,setMeasureWithLargestChildEnabled(Boolean)
 LinearLayout,android:orientation,setOrientation(Integer)
-LinearLayout,android:weightSum,
 LinearLayout,android:weightSum,setWeightSum(Float)
 
 //FrameLayout
@@ -318,13 +316,10 @@ Fragment,android:fragmentSharedElementEnterTransition,setSharedElementEnterTrans
 Fragment,android:fragmentSharedElementReturnTransition,setSharedElementReturnTransition(Transition)
 
 //ListView
-ListView,android:divider,
 ListView,android:divider,setDivider(Drawable)
-ListView,android:dividerHeight,
 ListView,android:dividerHeight,setDividerHeight(Float)
 ListView,android:entries,
 ListView,android:footerDividersEnabled,
-ListView,android:headerDividersEnabled,
 ListView,android:headerDividersEnabled,setHeaderDividersEnabled(Boolean)
 
 //ExpandableListView
@@ -506,30 +501,23 @@ GradientDrawable,android:centerColor,
 GradientDrawable,android:centerX,
 GradientDrawable,android:centerY,
 GradientDrawable,android:color,
-GradientDrawable,android:color,
 GradientDrawable,android:dashGap,
 GradientDrawable,android:dashWidth,
 GradientDrawable,android:endColor,
-GradientDrawable,android:gradientRadius,
 GradientDrawable,android:gradientRadius,setGradientRadius(Float)
 GradientDrawable,android:height,
 GradientDrawable,android:innerRadius,
 GradientDrawable,android:innerRadiusRatio,
 GradientDrawable,android:left,
 GradientDrawable,android:right,
-GradientDrawable,android:shape,
 GradientDrawable,android:shape,setType(Integer)
 GradientDrawable,android:startColor,
 GradientDrawable,android:thickness,
 GradientDrawable,android:thicknessRatio,
 GradientDrawable,android:top,
-GradientDrawable,android:type,
 GradientDrawable,android:type,setGradientType(Integer)
-GradientDrawable,android:useLevel,
-GradientDrawable,android:useLevel,
 GradientDrawable,android:useLevel,setUseLevel(Boolean)
 GradientDrawable,android:visible,
-GradientDrawable,android:width,
 GradientDrawable,android:width,
 GradientDrawable,android:radius,setCornerRadius(Float)
 
