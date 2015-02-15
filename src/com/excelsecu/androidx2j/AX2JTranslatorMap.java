@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import org.dom4j.Attribute;
+
 public class AX2JTranslatorMap{
     private static AX2JTranslatorMap translatorMap = null;
     private HashMap<Class<?>, AX2JTranslator> attribute2MethodMap = new LinkedHashMap<Class<?>, AX2JTranslator>();
@@ -16,11 +18,11 @@ public class AX2JTranslatorMap{
         return translatorMap;
     }
     
-    public void put(Class<?> clazz, AX2JTranslator translator) {
-        attribute2MethodMap.put(clazz, translator);
+    public void add(AX2JTranslator translator) {
+        attribute2MethodMap.put(translator.getType(), translator);
     }
     
-    public void put(String attributeString) {
+    public void add(String attributeString) {
         int index1 = attributeString.indexOf(',');
         int index2 = attributeString.indexOf(',', index1 + 1);
         
@@ -32,17 +34,28 @@ public class AX2JTranslatorMap{
         	name = attributeString.substring(index1 + 1, index2);
         }
         
-        put(getType(type), name, method);
+        add(getType(type), name, method);
     }
     
-    public void put(Class<?> clazz, String qNameString, String methodString) {
-        AX2JTranslator translator = attribute2MethodMap.get(clazz);
+    public void add(Class<?> type, String qNameString, String methodString) {
+        AX2JTranslator translator = attribute2MethodMap.get(type);
         if (translator == null) {
-            translator = new AX2JTranslator(clazz);
-            attribute2MethodMap.put(clazz, translator);
+            translator = new AX2JTranslator(type);
+            attribute2MethodMap.put(type, translator);
         }
         
         translator.add(qNameString, methodString);
+    }
+    
+    public String translate(Class<?> type, Attribute attribute) {
+        StringBuffer javaBlock = new StringBuffer();
+        AX2JTranslator translator = attribute2MethodMap.get(type);
+        if (translator == null) {
+            throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attribute.getQualifiedName());
+        } else {
+            javaBlock.append(translator.translate(attribute));
+        }
+        return javaBlock.toString();
     }
     
     public HashMap<Class<?>, AX2JTranslator> getMap() {

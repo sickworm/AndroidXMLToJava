@@ -53,13 +53,13 @@ public class AndroidDocConverter {
                 System.out.println(attribute.toString());
             }
             System.out.println("");
-            attrToMethodMap.put(translator.getType(), translator);
+            attrToMethodMap.add(translator);
 		}
         
         //some attributes don't shown in Android doc (like setEnabled), add them in here.
         System.out.println("Additional\n");
         for (String attribute : Config.ADDITION_LIST) {
-            attrToMethodMap.put(attribute);
+            attrToMethodMap.add(attribute);
         }
         
         System.out.println("Prasering system styles XML...\n");
@@ -147,7 +147,7 @@ public class AndroidDocConverter {
             String[] list = content.split("\n");
             for (String s : list) {
             	if (!(s.startsWith("//") || s.equals(""))) {
-                	attrToMethodMap.put(s);
+                	attrToMethodMap.add(s);
             	}
             }
         }

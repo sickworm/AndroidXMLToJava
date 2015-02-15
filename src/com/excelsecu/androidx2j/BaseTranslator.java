@@ -2,12 +2,9 @@ package com.excelsecu.androidx2j;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.dom4j.Attribute;
-
-import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
 
 import android.graphics.Color;
 import android.text.InputType;
@@ -25,7 +22,7 @@ import android.view.ViewGroup;
  */
 public class BaseTranslator {
     private static List<String> idList = new ArrayList<String>();
-    private static HashMap<String, String> map = null;
+    private static AX2JTranslatorMap map = null;
     private String extraMethod = "";
     private List<String> importList = new ArrayList<String>();
     
@@ -44,7 +41,7 @@ public class BaseTranslator {
     
 	public BaseTranslator(AX2JNode root) {
 		this.root = root;
-        map = AndroidDocConverter.getMap();
+        map = AX2JTranslatorMap.getInstance();
         init();
 	}
 	
@@ -79,155 +76,9 @@ public class BaseTranslator {
         return javaBlock;
 	}
 
-    protected String translateAttribute(Attribute attr, AX2JNode node) throws AX2JException {
-        String attrMethod = "";
-        String methodName = transAttrToMethod(attr, node.getType());
-        String methodValue = translateValue(attr);
-        attrMethod = methodName + "(" + methodValue + ")";
-        attrMethod = node.getObjectName() + "." + attrMethod + ";\n";
-        return attrMethod;
+    protected String translateAttribute(Attribute attribute, AX2JNode node) throws AX2JException {
+        return map.translate(node.getType(), attribute);
     }
-            
-	/**
-	 * Translate XML element's attribute to Android method without parameters.
-	 * @param attrName	The name of attribute.
-	 * @return Android method matches the attribute without parameters.
-	 */
-	protected String transAttrToMethod(Attribute a, Class<?> type) {
-	    //find the conversion between XML attribute and Java method in the match map.
-	    String attrName = a.getQualifiedName();
-	    String key = type.getSimpleName() + "$" + attrName;
-        if (!map.containsKey(key)) {
-            //find the conversion from its super class
-            while (Utils.isSupportClass(type.getSuperclass())) {
-                type = type.getSuperclass();
-                key = type.getSimpleName() + "$" + attrName;
-                if (map.containsKey(key))
-                    break;
-            }
-        }
-        String methodName = map.get(key);
-        if (methodName == null || methodName.equals("")) {
-            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, key);
-        }
-        
-        methodName = methodName.substring(0, methodName.indexOf("("));
-        return methodName;
-	}
-	
-	/**
-	 * Translate a XML attribute's value to a Java method's value.
-	 * @param attr the attribute to be translated
-	 * @return the value after translating
-	 */
-	protected String translateValue(Attribute attr) {
-	    String value = attr.getValue();
-        String attrName = attr.getQualifiedName();
-	    
-        //not strict enough, should check attrName both
-	    //dp, px, sp, float
-	    if (value.matches("[0-9.]+dp")) {
-            value = value.substring(0, value.length() - 2);
-            value = "(int) (" + value + " * scale + 0.5f)";
-	    } else if (value.matches("[0-9.]+sp")) {
-	        value = value.substring(0, value.length() - 2);
-	    } else if (value.matches("[0-9]+px")) {
-            value = value.substring(0, value.length() - 2);
-        } else if (value.equals("fill_parent") || value.equals("match_parent")) {
-            value = "ViewGroup.LayoutParams.MATCH_PARENT";
-        } else if (value.equals("wrap_content")) {
-            value = "ViewGroup.LayoutParams.WRAP_CONTENT";
-        } else if (value.matches("[0-9]+\\.[0-9]+") &&
-                !(attrName.contains("text") || attrName.contains("hint"))) {
-            value = value + "f";
-        }
-	    
-	    //id
-        else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
-	        value = value.substring(value.indexOf('/') + 1);
-	        value = Config.R_CLASS + ".id." + value;
-	    }
-        
-	    //string
-        else if (value.contains("@string/")) {
-	        value = value.substring(value.indexOf('/') + 1);
-            value = Config.R_CLASS + ".string." + value;
-            value = Config.RESOURCES_NAME + ".getString(" + value + ")";
-        } else if (attrName.equals("android:text") ||
-                attrName.equals("android:hint")) {
-            value = "\"" + value + "\"";
-        }
-	    
-	    //color
-	    else if (value.matches("#[0-9a-fA-F]+")) {
-	        if (value.length() == 4) {
-                value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
-                        value.charAt(3) + '0';
-	        } else if (value.length() == 5) {
-                value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
-                        value.charAt(3) + '0' + value.charAt(4) + '0';
-	        }
-	        value = "Color.parseColor(\"" + value + "\")";
-	    } else if (value.matches("@android:color/.+")) {
-	        value = value.substring(value.indexOf('/') + 1);
-	        value = value.toUpperCase();
-            value = "Color." + value;
-        } else if (value.matches("@color/.+")) {
-            value = value.substring(value.indexOf('/') + 1);
-            value = Config.R_CLASS + ".color." + value;
-            value = Config.RESOURCES_NAME + ".getColor(" + value + ")";
-        }
-	    
-	    //visibility
-	    else if (value.equals("gone") || value.equals("visibile") ||
-	            value.equals("invisibile")) {
-	        value = "View." + value.toUpperCase();
-	    }
-	    
-	    //drawable
-        else if (value.startsWith("@drawable/")) {
-            value = value.substring(value.indexOf('/') + 1);
-            value = Config.R_CLASS + ".drawable." + value;
-            if (attrName.contains("Color") ||
-                    attrName.contains("TintList")) {
-                value = "resources.getColorStateList(" + value + ")";
-            } else {
-                value = "resources.getDrawable(" + value + ")";
-            }
-        }
-	    
-        //orientation
-        else if (value.equals("vertical")) {
-            value = "LinearLayout.VERTICAL";
-        } else if (value.equals("horizontal")) {
-            value = "LinearLayout.HORIZONTAL";
-        }
-	    
-	    //gravity
-        else if (attrName.equals("android:gravity") ||
-                attrName.equals("android:layout_gravity")) {
-            value = Utils.prefixParams(value, "Gravity");
-        }
-	    
-	    //text
-        else if (attrName.equals("android:password")) {
-            value = "new PasswordTransformationMethod()";
-        } else if (attrName.equals("android:singleLine")) {
-            value = "new SingleLineTransformationMethod()";
-        } else if (attrName.equals("android:inputType")) {
-            String error = value; 
-            value = Config.INPUT_TYPE_MAP.get(value);
-            if (value == null) {
-                throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, error);
-            }
-            value = Utils.prefixParams(value, "InputType");
-        } else if (attrName.equals("android:ellipsize")) {
-            value = value.toUpperCase();
-            value = "TextUtils.TruncateAt." + value;
-        }
-	    
-        return value;
-	}
 	
 	/**
 	 * Find out what extra constant, id or import need to be added.
