@@ -171,6 +171,7 @@ public class AX2JTranslator {
      */
     protected String translateValue(AX2JAttribute attribute, AX2JMethod method) {
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS);
+        System.out.println(attribute);
         Class<?> argType = method.getArgTypes()[argOrder];
         String value = attribute.getValue();
         String attrName = attribute.getName().getQualifiedName();

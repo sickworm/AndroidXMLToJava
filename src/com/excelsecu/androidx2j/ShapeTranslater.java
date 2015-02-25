@@ -24,7 +24,6 @@ public class ShapeTranslater extends BaseTranslator {
         return extraMethod + javaBlock;
     }
     
-    @Override
     public String translateValue(Attribute attr) {
         String attrName = attr.getQualifiedName();
         String value = attr.getValue();
@@ -43,7 +42,8 @@ public class ShapeTranslater extends BaseTranslator {
 
         //nothing change
         if (value.equals(attr.getValue())) {
-            return super.translateValue(attr);
+            //return super.translateValue(attr);
+        	return value;
         } else {
             return value;
         }
