@@ -8,13 +8,13 @@ import android.graphics.drawable.Drawable;
 
 public class DrawableTranslator extends BaseTranslator{
 
-	public DrawableTranslator(File file) {
-		super(file);
-	}
-	
-	@Override
-	public String translate() {
-		File file = getFile();
+    public DrawableTranslator(File file) {
+        super(file);
+    }
+    
+    @Override
+    public String translate() {
+        File file = getFile();
         String content = "";
         if (!Utils.getFileExtension(file).equals("xml")) {
             String outPath = file.getPath();
@@ -25,7 +25,7 @@ public class DrawableTranslator extends BaseTranslator{
             //return object must put in the first line
             String className = Utils.getClassName(file);
             content += "InputStream inStream = " + className + ".class.getResourceAsStream(\"" +
-            		file.getPath().replace(Config.PROJECT_RES_PATH.replace('/', File.separatorChar), "/assets/").replace("\\", "/").replace('-', '_') + "\"); \n";
+                    file.getPath().replace(Config.PROJECT_RES_PATH.replace('/', File.separatorChar), "/assets/").replace("\\", "/").replace('-', '_') + "\"); \n";
             content += "Drawable drawable = Drawable.createFromStream(inStream" +
                     ", \"" + className +"\");\n";
             addImport(Drawable.class.getName());
@@ -43,5 +43,5 @@ public class DrawableTranslator extends BaseTranslator{
             setImportList(translator.getImportList());
         }
         return content;
-	}
+    }
 }

@@ -17,9 +17,9 @@ import android.graphics.drawable.ColorDrawable;
 public class LayoutTranslator extends BaseTranslator {
 
     public LayoutTranslator(File file) {
-		super(file);
-		AX2JNode.resetOrder();
-	}
+        super(file);
+        AX2JNode.resetOrder();
+    }
 
     @Override
     public String translate() {
@@ -30,7 +30,7 @@ public class LayoutTranslator extends BaseTranslator {
     }
     
     @Override
-	protected String translateNode(AX2JNode node) {
+    protected String translateNode(AX2JNode node) {
         String javaBlock = "";
         String newMethod = "";
         String nodeName = node.getObjectName();
@@ -45,10 +45,10 @@ public class LayoutTranslator extends BaseTranslator {
                         Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
             }
         } else {
-	        newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
-	                node.getLabelName() + "(" + node.constructorParams() + ");\n";
+            newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
+                    node.getLabelName() + "(" + node.constructorParams() + ");\n";
         }
-		    
+            
         javaBlock += newMethod;
         SpecialTranslator specialTranslater = new SpecialTranslator(node);
         javaBlock += specialTranslater.prebuild();
@@ -69,31 +69,31 @@ public class LayoutTranslator extends BaseTranslator {
         }
         javaBlock += "\n";
         
-	    //divider, the deviderHeight must set after divider in Java
+        //divider, the deviderHeight must set after divider in Java
         if (javaBlock.contains("setDivider(") && javaBlock.contains("setDividerHeight(")) {
-        	if (javaBlock.indexOf("setDivider(") > javaBlock.indexOf("setDividerHeight(")) {
-	        	String[] javaList = javaBlock.split("\\n");
-	        	String divider = "";
-	        	String dividerHeight = "";
-	        	for (String code : javaList) {
-	        		if (code.contains("setDivider(")) {
-	         			divider = code;
-	         		} else if (code.contains("setDividerHeight(")) {
-	         			dividerHeight = code;
-	         		}
-	        	}
-	        	String tmp = "<!REPLACE_BLOCK>";
-	        	javaBlock = javaBlock.replace(divider, tmp);
-	        	javaBlock = javaBlock.replace(dividerHeight, divider);
-	        	javaBlock = javaBlock.replace(tmp, dividerHeight);
-        	}
+            if (javaBlock.indexOf("setDivider(") > javaBlock.indexOf("setDividerHeight(")) {
+                String[] javaList = javaBlock.split("\\n");
+                String divider = "";
+                String dividerHeight = "";
+                for (String code : javaList) {
+                    if (code.contains("setDivider(")) {
+                         divider = code;
+                     } else if (code.contains("setDividerHeight(")) {
+                         dividerHeight = code;
+                     }
+                }
+                String tmp = "<!REPLACE_BLOCK>";
+                javaBlock = javaBlock.replace(divider, tmp);
+                javaBlock = javaBlock.replace(dividerHeight, divider);
+                javaBlock = javaBlock.replace(tmp, dividerHeight);
+            }
         }
         
         return javaBlock;
-	}
+    }
     
-	private String translateAttribute(Attribute attr, AX2JNode node,
-	        SpecialTranslator specialTranslator) throws AX2JException {
+    private String translateAttribute(Attribute attr, AX2JNode node,
+            SpecialTranslator specialTranslator) throws AX2JException {
         String attrMethod = "";
         try {
             attrMethod = super.translateAttribute(attr, node);
@@ -109,10 +109,10 @@ public class LayoutTranslator extends BaseTranslator {
         }
         
         return attrMethod;
-	}
-	
-	
-	
+    }
+    
+    
+    
     @Override
     protected String transAttrToMethod(Attribute a, Class<?> type) {
         String methodName = super.transAttrToMethod(a, type);
@@ -134,35 +134,35 @@ public class LayoutTranslator extends BaseTranslator {
     }
 
     @Override
-	protected String translateValue(Attribute attr) {
-		String value = super.translateValue(attr);
-		
-		//divider
-    	String attrName = attr.getQualifiedName();
-		if (attrName.equals("android:divider")) {
-			if (value.matches("Color\\.parseColor\\(\"#[0-9a-fA-F]+\"\\)")) {
-        		value = "new ColorDrawable(" + value + ")";
-			}
+    protected String translateValue(Attribute attr) {
+        String value = super.translateValue(attr);
+        
+        //divider
+        String attrName = attr.getQualifiedName();
+        if (attrName.equals("android:divider")) {
+            if (value.matches("Color\\.parseColor\\(\"#[0-9a-fA-F]+\"\\)")) {
+                value = "new ColorDrawable(" + value + ")";
+            }
         }
-		
-		return value;
-	}
+        
+        return value;
+    }
     
-	@Override
-	protected void extraHandle(AX2JNode node, Attribute attr) {
-		super.extraHandle(node, attr);
-		
-		//divider
-    	String attrName = attr.getQualifiedName();
-		String attrValue = attr.getValue();
-		if (attrName.equals("android:divider")) {
-			if (attrValue.matches("#[0-9a-fA-F]+")) {
-				addImport(ColorDrawable.class.getName());
-			}
+    @Override
+    protected void extraHandle(AX2JNode node, Attribute attr) {
+        super.extraHandle(node, attr);
+        
+        //divider
+        String attrName = attr.getQualifiedName();
+        String attrValue = attr.getValue();
+        if (attrName.equals("android:divider")) {
+            if (attrValue.matches("#[0-9a-fA-F]+")) {
+                addImport(ColorDrawable.class.getName());
+            }
         }
-	}
+    }
 
-	/**
+    /**
      * Handle the method not exists in the attr-to-method map.
      * @author ch
      *
@@ -416,14 +416,14 @@ public class LayoutTranslator extends BaseTranslator {
         private String buildStyle() {
             String styleValue = node.attributeValue("style");
             if (styleValue == null) {
-            	return "";
+                return "";
             }
             
             String javaBlock = "";
             try {
                 javaBlock += "/** " + styleValue + " block **/\n";
                 List<Attribute> styleAttrList = new ArrayList<Attribute>();
-            	buildStyleAttrList(styleValue, styleAttrList);
+                buildStyleAttrList(styleValue, styleAttrList);
                 for (Attribute a : styleAttrList) {
                     String attrMethod = translateAttribute(a, node, this);
                     if (!attrMethod.startsWith("//")) {
@@ -444,7 +444,7 @@ public class LayoutTranslator extends BaseTranslator {
             //if there is a parent, first handle the parent
             String parent = style.parent;
             if (parent != null && !parent.equals("")) {
-            	buildStyleAttrList(parent, styleAttrList);
+                buildStyleAttrList(parent, styleAttrList);
             }
             
             //remove the same attribute, the new replace the old

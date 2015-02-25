@@ -15,8 +15,8 @@ public class Config {
     public static final String NOTHING = " ";
     
     @SuppressWarnings("deprecation")
-	public static final Class<?>[] CLASSES_LIST = {
-    	/** Super **/
+    public static final Class<?>[] CLASSES_LIST = {
+        /** Super **/
         android.view.View.class,
         android.view.ViewGroup.class,
         android.widget.AdapterView.class,
@@ -24,7 +24,7 @@ public class Config {
         android.widget.AbsListView.class,
         android.widget.CompoundButton.class,
         
-    	/** Form Widgets **/
+        /** Form Widgets **/
         android.widget.Button.class,
         android.widget.ToggleButton.class,
         android.widget.CheckBox.class,
@@ -53,9 +53,9 @@ public class Config {
         android.widget.TableRow.class,
         android.support.v7.widget.Space.class,
         android.widget.Space.class,
-    	android.app.Fragment.class,
-    	
-    	/** Composite **/
+        android.app.Fragment.class,
+        
+        /** Composite **/
         android.widget.ListView.class,
         android.widget.ExpandableListView.class,
         android.widget.GridView.class,
@@ -118,25 +118,25 @@ public class Config {
      * some attributes don't shown in Android doc, add them in here
      */
     public static final String[] ADDITION_LIST = new String[]
-		{
-	        "View,android:enabled,setEnabled(boolean)",
+        {
+            "View,android:enabled,setEnabled(boolean)",
             "View,android:duplicateParentState,setDuplicateParentStateEnabled(boolean)",
             
-	        "RadioButton,android:checked,setChecked(boolean)",
-	        "LinearLayout,android:weightSum,setWeightSum(float)",
-	        "View,android:background,setBackground(Drawable)",
-	        
-	        "GradientDrawable,android:shape,setType(int)",
-	        "GradientDrawable,android:type,setGradientType(int)",
+            "RadioButton,android:checked,setChecked(boolean)",
+            "LinearLayout,android:weightSum,setWeightSum(float)",
+            "View,android:background,setBackground(Drawable)",
+            
+            "GradientDrawable,android:shape,setType(int)",
+            "GradientDrawable,android:type,setGradientType(int)",
             "GradientDrawable,android:gradientRadius,setGradientRadius(float)",
-	        "GradientDrawable,android:useLevel,setUseLevel(boolean)",
-	        //"GradientDrawable,android:angle,setOrientation(int)",    //use in API 16 or higher
-	        "GradientDrawable,android:radius,setCornerRadius(float)",
-	        
+            "GradientDrawable,android:useLevel,setUseLevel(boolean)",
+            //"GradientDrawable,android:angle,setOrientation(int)",    //use in API 16 or higher
+            "GradientDrawable,android:radius,setCornerRadius(float)",
+            
             "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean)",
             "ListView,android:divider,setDivider(Drawable)",
             "ListView,android:dividerHeight,setDividerHeight(float)",
-    	};
+        };
     
     /**the local Android doc path from SDK Manager**/
     public static final String ANDROID_DOCS_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";

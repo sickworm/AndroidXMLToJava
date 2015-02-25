@@ -30,8 +30,8 @@ public class AX2JTranslatorMap{
         String name = attributeString.substring(index1 + 1);
         String method = "";
         if (index2 != -1) { 
-        	method = attributeString.substring(index2 + 1);
-        	name = attributeString.substring(index1 + 1, index2);
+            method = attributeString.substring(index2 + 1);
+            name = attributeString.substring(index1 + 1, index2);
         }
         
         add(getType(type), name, method);
@@ -48,14 +48,21 @@ public class AX2JTranslatorMap{
     }
     
     public String translate(Class<?> type, Attribute attribute) {
-        StringBuffer javaBlock = new StringBuffer();
-        AX2JTranslator translator = attribute2MethodMap.get(type);
-        if (translator == null) {
-            throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attribute.getQualifiedName());
-        } else {
-            javaBlock.append(translator.translate(attribute));
+        String javaBlock = "";
+        while (true) {
+            AX2JTranslator translator = attribute2MethodMap.get(type);
+            if (translator == null) {
+                javaBlock = attribute.asXML() + "\t//not support";
+                break;
+            } else {
+                try {
+                    javaBlock = translator.translate(attribute);
+                } catch(AX2JException e) {
+                    type = type.getSuperclass();
+                }
+            }
         }
-        return javaBlock.toString();
+        return javaBlock;
     }
     
     public HashMap<Class<?>, AX2JTranslator> getMap() {
@@ -72,14 +79,14 @@ public class AX2JTranslatorMap{
     }
     
     public String toString() {
-    	StringBuffer content = new StringBuffer();
-    	Iterator<Entry<Class<?>, AX2JTranslator>> iterator = attribute2MethodMap.entrySet().iterator();
-    	while (iterator.hasNext()) {
-    		Entry<Class<?>, AX2JTranslator> entry = iterator.next();
-    		AX2JTranslator translator = entry.getValue();
-    		content.append("//" + translator.getType().getSimpleName() + "\n");
-    		content.append(translator.toString() + "\n");
-    	}
-    	return content.toString();
+        StringBuffer content = new StringBuffer();
+        Iterator<Entry<Class<?>, AX2JTranslator>> iterator = attribute2MethodMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<Class<?>, AX2JTranslator> entry = iterator.next();
+            AX2JTranslator translator = entry.getValue();
+            content.append("//" + translator.getType().getSimpleName() + "\n");
+            content.append(translator.toString() + "\n");
+        }
+        return content.toString();
     }
 }

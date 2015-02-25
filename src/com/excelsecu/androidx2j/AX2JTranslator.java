@@ -149,8 +149,19 @@ public class AX2JTranslator {
         return type;
     }
     
-    public String translate(Attribute attribute) {
-        return "";
+    public String translate(Attribute attr) {
+        AX2JAttribute attribute = findAttribute(attr.getQName());
+        if (attribute == null) {
+            throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
+        }
+        
+        //currently not support multi relative method, default choose the first one
+        AX2JMethod method = attribute.getRelativeMethodList().get(0);
+        if (method == null) {
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
+        }
+        
+        return method.getName() + "(" + translateValue(attribute, method) + ")";
     }
     
     /**
@@ -158,12 +169,13 @@ public class AX2JTranslator {
      * @param attr the attribute to be translated
      * @return the value after translating
      */
-    protected String translateValue(AX2JAttribute attribute) {
-        Class<?> type = getType();
+    protected String translateValue(AX2JAttribute attribute, AX2JMethod method) {
+        int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS);
+        Class<?> argType = method.getArgTypes()[argOrder];
         String value = attribute.getValue();
         String attrName = attribute.getName().getQualifiedName();
         
-        if (type.equals(Integer.class)) {
+        if (argType.equals(Integer.class)) {
             //dp, px, sp
             if (value.matches("[0-9.]+dp")) {
                 value = value.substring(0, value.length() - 2);
@@ -234,12 +246,12 @@ public class AX2JTranslator {
             }
         }
         
-        else if (type.equals(Float.class)) {
+        else if (argType.equals(Float.class)) {
             //float
             value = value + "f";
         }
         
-        else if (type.equals(Drawable.class) || type.equals(ColorStateList.class)) {
+        else if (argType.equals(Drawable.class) || argType.equals(ColorStateList.class)) {
             //drawable
             if (value.startsWith("@drawable/")) {
                 value = value.substring(value.indexOf('/') + 1);
@@ -253,7 +265,7 @@ public class AX2JTranslator {
             }
         }
         
-        else if (type.equals(TransformationMethod.class)) {
+        else if (argType.equals(TransformationMethod.class)) {
             //text
             if (attrName.equals("android:password")) {
                 value = "new PasswordTransformationMethod()";
@@ -288,32 +300,32 @@ public class AX2JTranslator {
     }
     
     public String toString() {
-    	StringBuffer content = new StringBuffer();
-    	for (AX2JAttribute attribute : attributeList) {
-    		content.append(attribute.toString());
-    	}
-    	return content.toString();
+        StringBuffer content = new StringBuffer();
+        for (AX2JAttribute attribute : attributeList) {
+            content.append(attribute.toString());
+        }
+        return content.toString();
     }
     
     public final class AX2JAttribute implements Cloneable {
         /** normal attribute **/
         public static final int TYPE_NORMAL = 0x00000000;
-        /** method has api limit. Range 0x00000100 - 0x000001ff**/
-        public static final int TYPE_API_LIMIT = 0x00000100;
-        /** method has priority in Java method list. Range 0x00000200 - 0x000002ff **/
-        public static final int TYPE_PRIORITY = 0x00000200;
-        /** method has multi-arguments. Range 0x00000400 - 0x000004ff **/
-        public static final int TYPE_ARGUMENTS = 0x00000400;
-        /** attribute for LayoutParams **/
-        public static final int TYPE_LAYOUT_PARAMETER = 0x00010000;
+        /** method has api limit. Range 0x00000000 - 0x000000ff **/
+        public static final int TYPE_API_LIMIT = 0x00000ff;
+        /** method has priority in Java method list. Range 0x00000100 - 0x00000f00 **/
+        public static final int TYPE_PRIORITY = 0x00000f00;
+        /** method has multi-arguments. Range 0x00001000 - 0x0000f000 **/
+        public static final int TYPE_ARGUMENTS = 0x0000f000;
+        /** attribute for LayoutParams. 0x00100000 **/
+        public static final int TYPE_LAYOUT_PARAMETER = 0x00100000;
         /** use style resource **/
         public static final int TYPE_STYLE = 0x00020000;
         /** assign variable directly **/
-        public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00040000;
+        public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00400000;
         /** use reflect to assign variable **/
-        public static final int TYPE_VARIABLE_REFLECTION = 0x00080000;
+        public static final int TYPE_VARIABLE_REFLECTION = 0x00800000;
         /** use reflect to invoke method **/
-        public static final int TYPE_METHOD_REFLECTION = 0x00100000;
+        public static final int TYPE_METHOD_REFLECTION = 0x01000000;
         
         private QName name;
         private List<AX2JMethod> relativeMethodList;
@@ -348,9 +360,6 @@ public class AX2JTranslator {
         }
         
         public void addRelativeMethod(AX2JMethod method) {
-            if (method.getName().equals("setType")) {
-                System.out.println();
-            }
             if (relativeMethodList.size() == 1) {
                 if (relativeMethodList.get(0).getName().equals("")
                     && !method.getName().equals("")) {
@@ -398,6 +407,47 @@ public class AX2JTranslator {
             }
             
             return attribute;
+        }
+        
+        public int getTypeValue(int mask) {
+            int value = methodType & mask;
+            switch(mask) {
+                case TYPE_NORMAL:
+                    break;
+                case TYPE_API_LIMIT:
+                    if (value == 0) {
+                        value = 1;
+                    }
+                    break;
+                case TYPE_PRIORITY:
+                    value = value >> 8;
+                    if (value == 0) {
+                        value = AX2JMethodBlock.PRIORITY_DEFAULT;
+                    }
+                    break;
+                case TYPE_ARGUMENTS:
+                    value = value >> 12;
+                    if (value == 0) {
+                        value = 1;
+                    }
+                    break;
+                case TYPE_LAYOUT_PARAMETER:
+                    value = value >> 20;
+                    break;
+                case TYPE_STYLE:
+                    value = value >> 21;
+                    break;
+                case TYPE_VARIABLE_ASSIGNMENT:
+                    value = value >> 22;
+                    break;
+                case TYPE_VARIABLE_REFLECTION:
+                    value = value >> 23;
+                    break;
+                case TYPE_METHOD_REFLECTION:
+                    value = value >> 24;
+                    break;
+            }
+            return value;
         }
     }
     
@@ -524,6 +574,7 @@ public class AX2JTranslator {
         public static final int PRIORITY_THIRDLY_LAST = 5;
         public static final int PRIORITY_SECONDLY_LAST = 6;
         public static final int PRIORITY_LAST = 7;
+        public static final int PRIORITY_DEFAULT = PRIORITY_NORMAL;
         public String content;
         public int priority;
         

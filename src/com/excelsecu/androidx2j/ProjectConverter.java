@@ -50,7 +50,7 @@ public class ProjectConverter {
         }
         
         addCustomWidget();
-    	
+        
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
             throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
@@ -107,7 +107,7 @@ public class ProjectConverter {
             }
             if (f.isFile() && f.getName().endsWith(".xml")) {
                 try {
-                	LayoutTranslator translator = new LayoutTranslator(f);
+                    LayoutTranslator translator = new LayoutTranslator(f);
                     String content = translator.translate();
                     
                     try {
@@ -189,16 +189,16 @@ public class ProjectConverter {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
             System.out.println("Analysing " + f.getPath() + "...");
-        	DrawableTranslator translator = new DrawableTranslator(f);
-        	String content = translator.translate();
+            DrawableTranslator translator = new DrawableTranslator(f);
+            String content = translator.translate();
 
             String id = Utils.getClassName(f);
             if (!Utils.hasString(drawableRList, id)) {
                 drawableRList.add(id);
             }
-        	if (content.equals(""))
-        		continue;
-        	
+            if (content.equals(""))
+                continue;
+            
             //package name can't use '-'
             File outFile = new File(f.getPath().replace('-', '_'));
             content = Utils.buildJavaFile(outFile, content, translator.getImportList(), drawableRList);

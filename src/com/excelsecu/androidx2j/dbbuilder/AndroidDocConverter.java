@@ -39,17 +39,17 @@ public class AndroidDocConverter {
     private static HashMap<String, AX2JStyle> systemStylesMap = new LinkedHashMap<String, AX2JStyle>();
     private static HashMap<String, AX2JStyle> systemThemesMap = new LinkedHashMap<String, AX2JStyle>();
     
-	public static void main(String[] argv) throws DocumentException {
+    public static void main(String[] argv) throws DocumentException {
         System.out.println("Prasering Android documents...\n");
         
-		String[] listPage = listPage();
+        String[] listPage = listPage();
         for (int i = 0; i < listPage.length; i++) {
             String path = listPage[i];
-		    System.out.println(path + "\n");
-		    AX2JTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
-		    System.out.println(translator + "\n");
+            System.out.println(path + "\n");
+            AX2JTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
+            System.out.println(translator + "\n");
             attrToMethodMap.add(translator);
-		}
+        }
         
         //some attributes don't shown in Android doc (like setEnabled), add them in here.
         System.out.println("Additional\n");
@@ -66,10 +66,10 @@ public class AndroidDocConverter {
         System.out.println("Generating data.dat...\n");
         generateDat();
         System.out.println("Done!");
-	}
-	
-	private static void buildSystem(String path, HashMap<String, AX2JStyle> map) throws DocumentException {
-	    Document document;
+    }
+    
+    private static void buildSystem(String path, HashMap<String, AX2JStyle> map) throws DocumentException {
+        Document document;
         document = new SAXReader().read(path).getDocument();
         AX2JNode systemStylesNode = new AX2JParser(document.getRootElement()).parse();
         for (AX2JNode n : systemStylesNode.getChildren()) {
@@ -97,30 +97,30 @@ public class AndroidDocConverter {
                 map.put(style.name, style);
             }
         }
-	}
-	
-	private static void generateDat() {
-	    File dat = new File(Config.DAT_PATH);
-	    if (dat.isFile()) {
-	        dat.delete();
-	    }
-	    
-	    appendFile(dat.getPath(), Config.DAT_COMMENT + "\n");
-	    
-	    StringBuffer mapString = new StringBuffer();
-	    mapString.append(attrToMethodMap.toString());
-	    mapString = mapString.insert(0, Config.DAT_BLOCK + "\n");
-	    mapString = mapString.insert(mapString.length(), "\n" + Config.DAT_BLOCK);
-	    appendFile(dat.getPath(), mapString + "\n\n");
-	    
+    }
+    
+    private static void generateDat() {
+        File dat = new File(Config.DAT_PATH);
+        if (dat.isFile()) {
+            dat.delete();
+        }
+        
+        appendFile(dat.getPath(), Config.DAT_COMMENT + "\n");
+        
+        StringBuffer mapString = new StringBuffer();
+        mapString.append(attrToMethodMap.toString());
+        mapString = mapString.insert(0, Config.DAT_BLOCK + "\n");
+        mapString = mapString.insert(mapString.length(), "\n" + Config.DAT_BLOCK);
+        appendFile(dat.getPath(), mapString + "\n\n");
+        
         generateSystem(systemStylesMap, Config.STYLE_BLOCK);
-	    
-	    generateSystem(systemThemesMap, Config.THEME_BLOCK);
-	}
-	
-	private static void generateSystem(HashMap<String, AX2JStyle> map, String block) {
-	    File dat = new File(Config.DAT_PATH);
-	    Iterator<Entry<String, AX2JStyle>> styleIterator = map.entrySet().iterator();
+        
+        generateSystem(systemThemesMap, Config.THEME_BLOCK);
+    }
+    
+    private static void generateSystem(HashMap<String, AX2JStyle> map, String block) {
+        File dat = new File(Config.DAT_PATH);
+        Iterator<Entry<String, AX2JStyle>> styleIterator = map.entrySet().iterator();
         StringBuffer styleString = new StringBuffer();
         while (styleIterator.hasNext()) {
             AX2JStyle style = styleIterator.next().getValue();
@@ -129,9 +129,9 @@ public class AndroidDocConverter {
         styleString.insert(0, block + "\n");
         styleString.insert(styleString.length(), block);
         appendFile(dat.getPath(), styleString + "\n\n");
-	}
-	
-	public static AX2JTranslatorMap getMap() {
+    }
+    
+    public static AX2JTranslatorMap getMap() {
         if (attrToMethodMap.getMap().size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
@@ -141,24 +141,24 @@ public class AndroidDocConverter {
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split("\n");
             for (String s : list) {
-            	if (!(s.startsWith("//") || s.equals(""))) {
-                	attrToMethodMap.add(s);
-            	}
+                if (!(s.startsWith("//") || s.equals(""))) {
+                    attrToMethodMap.add(s);
+                }
             }
         }
         
         return attrToMethodMap;
-	}
-	
-	public static HashMap<String, AX2JStyle> getSystemStyles() {
-		return getSystem(systemStylesMap, Config.STYLE_BLOCK);
-	}
-	
-	public static HashMap<String, AX2JStyle> getSystemThemes() {
-		return getSystem(systemThemesMap, Config.THEME_BLOCK);
-	}
-	
-	public static HashMap<String, AX2JStyle> getSystem(HashMap<String, AX2JStyle> map, String block) {
+    }
+    
+    public static HashMap<String, AX2JStyle> getSystemStyles() {
+        return getSystem(systemStylesMap, Config.STYLE_BLOCK);
+    }
+    
+    public static HashMap<String, AX2JStyle> getSystemThemes() {
+        return getSystem(systemThemesMap, Config.THEME_BLOCK);
+    }
+    
+    public static HashMap<String, AX2JStyle> getSystem(HashMap<String, AX2JStyle> map, String block) {
         if (map.size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
@@ -169,48 +169,48 @@ public class AndroidDocConverter {
             String content = readFile(dat.getPath(), block);
             String[] stylesString = content.split("\n");
             for (String styleString : stylesString) {
-            	int index1 = styleString.indexOf(',');
-            	int index2 = styleString.indexOf(',', index1 + 1);
-            	String name = styleString.substring(0, index1);
-            	String parent = styleString.substring(index1 + 1, index2);
-            	String attrs = styleString.substring(index2 + 1);
-            	
+                int index1 = styleString.indexOf(',');
+                int index2 = styleString.indexOf(',', index1 + 1);
+                String name = styleString.substring(0, index1);
+                String parent = styleString.substring(index1 + 1, index2);
+                String attrs = styleString.substring(index2 + 1);
+                
                 Element element = document.addElement("container");
-            	if (!attrs.equals("")) {
-                	String[] attrsArray = attrs.split(",");
+                if (!attrs.equals("")) {
+                    String[] attrsArray = attrs.split(",");
                     for (int i = 0; i < attrsArray.length; i++) {
-                    	String attrName = attrsArray[i].substring(0, attrsArray[i].indexOf('='));
-                    	String attrValue = attrsArray[i].substring(attrsArray[i].indexOf('=') + 1);
-                    	attrValue = attrValue.substring(1, attrValue.length() - 1);
+                        String attrName = attrsArray[i].substring(0, attrsArray[i].indexOf('='));
+                        String attrValue = attrsArray[i].substring(attrsArray[i].indexOf('=') + 1);
+                        attrValue = attrValue.substring(1, attrValue.length() - 1);
                         element.addAttribute(attrName, attrValue);
                     }
-            	}
+                }
                 @SuppressWarnings("unchecked")
-				AX2JStyle theme = new AX2JStyle(name, parent, element.attributes());
+                AX2JStyle theme = new AX2JStyle(name, parent, element.attributes());
                 map.put(name, theme);
                 document.remove(element);
             }
         }
         
         return map;
-	}
-	
-	/**
-	 * Include all the HTML path which has XML attribute to java method table.
-	 * @return The list of XML attribute to Java method table.
-	 */
-	public static String[] listPage() {
-	    String[] list = new String[Config.CLASSES_LIST.length];
-		for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
-		    String name = Config.CLASSES_LIST[i].getName();
-		    name = name.replace('.', '/');
-		    name = Config.ANDROID_DOCS_PATH + name + ".html";
-	        list[i] = name;
-		}
-		return list;
-	}
-	
-	/**
+    }
+    
+    /**
+     * Include all the HTML path which has XML attribute to java method table.
+     * @return The list of XML attribute to Java method table.
+     */
+    public static String[] listPage() {
+        String[] list = new String[Config.CLASSES_LIST.length];
+        for (int i = 0; i < Config.CLASSES_LIST.length; i++) {
+            String name = Config.CLASSES_LIST[i].getName();
+            name = name.replace('.', '/');
+            name = Config.ANDROID_DOCS_PATH + name + ".html";
+            list[i] = name;
+        }
+        return list;
+    }
+    
+    /**
      * Write a file
      * @param fileName
      * @param content

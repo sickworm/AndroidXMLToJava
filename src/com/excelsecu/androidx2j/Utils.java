@@ -183,15 +183,15 @@ public class Utils {
         
         //add import list
         if (subPath.equals("values")) {
-	        if (importList == null) {
-	        	importList = new ArrayList<String>();
-	        }
-        	if (!Utils.hasString(importList, Config.PACKAGE_NAME + "." + Config.R_CLASS)) {
-        		importList.add(Config.PACKAGE_NAME + "." + Config.R_CLASS);
-        	}
-        	if (!Utils.hasString(importList, HashMap.class.getName())) {
-        		importList.add(HashMap.class.getName());
-        	}
+            if (importList == null) {
+                importList = new ArrayList<String>();
+            }
+            if (!Utils.hasString(importList, Config.PACKAGE_NAME + "." + Config.R_CLASS)) {
+                importList.add(Config.PACKAGE_NAME + "." + Config.R_CLASS);
+            }
+            if (!Utils.hasString(importList, HashMap.class.getName())) {
+                importList.add(HashMap.class.getName());
+            }
         }
         for (String s : importList) {
             title += "import " + s + ";\n";
@@ -232,31 +232,31 @@ public class Utils {
                     "return " + returnObject + ";\n";
             return title + content + "\t}\n}";
         } else {
-        	//build a map
-        	String fileName = file.getPath();
-        	String type = "";
-        	String rClass = "";
-        	fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.indexOf('.'));
-        	switch(fileName) {
-        	case "strings":
-        		type = String.class.getSimpleName();
-        		rClass = "string";
-        		break;
-        	case "colors":
-        		type = Integer.class.getSimpleName();
-        		rClass = "color";
-        		break;
-        	default:
-        		type = String.class.getSimpleName();
-        		rClass = "string";
-        		break;
-        	}
-        	String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n\t{\n";
-        	for (String id : idList) {
-        		map += "\t\tput(" + Config.R_CLASS + "." + rClass + "." + id + ", " + id + ");\n";
-        	}
-        	map += "\t}\n};\n";
-        	content = content + map;
+            //build a map
+            String fileName = file.getPath();
+            String type = "";
+            String rClass = "";
+            fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.indexOf('.'));
+            switch(fileName) {
+            case "strings":
+                type = String.class.getSimpleName();
+                rClass = "string";
+                break;
+            case "colors":
+                type = Integer.class.getSimpleName();
+                rClass = "color";
+                break;
+            default:
+                type = String.class.getSimpleName();
+                rClass = "string";
+                break;
+            }
+            String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n\t{\n";
+            for (String id : idList) {
+                map += "\t\tput(" + Config.R_CLASS + "." + rClass + "." + id + ", " + id + ");\n";
+            }
+            map += "\t}\n};\n";
+            content = content + map;
             content = "\t" + content.replace("\n", "\n\t");
             content = content.substring(0, content.lastIndexOf('\t'));
             return title + content + "}";

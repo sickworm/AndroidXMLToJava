@@ -35,28 +35,28 @@ public class BaseTranslator {
     public BaseTranslator(File file) {
         this.file = file;
         if (Utils.getFileExtension(file).equals("xml")) {
-        	init();
+            init();
         }
     }
     
-	public BaseTranslator(AX2JNode root) {
-		this.root = root;
+    public BaseTranslator(AX2JNode root) {
+        this.root = root;
         map = AX2JTranslatorMap.getInstance();
         init();
-	}
-	
-	protected void init() {
-		if (root == null) {
-	        AX2JParser parser = new AX2JParser(file);
-	        root = parser.parse();
-		}
-	}
-	
-	public String translate() {
+    }
+    
+    protected void init() {
+        if (root == null) {
+            AX2JParser parser = new AX2JParser(file);
+            root = parser.parse();
+        }
+    }
+    
+    public String translate() {
         return translate(getRoot());
-	}
-	
-	protected String translate(AX2JNode node) {
+    }
+    
+    protected String translate(AX2JNode node) {
         String javaBlock = "";
         String nodeJavaBlock = translateNode(node);
         javaBlock += nodeJavaBlock;
@@ -65,28 +65,28 @@ public class BaseTranslator {
         }
         
         return javaBlock;
-    }	
-	
-	protected String translateNode(AX2JNode node) {
-	    String javaBlock = "";
+    }    
+    
+    protected String translateNode(AX2JNode node) {
+        String javaBlock = "";
         for (Attribute a : node.getAttributes()) {
             javaBlock += translateAttribute(a, node);
         }
         
         return javaBlock;
-	}
+    }
 
     protected String translateAttribute(Attribute attribute, AX2JNode node) throws AX2JException {
         return map.translate(node.getType(), attribute);
     }
-	
-	/**
-	 * Find out what extra constant, id or import need to be added.
-	 * @param attrName
-	 * @param attrValue
-	 */
-	protected void extraHandle(AX2JNode node, Attribute attr) {
-		addImport(node.getType().getName());
+    
+    /**
+     * Find out what extra constant, id or import need to be added.
+     * @param attrName
+     * @param attrValue
+     */
+    protected void extraHandle(AX2JNode node, Attribute attr) {
+        addImport(node.getType().getName());
         
         String attrValue = attr.getValue();
         String attrName = attr.getQualifiedName();
@@ -111,7 +111,7 @@ public class BaseTranslator {
                 idList.add(id);
             }
         } else if (attrValue.matches("#[0-9a-fA-F]+") ||
-        		attrValue.matches("@android:color/.+")) {
+                attrValue.matches("@android:color/.+")) {
             addImport(Color.class.getName());
         } else if (attrName.equals("android:gravity") ||
                 attr.getQualifiedName().equals("android:layout_gravity")) {
@@ -136,32 +136,32 @@ public class BaseTranslator {
                 resources = true;
             }
         }
-	}
+    }
 
-	/**
-	 *  Add the class to the import list. If already exists, ignore. 
-	 *  @param className the class try to be added in import list
-	 */
+    /**
+     *  Add the class to the import list. If already exists, ignore. 
+     *  @param className the class try to be added in import list
+     */
     protected void addImport(String className) {
-    	if (className == null || className.equals("") ||
-    			className.equals(Void.class.getName())) {
-    		return;
-    	}
+        if (className == null || className.equals("") ||
+                className.equals(Void.class.getName())) {
+            return;
+        }
         if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
     }
     
     public AX2JNode getRoot() {
-    	return root;
+        return root;
     }
     
     public Class<?> getType() {
-    	return root.getType();
+        return root.getType();
     }
     
     public File getFile() {
-    	return file;
+        return file;
     }
     
     public String getExtraMethod() {

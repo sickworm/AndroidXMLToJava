@@ -15,7 +15,7 @@ import org.dom4j.io.SAXReader;
  *
  */
 public class AX2JParser {
-	private String path;
+    private String path;
     private Element rootElement;
 
     public AX2JParser(File file) {

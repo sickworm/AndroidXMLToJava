@@ -22,7 +22,7 @@ public class AX2JNode implements Cloneable {
     private Class<?> type = null;
     
     @SuppressWarnings("unchecked")
-	public AX2JNode(AX2JNode parent, Element element) {
+    public AX2JNode(AX2JNode parent, Element element) {
         if (element == null) {
             throw new AX2JException(AX2JException.PARAMETER_NOT_INITIALIZE,
                     "AXMLNode constructor Element object is null");
@@ -39,44 +39,44 @@ public class AX2JNode implements Cloneable {
         }
         initType();
     }
-	
+    
     /**
      * Find out the Java class relative to the XML label
      */
-	@SuppressWarnings("unchecked")
-	protected void initType() {
+    @SuppressWarnings("unchecked")
+    protected void initType() {
         type = Utils.matchClass(element.getName());
         if (type.equals(Void.class)) {
-        	Class <?> parentType = CustomWidget.findParentByLabelName(getLabelName());
-        	if (!parentType.equals(Void.class)) {
-        		type = parentType;
-        	} else if (getLabelName().equals("include")) {
-        		type = View.class;
-        	} else if (getLabelName().equals("selector")){
+            Class <?> parentType = CustomWidget.findParentByLabelName(getLabelName());
+            if (!parentType.equals(Void.class)) {
+                type = parentType;
+            } else if (getLabelName().equals("include")) {
+                type = View.class;
+            } else if (getLabelName().equals("selector")){
                 for (Element e : (List<Element>)element.elements()) {
                     for (Attribute a : (List<Attribute>)e.attributes()) {
                         if (a.getQualifiedName().equals("android:color")) {
                             type = ColorStateList.class;
                         } else if (a.getQualifiedName().equals("android:drawable")) {
-                        	type = StateListDrawable.class;
+                            type = StateListDrawable.class;
                         }
                     }
                 }
-        	} else if (getLabelName().equals("shape")) {
+            } else if (getLabelName().equals("shape")) {
                 type = GradientDrawable.class;
-        	} else if (
-        	        getLabelName().equals("corners") ||
-        	        getLabelName().equals("gradient") ||
-        	        getLabelName().equals("padding") ||
-        	        getLabelName().equals("size") ||
-        	        getLabelName().equals("solid") ||
-        	        getLabelName().equals("stroke")) {
+            } else if (
+                    getLabelName().equals("corners") ||
+                    getLabelName().equals("gradient") ||
+                    getLabelName().equals("padding") ||
+                    getLabelName().equals("size") ||
+                    getLabelName().equals("solid") ||
+                    getLabelName().equals("stroke")) {
                 type = GradientDrawable.class;
                 setObjectName(getParent().getObjectName());
             }
         }
-	}
-	
+    }
+    
     public Attribute findAttrByName(String attrName) {
         List<Attribute> attrList = this.getAttributes(); 
         for (Attribute a : attrList) {
@@ -86,10 +86,10 @@ public class AX2JNode implements Cloneable {
         }
         return null;
     }
-	
-	public String toString() {
-		return asXML();
-	}
+    
+    public String toString() {
+        return asXML();
+    }
     
     public void addChild(AX2JNode child) {
         children.add(child);
