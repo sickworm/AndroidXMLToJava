@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import org.dom4j.QName;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.AndFilter;
@@ -107,8 +106,7 @@ public class Filter {
                 String attr = trNodeList.elementAt(1).toPlainTextString();
                 attr = attr.replace("\n", "");
                 String method = trNodeList.elementAt(3).toPlainTextString();
-                QName name = new QName(attr.substring(attr.indexOf(':') + 1), Config.ANDROID_NAMESPACE);
-                map.add(name, method);
+                map.add(attr, method);
             }
             return map;
         } catch (ParserException e) {

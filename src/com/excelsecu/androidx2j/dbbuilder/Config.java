@@ -119,23 +119,23 @@ public class Config {
      */
     public static final String[] ADDITION_LIST = new String[]
         {
-            "View,android:enabled,setEnabled(boolean)",
-            "View,android:duplicateParentState,setDuplicateParentStateEnabled(boolean)",
+            "View,android:enabled,setEnabled(boolean),",
+            "View,android:duplicateParentState,setDuplicateParentStateEnabled(boolean),",
             
-            "RadioButton,android:checked,setChecked(boolean)",
-            "LinearLayout,android:weightSum,setWeightSum(float)",
-            "View,android:background,setBackground(Drawable)",
+            "RadioButton,android:checked,setChecked(boolean),",
+            "LinearLayout,android:weightSum,setWeightSum(float),",
+            "View,android:background,setBackground(Drawable),",
             
-            "GradientDrawable,android:shape,setType(int)",
-            "GradientDrawable,android:type,setGradientType(int)",
-            "GradientDrawable,android:gradientRadius,setGradientRadius(float)",
-            "GradientDrawable,android:useLevel,setUseLevel(boolean)",
+            "GradientDrawable,android:shape,setType(int),",
+            "GradientDrawable,android:type,setGradientType(int),",
+            "GradientDrawable,android:gradientRadius,setGradientRadius(float),",
+            "GradientDrawable,android:useLevel,setUseLevel(boolean),",
             //"GradientDrawable,android:angle,setOrientation(int)",    //use in API 16 or higher
-            "GradientDrawable,android:radius,setCornerRadius(float)",
+            "GradientDrawable,android:radius,setCornerRadius(float),",
             
-            "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean)",
-            "ListView,android:divider,setDivider(Drawable)",
-            "ListView,android:dividerHeight,setDividerHeight(float)",
+            "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean),",
+            "ListView,android:divider,setDivider(Drawable),0x00000300",
+            "ListView,android:dividerHeight,setDividerHeight(float),",
         };
     
     /**the local Android doc path from SDK Manager**/

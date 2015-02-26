@@ -65,18 +65,27 @@ public class BaseTranslator {
         }
         
         return javaBlock;
-    }    
+    }
     
     protected String translateNode(AX2JNode node) {
-        String javaBlock = "";
-        for (Attribute a : node.getAttributes()) {
-            javaBlock += translateAttribute(a, node);
+        List<AX2JMethodBlock> methodBlockList = new ArrayList<AX2JMethodBlock>();
+        for (Attribute attribute : node.getAttributes()) {
+            methodBlockList.add(translateAttribute(attribute, node));
         }
         
-        return javaBlock;
+        StringBuffer javaBlock = new StringBuffer();
+        for (int i = AX2JMethodBlock.PRIORITY_TOP; i <= AX2JMethodBlock.PRIORITY_LAST; i++) {
+            for (AX2JMethodBlock methodBlock : methodBlockList) {
+                if (methodBlock.priority == i) {
+                    javaBlock.append(methodBlock);
+                }
+            }
+        }
+        
+        return javaBlock.toString();
     }
 
-    protected String translateAttribute(Attribute attribute, AX2JNode node) throws AX2JException {
+    protected AX2JMethodBlock translateAttribute(Attribute attribute, AX2JNode node) throws AX2JException {
         return map.translate(node.getType(), attribute);
     }
     

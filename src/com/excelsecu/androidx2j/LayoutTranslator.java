@@ -50,7 +50,7 @@ public class LayoutTranslator extends BaseTranslator {
         javaBlock += newMethod;
         addImport(Context.class.getName());
         for (Attribute a : node.getAttributes()) {
-            String attrMethod = translateAttribute(a, node);
+            String attrMethod = translateAttribute(a, node).toString();
             if (!attrMethod.startsWith("//")) {
                 extraHandle(node, a);
             }
@@ -63,26 +63,6 @@ public class LayoutTranslator extends BaseTranslator {
             javaBlock += addViewMethod;
         }
         javaBlock += "\n";
-        
-        //divider, the deviderHeight must set after divider in Java
-        if (javaBlock.contains("setDivider(") && javaBlock.contains("setDividerHeight(")) {
-            if (javaBlock.indexOf("setDivider(") > javaBlock.indexOf("setDividerHeight(")) {
-                String[] javaList = javaBlock.split("\\n");
-                String divider = "";
-                String dividerHeight = "";
-                for (String code : javaList) {
-                    if (code.contains("setDivider(")) {
-                         divider = code;
-                     } else if (code.contains("setDividerHeight(")) {
-                         dividerHeight = code;
-                     }
-                }
-                String tmp = "<!REPLACE_BLOCK>";
-                javaBlock = javaBlock.replace(divider, tmp);
-                javaBlock = javaBlock.replace(dividerHeight, divider);
-                javaBlock = javaBlock.replace(tmp, dividerHeight);
-            }
-        }
         
         return javaBlock;
     }

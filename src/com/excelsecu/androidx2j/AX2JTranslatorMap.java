@@ -25,16 +25,13 @@ public class AX2JTranslatorMap{
     public void add(String attributeString) {
         int index1 = attributeString.indexOf(',');
         int index2 = attributeString.indexOf(',', index1 + 1);
-        
+        int index3 = attributeString.lastIndexOf(',');
         String type = attributeString.substring(0, index1);
-        String name = attributeString.substring(index1 + 1);
-        String method = "";
-        if (index2 != -1) { 
-            method = attributeString.substring(index2 + 1);
-            name = attributeString.substring(index1 + 1, index2);
-        }
+        String name = attributeString.substring(index1 + 1, index2);
+        String method = attributeString.substring(index2 + 1, index3);
+        String methodType = attributeString.substring(index3 + 1);
         
-        add(getType(type), name, method);
+        add(getType(type), name, method, (methodType.equals(""))? 0 : Integer.decode(methodType));
     }
     
     public void add(Class<?> type, String qNameString, String methodString) {
@@ -47,12 +44,22 @@ public class AX2JTranslatorMap{
         translator.add(qNameString, methodString);
     }
     
-    public String translate(Class<?> type, Attribute attribute) {
-        String javaBlock = "";
+    public void add(Class<?> type, String qNameString, String methodString, int methodType) {
+        AX2JTranslator translator = attribute2MethodMap.get(type);
+        if (translator == null) {
+            translator = new AX2JTranslator(type);
+            attribute2MethodMap.put(type, translator);
+        }
+        
+        translator.add(qNameString, methodString, methodType);
+    }
+    
+    public AX2JMethodBlock translate(Class<?> type, Attribute attribute) {
+        AX2JMethodBlock javaBlock;
         while (true) {
             AX2JTranslator translator = attribute2MethodMap.get(type);
             if (translator == null) {
-                javaBlock = "//" + attribute.asXML() + "\t//not support\n";
+                javaBlock = new AX2JMethodBlock("//" + attribute.asXML() + "\t//not support\n");
                 break;
             } else {
                 try {

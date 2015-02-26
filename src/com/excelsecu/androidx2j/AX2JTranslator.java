@@ -75,12 +75,16 @@ public class AX2JTranslator {
     }
     
     public void add(String qNameString, String methodString) {
-        add(string2QName(qNameString), methodString);
+        add(string2QName(qNameString), methodString, 0);
     }
     
-    public void add(QName name, String methodString) {
+    public void add(String qNameString, String methodString, int methodType) {
+        add(string2QName(qNameString), methodString, methodType);
+    }
+    
+    public void add(QName name, String methodString, int methodType) {
         AX2JMethod method = new AX2JMethod(name, methodString);
-        addAttribute(name, method);
+        addAttribute(name, method, methodType);
     }
     
     public AX2JAttribute get(QName name) {
@@ -111,11 +115,13 @@ public class AX2JTranslator {
         return null;
     }
     
-    public void addAttribute(QName name, AX2JMethod method) {
+    public void addAttribute(QName name, AX2JMethod method, int methodType) {
         AX2JAttribute attribute = findAttribute(name);
         if (attribute == null) {
-            attribute = new AX2JAttribute(name);
+            attribute = new AX2JAttribute(name, methodType);
             attributeList.add(attribute);
+        } else {
+            attribute.setMethodType(methodType);
         }
         
         AX2JMethod oldMethod = findMethod(method);
@@ -149,7 +155,7 @@ public class AX2JTranslator {
         return type;
     }
     
-    public String translate(Attribute attr) {
+    public AX2JMethodBlock translate(Attribute attr) {
         AX2JAttribute attribute = findAttribute(attr.getQName());
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
@@ -162,7 +168,8 @@ public class AX2JTranslator {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
         }
         
-        return method.getName() + "(" + translateValue(attribute, method) + ");\n";
+        String methodString = method.getName() + "(" + translateValue(attribute, method) + ");\n";
+        return new AX2JMethodBlock(methodString, attribute.getTypeValue(AX2JAttribute.TYPE_PRIORITY));
     }
     
     /**
@@ -341,24 +348,18 @@ public class AX2JTranslator {
             value = null;
         }
         
+        public AX2JAttribute(QName name, int methodType) {
+            this.name = name;
+            this.methodType = methodType;
+            relativeMethodList = new ArrayList<AX2JMethod>();
+            value = null;
+        }
+        
         public AX2JAttribute(QName name, AX2JMethod method) {
             this.name = name;
             relativeMethodList = new ArrayList<AX2JMethod>();
             relativeMethodList.add(method);
             value = null;
-        }
-        
-        public AX2JMethod findMethod(AX2JMethod oldMethod) {
-            for (AX2JMethod method : relativeMethodList) {
-                if (method.equals(oldMethod)) {
-                    return method;
-                }
-            }
-            return null;
-        }
-        
-        public void setValue(String value) {
-            this.value = value;
         }
         
         public void addRelativeMethod(AX2JMethod method) {
@@ -375,6 +376,23 @@ public class AX2JTranslator {
             }
         }
         
+        public AX2JMethod findMethod(AX2JMethod oldMethod) {
+            for (AX2JMethod method : relativeMethodList) {
+                if (method.equals(oldMethod)) {
+                    return method;
+                }
+            }
+            return null;
+        }
+        
+        public void setValue(String value) {
+            this.value = value;
+        }
+        
+        public void setMethodType(int methodType) {
+            this.methodType = methodType;
+        }
+        
         public QName getName() {
             return name;
         }
@@ -389,15 +407,6 @@ public class AX2JTranslator {
         
         public List<AX2JMethod> getRelativeMethodList() {
             return relativeMethodList;
-        }
-        
-        public String toString() {
-            StringBuffer stringBuffer = new StringBuffer();
-            for (AX2JMethod method : relativeMethodList) {
-                stringBuffer.append(type.getSimpleName() + "," + name.getQualifiedName() +
-                        "," + method.toString() + "\n");
-            }
-            return stringBuffer.toString();
         }
         
         public AX2JAttribute clone() {
@@ -447,6 +456,20 @@ public class AX2JTranslator {
                     break;
             }
             return value;
+        }
+        
+        public String toString() {
+            StringBuffer stringBuffer = new StringBuffer();
+            for (AX2JMethod method : relativeMethodList) {
+                String methodString = method.toString();
+                String methodTypeString = "";
+                if (!methodString.equals("") && methodType != 0) {
+                    methodTypeString = String.format("0x%08x", methodType);
+                }
+                stringBuffer.append(type.getSimpleName() + "," + name.getQualifiedName() +
+                        "," + methodString + "," + methodTypeString + "\n");
+            }
+            return stringBuffer.toString();
         }
     }
     
@@ -564,28 +587,4 @@ public class AX2JTranslator {
             return false;
         }
     }
-    
-    public class AX2JMethodBlock {
-        public static final int PRIORITY_TOP = 1;
-        public static final int PRIORITY_SECONDLY_TOP = 2;
-        public static final int PRIORITY_THIRDLY_TOP = 3;
-        public static final int PRIORITY_NORMAL = 4;
-        public static final int PRIORITY_THIRDLY_LAST = 5;
-        public static final int PRIORITY_SECONDLY_LAST = 6;
-        public static final int PRIORITY_LAST = 7;
-        public static final int PRIORITY_DEFAULT = PRIORITY_NORMAL;
-        public String content;
-        public int priority;
-        
-        public AX2JMethodBlock(String content, int priority) {
-            this.content = content;
-            this.priority = priority;
-        }
-        
-        public AX2JMethodBlock(String content) {
-            this.content = content;
-            this.priority = PRIORITY_NORMAL;
-        }
-    }
-
 }

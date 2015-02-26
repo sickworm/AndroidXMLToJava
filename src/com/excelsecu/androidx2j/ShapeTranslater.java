@@ -2,7 +2,6 @@ package com.excelsecu.androidx2j;
 
 import org.dom4j.Attribute;
 
-import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 
 public class ShapeTranslater extends BaseTranslator {
@@ -47,46 +46,6 @@ public class ShapeTranslater extends BaseTranslator {
         } else {
             return value;
         }
-    }
-    
-    /**
-     * Translate a Android XML Node to a Java method block.
-     * @return the Java block
-     */
-    @Override
-    protected String translateNode(AX2JNode node) {
-        String javaBlock = "";
-        SpecialTranslator specialTranslater = new SpecialTranslator(node);
-        addImport(Context.class.getName());
-        for (Attribute a : node.getAttributes()) {
-            String attrMethod = translateAttribute(a, node, specialTranslater);
-            if (!attrMethod.startsWith("//")) {
-                extraHandle(node, a);
-            }
-            if (!javaBlock.equals("")) {
-                javaBlock += attrMethod + "\n";
-            }
-        }
-        
-        return javaBlock;
-    }
-    
-    private String translateAttribute(Attribute attr, AX2JNode node,
-            SpecialTranslator specialTranslator) throws AX2JException {
-        String attrMethod = "";
-        try {
-            attrMethod = super.translateAttribute(attr, node);
-        } catch (AX2JException e) {
-            try {
-                //deal with the attributes that doesn't match the XML attributes table
-                attrMethod = specialTranslator.translate(attr);
-            } catch (AX2JException e1) {
-                //translator can not translate this attribute
-                attrMethod = "//" + attr.getQualifiedName() + "=\"" +
-                        attr.getValue() + "\";\t//not support\n";
-            }
-        }
-        return attrMethod;
     }
     
     private String construct() {

@@ -54,8 +54,10 @@ public class AndroidDocConverter {
         //some attributes don't shown in Android doc (like setEnabled), add them in here.
         System.out.println("Additional\n");
         for (String attribute : Config.ADDITION_LIST) {
+            System.out.println(attribute);
             attrToMethodMap.add(attribute);
         }
+        System.out.println();
         
         System.out.println("Prasering system styles XML...\n");
         buildSystem(Config.SYSTEM_STYLES_PATH, systemStylesMap);
