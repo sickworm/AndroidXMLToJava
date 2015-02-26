@@ -155,7 +155,7 @@ public class AX2JTranslator {
         return type;
     }
     
-    public AX2JMethodBlock translate(Attribute attr) {
+    public void translate(AX2JCodeBlock codeBlock, Attribute attr) {
         AX2JAttribute attribute = findAttribute(attr.getQName());
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
@@ -169,7 +169,7 @@ public class AX2JTranslator {
         }
         
         String methodString = method.getName() + "(" + translateValue(attribute, method) + ");\n";
-        return new AX2JMethodBlock(methodString, attribute.getTypeValue(AX2JAttribute.TYPE_PRIORITY));
+        codeBlock.add(methodString, attribute.getTypeValue(AX2JAttribute.TYPE_PRIORITY));
     }
     
     /**
@@ -433,7 +433,7 @@ public class AX2JTranslator {
                 case TYPE_PRIORITY:
                     value = value >> 8;
                     if (value == 0) {
-                        value = AX2JMethodBlock.PRIORITY_DEFAULT;
+                        value = AX2JCodeBlock.PRIORITY_DEFAULT;
                     }
                     break;
                 case TYPE_ARGUMENTS:

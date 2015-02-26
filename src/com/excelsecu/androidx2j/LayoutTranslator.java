@@ -28,7 +28,7 @@ public class LayoutTranslator extends BaseTranslator {
     }
     
     @Override
-    protected String translateNode(AX2JNode node) {
+    protected String translate(AX2JNode node) {
         String javaBlock = "";
         String newMethod = "";
         String nodeName = node.getObjectName();
@@ -46,16 +46,11 @@ public class LayoutTranslator extends BaseTranslator {
             newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
                     node.getLabelName() + "(" + node.constructorParams() + ");\n";
         }
-            
+        
         javaBlock += newMethod;
         addImport(Context.class.getName());
-        for (Attribute a : node.getAttributes()) {
-            String attrMethod = translateAttribute(a, node).toString();
-            if (!attrMethod.startsWith("//")) {
-                extraHandle(node, a);
-            }
-            javaBlock += attrMethod;
-        }
+        
+        javaBlock += translate(node);
         
         AX2JNode parent = node.getParent();
         if (parent != null) {

@@ -54,23 +54,32 @@ public class AX2JTranslatorMap{
         translator.add(qNameString, methodString, methodType);
     }
     
-    public AX2JMethodBlock translate(Class<?> type, Attribute attribute) {
-        AX2JMethodBlock javaBlock;
+    protected String translate(AX2JNode node) {
+        AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
+        
+        for (Attribute attribute : node.getAttributes()) {
+            translate(codeBlock, attribute);
+        }
+        
+        return codeBlock.toString();
+    }
+    
+    protected void translate(AX2JCodeBlock codeBlock, Attribute attribute) {
+        Class<?> type = codeBlock.getType();
         while (true) {
             AX2JTranslator translator = attribute2MethodMap.get(type);
             if (translator == null) {
-                javaBlock = new AX2JMethodBlock("//" + attribute.asXML() + "\t//not support\n");
+                codeBlock.add("//" + attribute.asXML() + "\t//not support\n");
                 break;
             } else {
                 try {
-                    javaBlock = translator.translate(attribute);
+                    translator.translate(codeBlock, attribute);
                     break;
                 } catch(AX2JException e) {
                     type = type.getSuperclass();
                 }
             }
         }
-        return javaBlock;
     }
     
     public HashMap<Class<?>, AX2JTranslator> getMap() {

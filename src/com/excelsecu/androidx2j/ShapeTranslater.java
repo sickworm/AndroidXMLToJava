@@ -84,7 +84,7 @@ public class ShapeTranslater extends BaseTranslator {
             } else if (n.getLabelName().equals("solid")) {
                 Attribute solidcolor = n.findAttrByName("android:color");
                 javaBlock += "GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n";
-                javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
+                //javaBlock += getRoot().getObjectName() + ".setColor(" + translateAttribute(solidcolor, n) + ");\n";
             } else if (n.getLabelName().equals("stroke")) {
                 Attribute attrWidth = n.findAttrByName("android:width");
                 Attribute attrColor = n.findAttrByName("android:color");
