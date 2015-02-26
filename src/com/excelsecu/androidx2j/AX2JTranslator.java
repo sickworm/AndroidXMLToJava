@@ -326,15 +326,15 @@ public class AX2JTranslator {
         /** method has multi-arguments. Range 0x00001000 - 0x0000f000 **/
         public static final int TYPE_ARGUMENTS = 0x0000f000;
         /** attribute for LayoutParams. 0x00100000 **/
-        public static final int TYPE_LAYOUT_PARAMETER = 0x00100000;
+        public static final int TYPE_LAYOUT_PARAMETER = 0x00010000;
         /** use style resource **/
         public static final int TYPE_STYLE = 0x00020000;
         /** assign variable directly **/
-        public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00400000;
+        public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00040000;
         /** use reflect to assign variable **/
-        public static final int TYPE_VARIABLE_REFLECTION = 0x00800000;
+        public static final int TYPE_VARIABLE_REFLECTION = 0x00080000;
         /** use reflect to invoke method **/
-        public static final int TYPE_METHOD_REFLECTION = 0x01000000;
+        public static final int TYPE_METHOD_REFLECTION = 0x00100000;
         
         private QName name;
         private List<AX2JMethod> relativeMethodList;

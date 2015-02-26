@@ -50,7 +50,7 @@ public class LayoutTranslator extends BaseTranslator {
         javaBlock += newMethod;
         addImport(Context.class.getName());
         
-        javaBlock += translate(node);
+        javaBlock += super.translate(node);
         
         AX2JNode parent = node.getParent();
         if (parent != null) {
@@ -105,25 +105,6 @@ public class LayoutTranslator extends BaseTranslator {
 //            String attrName = attr.getQualifiedName();
 //            String javaBlock = "";
 //            
-//            //LayoutParams, handled in buildLayoutParams
-//            if (attrName.equals("android:layout_width") || attrName.equals("android:layout_height")) {
-//                return "";
-//            }
-//            //style, handled in buildStyle
-//            if (attrName.equals("style")) {
-//                return "";
-//            }
-//            
-//            //include
-//            if (attrName.equals("layout")) {
-//                //handled in newMethod
-//                return "";
-//            }
-//            
-//            //weight
-//            if (attrName.equals("android:layout_weight")) {
-//                return layoutParamName + ".weight = " + attr.getValue() + ";\n";
-//            }
 //            
 //            //layout_gravity
 //            if (attrName.equals("android:layout_gravity")) {

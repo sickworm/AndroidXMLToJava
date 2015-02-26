@@ -2,6 +2,9 @@ package com.excelsecu.androidx2j.dbbuilder;
 
 import org.dom4j.Namespace;
 
+import static com.excelsecu.androidx2j.AX2JTranslator.AX2JAttribute.*;
+import static com.excelsecu.androidx2j.AX2JCodeBlock.*;
+
 public class Config {
     public static final String ANDROID_URI = "http://schemas.android.com/apk/res/android";
     public static final String ANDROID_PRIFIX = "android";
@@ -134,8 +137,14 @@ public class Config {
             "GradientDrawable,android:radius,setCornerRadius(float),",
             
             "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean),",
-            "ListView,android:divider,setDivider(Drawable),0x00000300",
+            "ListView,android:divider,setDivider(Drawable)," + (TYPE_PRIORITY / 0xf * PRIORITY_THIRD),
             "ListView,android:dividerHeight,setDividerHeight(float),",
+            
+            //LayoutParams
+            "View,android:layout_width,width," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_height,height,"+ (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_height,height," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_gravity,gravity," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT)
         };
     
     /**the local Android doc path from SDK Manager**/

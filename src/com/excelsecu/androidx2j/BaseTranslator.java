@@ -49,6 +49,7 @@ public class BaseTranslator {
         if (root == null) {
             AX2JParser parser = new AX2JParser(file);
             root = parser.parse();
+            root.setObjectName(file.getName().substring(0, file.getName().indexOf('.')));
         }
     }
     
