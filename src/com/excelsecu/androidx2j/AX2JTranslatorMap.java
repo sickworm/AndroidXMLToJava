@@ -52,11 +52,12 @@ public class AX2JTranslatorMap{
         while (true) {
             AX2JTranslator translator = attribute2MethodMap.get(type);
             if (translator == null) {
-                javaBlock = attribute.asXML() + "\t//not support";
+                javaBlock = "//" + attribute.asXML() + "\t//not support\n";
                 break;
             } else {
                 try {
                     javaBlock = translator.translate(attribute);
+                    break;
                 } catch(AX2JException e) {
                     type = type.getSuperclass();
                 }

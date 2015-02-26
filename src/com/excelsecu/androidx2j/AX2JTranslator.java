@@ -154,14 +154,15 @@ public class AX2JTranslator {
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
         }
+        attribute.setValue(attr.getValue());
         
         //currently not support multi relative method, default choose the first one
         AX2JMethod method = attribute.getRelativeMethodList().get(0);
-        if (method == null) {
+        if (method == null || method.getName().equals("")) {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
         }
         
-        return method.getName() + "(" + translateValue(attribute, method) + ")";
+        return method.getName() + "(" + translateValue(attribute, method) + ");\n";
     }
     
     /**
@@ -428,9 +429,6 @@ public class AX2JTranslator {
                     break;
                 case TYPE_ARGUMENTS:
                     value = value >> 12;
-                    if (value == 0) {
-                        value = 1;
-                    }
                     break;
                 case TYPE_LAYOUT_PARAMETER:
                     value = value >> 20;
