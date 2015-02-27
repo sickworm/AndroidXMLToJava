@@ -15,12 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import org.dom4j.Attribute;
-
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
 import com.excelsecu.androidx2j.Config;
 
 /**
@@ -285,27 +279,6 @@ public class Utils {
      */
     public static String findRule(String attrName) {
         return Config.RULE_MAP.get(attrName);
-    }
-    
-    /**
-     * Get the name of parent to build the LayoutParams
-     * @param node
-     * @return
-     */
-    public static String getParentName(AX2JNode node) {
-        if (node.getParent() == null) {
-            List<Attribute> attrList = node.getAttributes();
-            for (Attribute a : attrList) {
-                if (Config.RULE_MAP.get(a.getQualifiedName()) != null) {
-                    return RelativeLayout.class.getSimpleName();
-                }
-                if (a.getQualifiedName().equals("android:layout_gravity")) {
-                    return LinearLayout.class.getSimpleName();
-                }
-            }
-            return ViewGroup.class.getSimpleName();
-        }
-        return node.getParent().getLabelName();
     }
     
     /**

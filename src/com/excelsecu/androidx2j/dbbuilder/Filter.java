@@ -15,7 +15,7 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.excelsecu.androidx2j.AX2JTranslator;
+import com.excelsecu.androidx2j.AX2JClassTranslator;
 
 public class Filter {
     private Class<?> type;
@@ -24,9 +24,9 @@ public class Filter {
         this.type = type;
     }
     
-    public AX2JTranslator filterDoc(String fileName) throws AndroidDocException {
+    public AX2JClassTranslator filterDoc(String fileName) throws AndroidDocException {
         String docContent = readDoc(fileName);
-        AX2JTranslator attrToMethodList = filter(docContent);
+        AX2JClassTranslator attrToMethodList = filter(docContent);
         return attrToMethodList;
     }
     
@@ -63,7 +63,7 @@ public class Filter {
         }
     }
     
-    private AX2JTranslator filter(String content) {
+    private AX2JClassTranslator filter(String content) {
         try {
             Parser parser = Parser.createParser(content, Config.ENCODE);
             AndFilter andFilter1 =
@@ -75,7 +75,7 @@ public class Filter {
             NodeList tableNodeList = parser.parse(orFilter);
             NodeIterator tableIt = tableNodeList.elements();
             
-            AX2JTranslator map = new AX2JTranslator(type);
+            AX2JClassTranslator map = new AX2JClassTranslator(type);
             while(tableIt.hasMoreNodes()) {
                 Node trNode = tableIt.nextNode();
                 NodeList trNodeList = trNode.getChildren();

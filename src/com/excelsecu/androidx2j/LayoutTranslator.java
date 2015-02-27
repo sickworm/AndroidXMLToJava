@@ -1,11 +1,8 @@
 package com.excelsecu.androidx2j;
 
 import java.io.File;
-
-import org.dom4j.Attribute;
-
-import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Translate Android XML layout resources to Java method block.
@@ -13,22 +10,15 @@ import android.graphics.drawable.ColorDrawable;
  *
  */
 public class LayoutTranslator extends BaseTranslator {
+    private static List<String> idList = new ArrayList<String>();
 
     public LayoutTranslator(File file) {
         super(file);
         AX2JNode.resetOrder();
     }
-
-    @Override
-    public String translate() {
-        String javaBlock = super.translate();
-        String extraMethod = getExtraMethod();
-        extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
-        return extraMethod + javaBlock;
-    }
     
     @Override
-    protected String translate(AX2JNode node) {
+    protected List<AX2JCodeBlock> translate(AX2JNode node) {
         String javaBlock = "";
         String newMethod = "";
         String nodeName = node.getObjectName();
@@ -48,7 +38,11 @@ public class LayoutTranslator extends BaseTranslator {
         }
         
         javaBlock += newMethod;
-        addImport(Context.class.getName());
+//      addImport(Context.class.getName());
+//      String id = attrValue.substring(attrValue.indexOf('/') + 1);
+//      if (!Utils.hasString(idList, id)) {
+//          idList.add(id);
+//      }
         
         javaBlock += super.translate(node);
         
@@ -62,19 +56,10 @@ public class LayoutTranslator extends BaseTranslator {
         return javaBlock;
     }
     
-    @Override
-    protected void extraHandle(AX2JNode node, Attribute attr) {
-        super.extraHandle(node, attr);
-        
-        //divider
-        String attrName = attr.getQualifiedName();
-        String attrValue = attr.getValue();
-        if (attrName.equals("android:divider")) {
-            if (attrValue.matches("#[0-9a-fA-F]+")) {
-                addImport(ColorDrawable.class.getName());
-            }
-        }
+    public static List<String> getIdList() {
+        return idList;
     }
+    
 //
 //    /**
 //     * Handle the method not exists in the attr-to-method map.

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-public class DrawableTranslator extends BaseTranslator{
+public class DrawableTranslator extends BaseTranslator {
 
     public DrawableTranslator(File file) {
         super(file);

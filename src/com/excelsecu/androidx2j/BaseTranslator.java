@@ -6,14 +6,9 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
-import android.graphics.Color;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.text.method.PasswordTransformationMethod;
-import android.text.method.SingleLineTransformationMethod;
-import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Super class for drawable and layout resources. Translate a AX2JNode to java block.
@@ -21,16 +16,11 @@ import android.view.ViewGroup;
  *
  */
 public class BaseTranslator {
-    private static List<String> idList = new ArrayList<String>();
-    private static AX2JTranslatorMap map = null;
-    private String extraMethod = "";
-    private List<String> importList = new ArrayList<String>();
-    
+    private static AX2JTranslatorMap map = AX2JTranslatorMap.getInstance();
+    /** translate **/
     private AX2JNode root = null;
     private File file = null;
-    
-    private boolean scale = false;
-    private boolean resources = false;
+    private List<String> importList = new ArrayList<String>();
     
     public BaseTranslator(File file) {
         this.file = file;
@@ -41,8 +31,6 @@ public class BaseTranslator {
     
     public BaseTranslator(AX2JNode root) {
         this.root = root;
-        map = AX2JTranslatorMap.getInstance();
-        init();
     }
     
     protected void init() {
@@ -54,78 +42,65 @@ public class BaseTranslator {
     }
     
     public String translate() {
-        return translate(getRoot());
+        return printCodeBlock(translate(getRoot()));
     }
     
-    protected String translate(AX2JNode node) throws AX2JException {
-        String javaBlock = "";
-        String nodeJavaBlock = map.translate(node);
-        javaBlock += nodeJavaBlock;
-        for (AX2JNode n : node.getChildren()) {
-            javaBlock += translate(n);
+    protected List<AX2JCodeBlock> translate(AX2JNode root) throws AX2JException {
+        List<AX2JCodeBlock> codeBlockList = new ArrayList<AX2JCodeBlock>();
+        codeBlockList.add(translateNode(root));
+        for (AX2JNode child : root.getChildren()) {
+            List<AX2JCodeBlock> childCodeBlockList = translate(child);
+            codeBlockList.addAll(childCodeBlockList);
         }
         
-        return javaBlock;
+        return codeBlockList;
     }
     
-    /**
-     * Find out what extra constant, id or import need to be added.
-     * @param attrName
-     * @param attrValue
-     */
-    protected void extraHandle(AX2JNode node, Attribute attr) {
-        addImport(node.getType().getName());
+    private String printCodeBlock(List<AX2JCodeBlock> codeBlockList) {
+        List<String> codeList = new ArrayList<String>();
+        for (AX2JCodeBlock codeBlock : codeBlockList) {
+            codeBlock.toString(AX2JCodeBlock.PRIORITY_FIRST);
+        }
+    }
+    
+    protected void preTranslateNode(AX2JCodeBlock codeBlock) {
+    }
+    
+    protected AX2JCodeBlock translateNode(AX2JNode node) {
+        AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
         
-        String attrValue = attr.getValue();
-        String attrName = attr.getQualifiedName();
-        if (attrValue.matches("[0-9]+dp")) {
-            if (!scale) {
-                extraMethod += "final float scale = context.getResources().getDisplayMetrics().density;\n";
-                scale = true;
-            }
-        } else if (attrValue.equals("fill_parent") || attrValue.equals("match_parent")
-                || attrValue.equals("wrap_content")) {
-            addImport(ViewGroup.class.getName());
-        } else if (attrName.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
-            addImport(ViewGroup.class.getName());
-        } else if (attrValue.equals("gone") || attrValue.equals("visibile") ||
-                attrValue.equals("invisibile")) {
-            addImport(View.class.getName());
-        } else if (attrName.equals("android:id") &&
-                    attrValue.startsWith("@+id/")) {
-            addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
-            String id = attrValue.substring(attrValue.indexOf('/') + 1);
-            if (!Utils.hasString(idList, id)) {
-                idList.add(id);
-            }
-        } else if (attrValue.matches("#[0-9a-fA-F]+") ||
-                attrValue.matches("@android:color/.+")) {
-            addImport(Color.class.getName());
-        } else if (attrName.equals("android:gravity") ||
-                attr.getQualifiedName().equals("android:layout_gravity")) {
-            addImport(Gravity.class.getName());
-        } else if (attrName.equals("android:password")) {
-            addImport(PasswordTransformationMethod.class.getName());
-        } else if (attrName.equals("android:singleLine")) {
-            addImport(SingleLineTransformationMethod.class.getName());
-        } else if (attrName.equals("android:inputType")) {
-            addImport(InputType.class.getName());
-        } else if (attrName.equals("android:ellipsize")) {
-            addImport(TextUtils.class.getName());
+        preTranslateNode(codeBlock);
+        
+        for (Attribute attribute : node.getAttributes()) {
+            translateAttribute(codeBlock, attribute);
         }
         
-        else if (attrValue.startsWith("@drawable/") ||
-                attrValue.startsWith("@color/") ||
-                attrValue.startsWith("@string/")) {
-            addImport(Config.PACKAGE_NAME + "." + Config.RESOURCES_CLASS);
-            addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
-            if (!resources) {
-                extraMethod += Config.RESOURCES_CLASS + " " + Config.RESOURCES_NAME + " = new " + Config.RESOURCES_CLASS + "(context);\n";
-                resources = true;
+        afterTranslateNode(codeBlock);
+        
+        return codeBlock;
+    }
+    
+    protected void afterTranslateNode(AX2JCodeBlock codeBlock) {
+    }
+    
+    protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute) {
+        Class<?> type = codeBlock.getType();
+        while (true) {
+            AX2JClassTranslator translator = map.get(type);
+            if (translator == null) {
+                codeBlock.add("//" + attribute.asXML() + "\t//not support\n");
+                break;
+            } else {
+                try {
+                    translator.translate(codeBlock, attribute);
+                    break;
+                } catch(AX2JException e) {
+                    type = type.getSuperclass();
+                }
             }
         }
     }
-
+    
     /**
      *  Add the class to the import list. If already exists, ignore. 
      *  @param className the class try to be added in import list
@@ -138,6 +113,27 @@ public class BaseTranslator {
         if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
+    }
+
+    /**
+     * Get the name of parent to build the LayoutParams
+     * @param node
+     * @return
+     */
+    public static String getParentName(AX2JNode node) {
+        if (node.getParent() == null) {
+            List<Attribute> attrList = node.getAttributes();
+            for (Attribute a : attrList) {
+                if (Config.RULE_MAP.get(a.getQualifiedName()) != null) {
+                    return RelativeLayout.class.getSimpleName();
+                }
+                if (a.getQualifiedName().equals("android:layout_gravity")) {
+                    return LinearLayout.class.getSimpleName();
+                }
+            }
+            return ViewGroup.class.getSimpleName();
+        }
+        return node.getParent().getLabelName();
     }
     
     public AX2JNode getRoot() {
@@ -152,10 +148,6 @@ public class BaseTranslator {
         return file;
     }
     
-    public String getExtraMethod() {
-        return extraMethod;
-    }
-    
     public List<String> getImportList() {
         return importList;
     }
@@ -164,7 +156,4 @@ public class BaseTranslator {
         this.importList = importList;
     }
     
-    public static List<String> getIdList() {
-        return idList;
-    }
 }

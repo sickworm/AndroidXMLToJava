@@ -23,7 +23,7 @@ import org.dom4j.io.SAXReader;
 import com.excelsecu.androidx2j.AX2JNode;
 import com.excelsecu.androidx2j.AX2JParser;
 import com.excelsecu.androidx2j.AX2JStyle;
-import com.excelsecu.androidx2j.AX2JTranslator;
+import com.excelsecu.androidx2j.AX2JClassTranslator;
 import com.excelsecu.androidx2j.AX2JTranslatorMap;
 
 /**
@@ -46,7 +46,7 @@ public class AndroidDocConverter {
         for (int i = 0; i < listPage.length; i++) {
             String path = listPage[i];
             System.out.println(path + "\n");
-            AX2JTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
+            AX2JClassTranslator translator = new Filter(Config.CLASSES_LIST[i]).filterDoc(path);
             System.out.println(translator + "\n");
             attrToMethodMap.add(translator);
         }

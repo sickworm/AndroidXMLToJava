@@ -2,7 +2,7 @@ package com.excelsecu.androidx2j.dbbuilder;
 
 import org.dom4j.Namespace;
 
-import static com.excelsecu.androidx2j.AX2JTranslator.AX2JAttribute.*;
+import static com.excelsecu.androidx2j.AX2JClassTranslator.AX2JAttribute.*;
 import static com.excelsecu.androidx2j.AX2JCodeBlock.*;
 
 public class Config {
@@ -141,10 +141,18 @@ public class Config {
             "ListView,android:dividerHeight,setDividerHeight(float),",
             
             //LayoutParams
-            "View,android:layout_width,width," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
-            "View,android:layout_height,height,"+ (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
-            "View,android:layout_height,height," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
-            "View,android:layout_gravity,gravity," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT)
+            "View,android:layout_width,width(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_height,height(Integer),"+ (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_weight,weight(Float)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_gravity,gravity(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            
+            "View,android:layout_marginTop,topMargin(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_marginBottom,bottomMargin(Integer),"+ (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_marginLeft,leftMargin(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_marginRight,rightMargin(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
+            "View,android:layout_marginStart,setMarginStart(Integer)," + (TYPE_LAYOUT_PARAMETER),
+            "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
+            "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER),
         };
     
     /**the local Android doc path from SDK Manager**/

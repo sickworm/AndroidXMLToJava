@@ -18,9 +18,7 @@ public class ShapeTranslater extends BaseTranslator {
         addImport(GradientDrawable.class.getName());
         String javaBlock = construct();
         javaBlock += super.translate();
-        String extraMethod = getExtraMethod();
-        extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
-        return extraMethod + javaBlock;
+        return javaBlock;
     }
     
     public String translateValue(Attribute attr) {

@@ -19,14 +19,10 @@ public class SelectorTranslator extends BaseTranslator {
     public String translate() {
         if (getType() == ColorStateList.class) {
             String javaBlock = translateToColorStateList();
-            String extraMethod = getExtraMethod();
-            extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
-            return extraMethod + javaBlock;
+            return javaBlock;
         } else if (getType() == StateListDrawable.class) {
             String javaBlock = translateToStateListDrawable();
-            String extraMethod = getExtraMethod();
-            extraMethod = extraMethod.equals("")? "" : extraMethod + "\n";
-            return extraMethod + javaBlock;
+            return javaBlock;
         } else {
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR, "not a selector type");
         }
@@ -59,7 +55,7 @@ public class SelectorTranslator extends BaseTranslator {
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(getRoot(), a);
+                //extraHandle(getRoot(), a);
             }
             if (colorList.equals("")) {
                 colorList = color;
@@ -104,7 +100,7 @@ public class SelectorTranslator extends BaseTranslator {
                         stateSet += ", " + state;
                     }
                 }
-                extraHandle(getRoot(), a);
+                //extraHandle(getRoot(), a);
             }
             
             String setName = "stateSet" + num;

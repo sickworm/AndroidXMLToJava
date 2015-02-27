@@ -10,19 +10,27 @@ import org.dom4j.QName;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.KeyListener;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.transition.Transition;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class AX2JTranslator {
+public class AX2JClassTranslator {
     public static HashMap<String, Class<?>> typeMap = new HashMap<String, Class<?>>() {
         private static final long serialVersionUID = -4934808097054114253L;
 
@@ -69,7 +77,7 @@ public class AX2JTranslator {
     private List<AX2JAttribute> attributeList = new ArrayList<AX2JAttribute>();
     private List<AX2JMethod> methodList = new ArrayList<AX2JMethod>();
     
-    public AX2JTranslator(Class<?> type) {
+    public AX2JClassTranslator(Class<?> type) {
         this.type = type;
         attributeList = new ArrayList<AX2JAttribute>();
     }
@@ -168,8 +176,9 @@ public class AX2JTranslator {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
         }
         
-        String methodString = method.getName() + "(" + translateValue(attribute, method) + ");\n";
-        codeBlock.add(methodString, attribute.getTypeValue(AX2JAttribute.TYPE_PRIORITY));
+        String value = translateValue(codeBlock, attribute, method);
+        
+        codeBlock.add(method.getName(), value, attribute.getType());
     }
     
     /**
@@ -177,7 +186,7 @@ public class AX2JTranslator {
      * @param attr the attribute to be translated
      * @return the value after translating
      */
-    protected String translateValue(AX2JAttribute attribute, AX2JMethod method) {
+    protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS);
         System.out.println(attribute);
         Class<?> argType = method.getArgTypes()[argOrder];
@@ -189,20 +198,24 @@ public class AX2JTranslator {
             if (value.matches("[0-9.]+dp")) {
                 value = value.substring(0, value.length() - 2);
                 value = "(int) (" + value + " * scale + 0.5f)";
+                codeBlock.add("final float scale = context.getResources().getDisplayMetrics().density;\n", AX2JCodeBlock.PRIORITY_FIRST);
             } else if (value.matches("[0-9.]+sp")) {
                 value = value.substring(0, value.length() - 2);
             } else if (value.matches("[0-9]+px")) {
                 value = value.substring(0, value.length() - 2);
             } else if (value.equals("fill_parent") || value.equals("match_parent")) {
                 value = "ViewGroup.LayoutParams.MATCH_PARENT";
+                codeBlock.addImport(ViewGroup.class.getName());
             } else if (value.equals("wrap_content")) {
                 value = "ViewGroup.LayoutParams.WRAP_CONTENT";
+                codeBlock.addImport(ViewGroup.class.getName());
             }
             
             //id
             else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
                 value = value.substring(value.indexOf('/') + 1);
                 value = Config.R_CLASS + ".id." + value;
+                codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
             }
             
             //string
@@ -225,10 +238,12 @@ public class AX2JTranslator {
                             value.charAt(3) + '0' + value.charAt(4) + '0';
                 }
                 value = "Color.parseColor(\"" + value + "\")";
+                codeBlock.addImport(Color.class.getName());
             } else if (value.matches("@android:color/.+")) {
                 value = value.substring(value.indexOf('/') + 1);
                 value = value.toUpperCase();
                 value = "Color." + value;
+                codeBlock.addImport(Color.class.getName());
             } else if (value.matches("@color/.+")) {
                 value = value.substring(value.indexOf('/') + 1);
                 value = Config.R_CLASS + ".color." + value;
@@ -239,6 +254,7 @@ public class AX2JTranslator {
             else if (value.equals("gone") || value.equals("visibile") ||
                     value.equals("invisibile")) {
                 value = "View." + value.toUpperCase();
+                codeBlock.addImport(View.class.getName());
             }
             
             //orientation
@@ -252,6 +268,26 @@ public class AX2JTranslator {
             else if (attrName.equals("android:gravity") ||
                     attrName.equals("android:layout_gravity")) {
                 value = Utils.prefixParams(value, "Gravity");
+                codeBlock.addImport(Gravity.class.getName());
+            }
+            
+            //margin
+            else if (attrName.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
+                codeBlock.addImport(ViewGroup.class.getName());
+            }
+            
+            if (attrName.equals("android:divider")) {
+                codeBlock.addImport(ColorDrawable.class.getName());
+            }
+            
+            if (value.startsWith("@drawable/") ||
+                    value.startsWith("@color/") ||
+                    value.startsWith("@string/")) {
+                codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.RESOURCES_CLASS);
+                codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
+                codeBlock.add(Config.RESOURCES_CLASS + " " + Config.RESOURCES_NAME + 
+                        " = new " + Config.RESOURCES_CLASS + "(context);\n",
+                        AX2JCodeBlock.PRIORITY_FIRST);
             }
         }
         
@@ -278,8 +314,10 @@ public class AX2JTranslator {
             //text
             if (attrName.equals("android:password")) {
                 value = "new PasswordTransformationMethod()";
+                codeBlock.addImport(PasswordTransformationMethod.class.getName());
             } else if (attrName.equals("android:singleLine")) {
                 value = "new SingleLineTransformationMethod()";
+                codeBlock.addImport(SingleLineTransformationMethod.class.getName());
             } else if (attrName.equals("android:inputType")) {
                 String error = value; 
                 value = Config.INPUT_TYPE_MAP.get(value);
@@ -287,12 +325,14 @@ public class AX2JTranslator {
                     throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, error);
                 }
                 value = Utils.prefixParams(value, "InputType");
+                codeBlock.addImport(InputType.class.getName());
             } else if (attrName.equals("android:ellipsize")) {
                 value = value.toUpperCase();
                 value = "TextUtils.TruncateAt." + value;
+                codeBlock.addImport(TextUtils.class.getName());
             }
         }
-        
+
         return value;
     }
     
@@ -440,19 +480,19 @@ public class AX2JTranslator {
                     value = value >> 12;
                     break;
                 case TYPE_LAYOUT_PARAMETER:
-                    value = value >> 20;
+                    value = value >> 16;
                     break;
                 case TYPE_STYLE:
-                    value = value >> 21;
+                    value = value >> 17;
                     break;
                 case TYPE_VARIABLE_ASSIGNMENT:
-                    value = value >> 22;
+                    value = value >> 18;
                     break;
                 case TYPE_VARIABLE_REFLECTION:
-                    value = value >> 23;
+                    value = value >> 19;
                     break;
                 case TYPE_METHOD_REFLECTION:
-                    value = value >> 24;
+                    value = value >> 20;
                     break;
             }
             return value;
@@ -486,13 +526,13 @@ public class AX2JTranslator {
         }
         
         public void setMethod(String methodString) {
+            methodString = methodString.replace("\n", "");
             //no relative method
             if (methodString.indexOf('(') == -1) {
-                methodName = "";
+                methodName = methodString;
                 argTypes = new Class<?>[0];
             } else {
                 methodName = methodString.substring(0, methodString.indexOf('('));
-                methodName = methodName.replace("\n", "");
                 
                 String[] args = methodString.substring(methodString.indexOf('(') + 1,
                         methodString.indexOf(')')).split(",");
@@ -549,24 +589,23 @@ public class AX2JTranslator {
         }
         
         public String toString() {
-            StringBuffer argsBuffer = new StringBuffer();
+            String argsString = "";
             if (args != null) {
                 for (String arg : args) {
-                    argsBuffer.append(arg + ", ");
+                    argsString += arg + ", ";
                 }
-                if (argsBuffer.length() > 1) {
-                    argsBuffer.deleteCharAt(argsBuffer.length() - 2);
+                if (argsString.length() > 2) {
+                    argsString = argsString.substring(0, argsString.length() - 2);
                 }
             } else {
                 for (Class<?> clazz : argTypes) {
-                    argsBuffer.append(clazz.getSimpleName() + ",");
+                    argsString += clazz.getSimpleName() + ",";
                 }
-                if (argsBuffer.length() > 1) {
-                    argsBuffer.deleteCharAt(argsBuffer.length() - 1);
+                if (argsString.length() > 1) {
+                    argsString = argsString.substring(0, argsString.length() - 1);
                 }
             }
-            String methodString = this.getMethodName() == ""? "" :
-                this.getMethodName() + "(" + argsBuffer +")";
+            String methodString = this.getMethodName() + (argsString.equals("")? "" : ("(" + argsString +")"));
             
             return methodString;
         }
