@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
+import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
+
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,30 +59,81 @@ public class BaseTranslator {
     }
     
     private String printCodeBlock(List<AX2JCodeBlock> codeBlockList) {
-        List<String> codeList = new ArrayList<String>();
-        for (AX2JCodeBlock codeBlock : codeBlockList) {
-            codeBlock.toString(AX2JCodeBlock.PRIORITY_FIRST);
+        if (getRoot().getObjectName().equals("base")) {
+            System.out.println("");
         }
+        String topBlock = "";
+        List<AX2JCode> topCodeList = new ArrayList<AX2JCode>();
+        for (AX2JCodeBlock codeBlock : codeBlockList) {
+            List<AX2JCode> subCodeList = codeBlock.getCode(AX2JCode.PRIORITY_FIRST);
+            for (int i = 0; i < subCodeList.size(); i++) {
+                int j = 0;
+                for (j = 0; j < topCodeList.size(); j++) {
+                    if (subCodeList.get(i).isDuplicateMethod(topCodeList.get(j))) {
+                        break;
+                    }
+                }
+                if (j != topCodeList.size()) {
+                    topCodeList.remove(j);
+                }
+            }
+            topCodeList.addAll(subCodeList);
+        }
+        for (AX2JCode code : topCodeList) {
+            topBlock += code.toString();
+        }
+        if (!topBlock.equals("")) {
+            topBlock += "\n";
+        }
+        
+        String normalBlock = "";
+        for (AX2JCodeBlock codeBlock : codeBlockList) {
+            normalBlock += codeBlock.toString();
+            normalBlock += "\n";
+        }
+        
+        String bottomBlock = "";
+        List<AX2JCode> bottomCodeList = new ArrayList<AX2JCode>();
+        for (AX2JCodeBlock codeBlock : codeBlockList) {
+            List<AX2JCode> subCodeList = codeBlock.getCode(AX2JCode.PRIORITY_LAST);
+            for (int i = 0; i < bottomCodeList.size(); i++) {
+                int j = 0;
+                for (j = 0; j < subCodeList.size(); j++) {
+                    if (bottomCodeList.get(i).isDuplicateMethod(subCodeList.get(j))) {
+                        break;
+                    }
+                }
+                if (j != subCodeList.size()) {
+                    bottomCodeList.remove(i);
+                }
+                bottomCodeList.addAll(subCodeList);
+            }
+        }
+        for (AX2JCode code : bottomCodeList) {
+            bottomBlock += code.toString();
+        }
+        
+        return topBlock + normalBlock + bottomBlock;
     }
     
-    protected void preTranslateNode(AX2JCodeBlock codeBlock) {
+    protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
     }
     
     protected AX2JCodeBlock translateNode(AX2JNode node) {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
         
-        preTranslateNode(codeBlock);
+        preTranslateNode(codeBlock, node);
         
         for (Attribute attribute : node.getAttributes()) {
             translateAttribute(codeBlock, attribute);
         }
         
-        afterTranslateNode(codeBlock);
+        afterTranslateNode(codeBlock, node);
         
         return codeBlock;
     }
     
-    protected void afterTranslateNode(AX2JCodeBlock codeBlock) {
+    protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
     }
     
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute) {

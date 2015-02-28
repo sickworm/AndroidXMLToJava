@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+
 /**
  * Translate Android XML layout resources to Java method block.
  * @author ch
@@ -17,45 +19,55 @@ public class LayoutTranslator extends BaseTranslator {
         AX2JNode.resetOrder();
     }
     
+    
+    
     @Override
-    protected List<AX2JCodeBlock> translate(AX2JNode node) {
-        String javaBlock = "";
-        String newMethod = "";
-        String nodeName = node.getObjectName();
-        node.setObjectName(nodeName);
+    protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+        super.preTranslateNode(codeBlock, node);
+
+        addImport(Context.class.getName());
         
+        String newMethod = "";
         //include label
         if (node.getLabelName().equals("include")) {
             String layout = node.attributeValue("layout");
             layout = layout.substring(layout.indexOf('/') + 1);
-            if (layout != null) {
-                newMethod = "View " + nodeName + " = " +
-                        Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
-            }
+            newMethod = "View " + node.getObjectName() + " = " +
+                    Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
         } else {
-            newMethod = node.getType().getSimpleName() + " " + nodeName + " = new " + 
+            newMethod = node.getType().getSimpleName() + " " + node.getObjectName() + " = new " + 
                     node.getLabelName() + "(" + node.constructorParams() + ");\n";
         }
         
-        javaBlock += newMethod;
-//      addImport(Context.class.getName());
+        codeBlock.add(newMethod);
+        
+        String parentName = getParentName(node);
+        String params = parentName + ".LayoutParams.WRAP_CONTENT";
+        codeBlock.add(parentName + ".LayoutParams " + node.getObjectName() +
+              "LayoutParams =\n\t\tnew " + parentName +
+              ".LayoutParams(" + params + ", " + params + ");\n");
+        
 //      String id = attrValue.substring(attrValue.indexOf('/') + 1);
 //      if (!Utils.hasString(idList, id)) {
 //          idList.add(id);
 //      }
-        
-        javaBlock += super.translate(node);
+    }
+    
+    @Override
+    protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+        super.afterTranslateNode(codeBlock, node);
         
         AX2JNode parent = node.getParent();
         if (parent != null) {
-            String addViewMethod = parent.getObjectName() + ".addView(" + nodeName + ");\n";
-            javaBlock += addViewMethod;
+            String addViewMethod = parent.getObjectName() + ".addView(" + node.getObjectName() + ");\n";
+            codeBlock.add(addViewMethod);
         }
-        javaBlock += "\n";
         
-        return javaBlock;
+        codeBlock.add(node.getObjectName() + ".setLayoutParams(" + node.getObjectName() + "LayoutParams);\n");
     }
-    
+
+
+
     public static List<String> getIdList() {
         return idList;
     }

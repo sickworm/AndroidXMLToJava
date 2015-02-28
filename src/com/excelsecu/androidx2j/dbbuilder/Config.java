@@ -2,8 +2,8 @@ package com.excelsecu.androidx2j.dbbuilder;
 
 import org.dom4j.Namespace;
 
-import static com.excelsecu.androidx2j.AX2JClassTranslator.AX2JAttribute.*;
-import static com.excelsecu.androidx2j.AX2JCodeBlock.*;
+import static com.excelsecu.androidx2j.AX2JAttribute.*;
+import static com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode.*;
 
 public class Config {
     public static final String ANDROID_URI = "http://schemas.android.com/apk/res/android";
