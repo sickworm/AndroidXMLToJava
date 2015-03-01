@@ -278,6 +278,14 @@ public class AX2JClassTranslator {
                 codeBlock.addImport(ViewGroup.class.getName());
             }
             
+            //text
+            else if (attrName.equals("android:textAppearance")) {
+            	String style = AX2JStyle.getStyle(value).name;
+            	style = style.replace('.', '_');
+            	style = "android.R.style." + style;
+            	value = "context, " + style;
+            }
+            
             if (attrName.equals("android:divider")) {
                 codeBlock.addImport(ColorDrawable.class.getName());
             }
