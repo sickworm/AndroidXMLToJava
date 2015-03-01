@@ -43,14 +43,18 @@ public class LayoutTranslator extends BaseTranslator {
         
         String parentName = getParentName(node);
         String params = parentName + ".LayoutParams.WRAP_CONTENT";
-        codeBlock.add(parentName + ".LayoutParams " + node.getObjectName() +
-              "LayoutParams =\n\t\tnew " + parentName +
-              ".LayoutParams(" + params + ", " + params + ");\n");
+        codeBlock.add(parentName + ".LayoutParams " +
+        		getLayoutParamsName(node.getObjectName()) + " =\n\t\tnew " + parentName +
+        		".LayoutParams(" + params + ", " + params + ");\n");
         
 //      String id = attrValue.substring(attrValue.indexOf('/') + 1);
 //      if (!Utils.hasString(idList, id)) {
 //          idList.add(id);
 //      }
+    }
+    
+    public static String getLayoutParamsName(String objectName) {
+    	return objectName + "_LayoutParams";
     }
     
     @Override
@@ -103,44 +107,12 @@ public class LayoutTranslator extends BaseTranslator {
 //            String javaBlock = "";
 //            
 //            
-//            //layout_gravity
-//            if (attrName.equals("android:layout_gravity")) {
-//                return layoutParamName + ".gravity = " + translateValue(attr) + ";\n";
-//            }
-//            
 //            //textAppearance
 //            if (attrName.equals("android:textAppearance") && node.getLabelName().equals("TextView")) {
 //                String style = AX2JStyle.getStyle(attr.getValue()).name;
 //                style = style.replace('.', '_');
 //                style = "android.R.style." + style;
 //                return node.getObjectName() + ".setTextAppearance(context, " + style + ");\n";
-//            }
-//            
-//            //MarginLayoutParams
-//            if (attrName.equals("android:layout_marginTop") || attrName.equals("android:layout_marginBottom") ||
-//                    attrName.equals("android:layout_marginLeft") || attrName.equals("android:layout_marginRight") ||
-//                    attrName.equals("android:layout_margin")) {
-//                if (!margin) {
-//                    String left, top, right, bottom;
-//                    if (attrName.equals("android:layout_margin")) {
-//                        left = top = right = bottom = translateValue(attr);
-//                    } else {
-//                        Attribute attrLeft = findAttrByName("android:layout_marginLeft");
-//                        Attribute attrTop = findAttrByName("android:layout_marginTop");
-//                        Attribute attrRight = findAttrByName("android:layout_marginRight");
-//                        Attribute attrBottom = findAttrByName("android:layout_marginBottom");
-//                        left = (attrLeft == null)? "0" : translateValue(attrLeft);
-//                        top = (attrTop == null)? "0" : translateValue(attrTop);
-//                        right = (attrRight == null)? "0" : translateValue(attrRight);
-//                        bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
-//                    }
-//                    String paramValue = left + ", " + top + ", " + right + ", " + bottom;
-//                    javaBlock += layoutParamName + ".setMargins(" + paramValue + ");\n";
-//                    
-//                    margin = true;
-//                    return javaBlock;
-//                }
-//                return "";
 //            }
 //            
 //            //padding

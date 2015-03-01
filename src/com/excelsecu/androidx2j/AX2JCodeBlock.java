@@ -104,7 +104,7 @@ public class AX2JCodeBlock {
                 if (code.isSpecial()) {
                     codeBlock.append(code);
             	} else if (code.isLayoutParam()){
-            		codeBlock.append(name + "Params." + code);
+            		codeBlock.append(LayoutTranslator.getLayoutParamsName(name) + "." + code);
             	} else {
                     codeBlock.append(name + "." + code);
             	}

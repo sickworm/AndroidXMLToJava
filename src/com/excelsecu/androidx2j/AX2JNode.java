@@ -151,6 +151,7 @@ public class AX2JNode implements Cloneable {
                 objectName = firstLetter + objectName + ((order == 0)? "" : order);
                 order++;
             }
+            
             return objectName;
         }
     }

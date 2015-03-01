@@ -282,8 +282,8 @@ public class Utils {
     }
     
     /**
-     * Prefix each parameter devided by '|'
-     * @param value value to be devided
+     * Prefix each parameter divided by '|'
+     * @param value value to be divided
      * @param prefix prefix of the value
      * @return value added prefix
      */
@@ -364,5 +364,25 @@ public class Utils {
         }
         
         return file.getName().substring(0, file.getName().indexOf('.'));
+    }
+    
+    /**
+     * change name like "main_g_title_bar" to "mainGTitleBar"
+     * @return
+     */
+    @Deprecated
+    public static String xmlNameToJavaName(String xmlName) {
+    	StringBuffer javaNameBuffer = new StringBuffer(xmlName);
+    	while (javaNameBuffer.indexOf("_") != -1) {
+    		int index = javaNameBuffer.indexOf("_");
+    		if (index != javaNameBuffer.length()) {
+        		String upperCase = Character.toString(javaNameBuffer.charAt(index + 1)).toUpperCase();
+        		javaNameBuffer.replace(index + 1, index + 2, upperCase);
+    		}
+    		javaNameBuffer.deleteCharAt(index);
+    	}
+    	
+    	return javaNameBuffer.toString();
+    	
     }
 }
