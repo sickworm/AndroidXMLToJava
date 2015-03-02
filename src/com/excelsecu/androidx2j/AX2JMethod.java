@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.dom4j.QName;
 
+import android.content.Context;
+
 public class AX2JMethod implements Cloneable {
     private String methodName;
     private Class<?>[] argTypes;
@@ -49,15 +51,20 @@ public class AX2JMethod implements Cloneable {
         this.args = args;
     }
     
-    public AX2JMethod clone() {
-        AX2JMethod method = null;
-        try {
-            method = (AX2JMethod) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+    public String getDefaultValue(int index) {
+        if (index < 0 || index > argTypes.length - 1) {
+            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this.toString() + ", index: " + index);
         }
         
-        return method;
+        String value = "";
+        Class<?> type = argTypes[index];
+        if (type.equals(Context.class)) {
+            value = "context";
+        } else {
+            value = "0";
+        }
+        
+        return value;
     }
     
     public String getName() {
@@ -80,6 +87,19 @@ public class AX2JMethod implements Cloneable {
         return relativeAttributeList;
     }
     
+    @Override
+    public AX2JMethod clone() {
+        AX2JMethod method = null;
+        try {
+            method = (AX2JMethod) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        
+        return method;
+    }
+    
+    @Override
     public String toString() {
         String argsString = "";
         if (args != null) {
@@ -102,17 +122,21 @@ public class AX2JMethod implements Cloneable {
         return methodString;
     }
     
-    public boolean equals(AX2JMethod method2) {
-        if (methodName.equals(method2.getName())) {
-            Class<?>[] argTypes2 = method2.getArgTypes();
-            int i = 0;
-            for (; i < argTypes.length; i++) {
-                if (!argTypes[i].equals(argTypes2[i])) {
-                    break;
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof AX2JMethod) {
+            AX2JMethod method2 = (AX2JMethod) object;
+            if (methodName.equals(method2.getName())) {
+                Class<?>[] argTypes2 = method2.getArgTypes();
+                int i = 0;
+                for (; i < argTypes.length; i++) {
+                    if (!argTypes[i].equals(argTypes2[i])) {
+                        break;
+                    }
                 }
-            }
-            if (i == argTypes.length) {
-                return true;
+                if (i == argTypes.length) {
+                    return true;
+                }
             }
         }
         return false;

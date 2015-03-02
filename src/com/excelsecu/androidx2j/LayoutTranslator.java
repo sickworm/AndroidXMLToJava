@@ -67,7 +67,7 @@ public class LayoutTranslator extends BaseTranslator {
             codeBlock.add(addViewMethod);
         }
         
-        codeBlock.add(node.getObjectName() + ".setLayoutParams(" + node.getObjectName() + "LayoutParams);\n");
+        codeBlock.add(node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n");
     }
 
 

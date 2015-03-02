@@ -154,7 +154,8 @@ public class Config {
             "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
             "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER),
             
-            "TextView,android:textAppearance,setTextAppearance(Integer),",
+            "TextView,android:textAppearance,setTextAppearance(Context, Integer),",
+            "TextView,android:text,setText(Integer),",
         };
     
     /**the local Android doc path from SDK Manager**/

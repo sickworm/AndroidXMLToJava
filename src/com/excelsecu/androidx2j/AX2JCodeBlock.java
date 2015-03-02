@@ -34,7 +34,7 @@ public class AX2JCodeBlock {
         add(code);
     }
     
-    public void add(String method, String value, int type) {
+    public void add(AX2JMethod method, String value, int type) {
         AX2JCode code = new AX2JCode(method, value, type);
         add(code);
     }
@@ -131,32 +131,36 @@ public class AX2JCodeBlock {
         public static final int PRIORITY_LAST = 7;
         public static final int PRIORITY_DEFAULT = PRIORITY_NORMAL;
         
-        public String method;
-        public String value;
+        public AX2JMethod method;
+        public String methodString;
+        public String[] value;
         public int type = AX2JAttribute.TYPE_NORMAL;
         public int priority = PRIORITY_NORMAL;
         /** not a common method **/
         public boolean special = false;
         
-        public AX2JCode(String method) {
-            this.method = method;
+        public AX2JCode(String methodString) {
+            this.methodString = methodString;
             special = true;
         }
         
-        public AX2JCode(String method, int priority) {
-            this.method = method;
+        public AX2JCode(String methodString, int priority) {
+            this.methodString = methodString;
             this.priority = priority;
             special = true;
         }
         
-        public AX2JCode(String method, String value) {
-            this.method = method;
-            this.value = value;
+        public AX2JCode(String methodString, String value) {
+            this.methodString = methodString;
+            this.value = new String[1];
+            this.value[0] = value;
         }
         
-        public AX2JCode(String method, String value, int type) {
+        public AX2JCode(AX2JMethod method, String value, int type) {
             this.method = method;
-            this.value = value;
+            this.methodString = method.getMethodName();
+            int arguments = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS);
+            this.value = new String[arguments];
             this.type = type;
             this.priority = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_PRIORITY);
         }
@@ -183,14 +187,25 @@ public class AX2JCodeBlock {
         
         @Override
         public String toString() {
+            
             if (special) {
-                return method;
+                return methodString;
+            }
+            
+            int arguments = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS);
+            String valueString = "";
+            for (int i = 0; i < arguments; i++) {
+                if (value[i] == null) {
+                    //multi-argument must have AX2JMethod member
+                    value[i] = method.getDefaultValue(i);
+                }
+                valueString += ", " + value[i];
             }
             
             if (AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0) {
-                return method + " = " + value + ";\n";
+                return methodString + " = " + valueString + ";\n";
             } else {
-                return method + "(" + value + ");\n";
+                return methodString + "(" + valueString + ");\n";
             }
         }
     }

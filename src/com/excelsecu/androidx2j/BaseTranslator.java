@@ -59,9 +59,6 @@ public class BaseTranslator {
     }
     
     private String printCodeBlock(List<AX2JCodeBlock> codeBlockList) {
-        if (getRoot().getObjectName().equals("base")) {
-            System.out.println("");
-        }
         String topBlock = "";
         List<AX2JCode> topCodeList = new ArrayList<AX2JCode>();
         for (AX2JCodeBlock codeBlock : codeBlockList) {

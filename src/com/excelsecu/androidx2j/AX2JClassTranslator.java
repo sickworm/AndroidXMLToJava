@@ -180,7 +180,7 @@ public class AX2JClassTranslator {
         
         String value = translateValue(codeBlock, attribute, method);
         
-        codeBlock.add(method.getName(), value, attribute.getType());
+        codeBlock.add(method, value, attribute.getType());
     }
     
     /**
@@ -190,7 +190,6 @@ public class AX2JClassTranslator {
      */
     protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS);
-        System.out.println(attribute);
         Class<?> argType = method.getArgTypes()[argOrder];
         String value = attribute.getValue();
         String attrName = attribute.getName().getQualifiedName();
@@ -283,7 +282,7 @@ public class AX2JClassTranslator {
             	String style = AX2JStyle.getStyle(value).name;
             	style = style.replace('.', '_');
             	style = "android.R.style." + style;
-            	value = "context, " + style;
+            	value = style;
             }
             
             if (attrName.equals("android:divider")) {
@@ -342,7 +341,7 @@ public class AX2JClassTranslator {
                 codeBlock.addImport(TextUtils.class.getName());
             }
         }
-
+        
         return value;
     }
     
