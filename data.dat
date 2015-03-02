@@ -74,17 +74,17 @@ View,android:translationY,setTranslationY(Float),
 View,android:translationZ,setTranslationZ(Float),
 View,android:visibility,setVisibility(Integer),
 View,android:enabled,setEnabled(Boolean),
-View,android:layout_width,width(Integer),0x00050000
-View,android:layout_height,height(Integer),0x00050000
-View,android:layout_weight,weight(Float),0x00050000
-View,android:layout_gravity,gravity(Integer),0x00050000
-View,android:layout_marginTop,topMargin(Integer),0x00050000
-View,android:layout_marginBottom,bottomMargin(Integer),0x00050000
-View,android:layout_marginLeft,leftMargin(Integer),0x00050000
-View,android:layout_marginRight,rightMargin(Integer),0x00050000
-View,android:layout_marginStart,setMarginStart(Integer),0x00010000
-View,android:layout_marginEnd,setMarginEnd(Integer),0x00010000
-View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer),0x00010000
+View,android:layout_width,width(Integer),0x00500000
+View,android:layout_height,height(Integer),0x00500000
+View,android:layout_weight,weight(Float),0x00500000
+View,android:layout_gravity,gravity(Integer),0x00500000
+View,android:layout_marginTop,topMargin(Integer),0x00500000
+View,android:layout_marginBottom,bottomMargin(Integer),0x00500000
+View,android:layout_marginLeft,leftMargin(Integer),0x00500000
+View,android:layout_marginRight,rightMargin(Integer),0x00500000
+View,android:layout_marginStart,setMarginStart(Integer),0x00100000
+View,android:layout_marginEnd,setMarginEnd(Integer),0x00100000
+View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer),
 
 //ViewGroup
 ViewGroup,android:addStatesFromChildren,,
@@ -255,7 +255,7 @@ TextView,android:singleLine,setTransformationMethod(TransformationMethod),
 TextView,android:text,setText(CharSequence,BufferType),
 TextView,android:text,setText(Integer),
 TextView,android:textAllCaps,setAllCaps(Boolean),
-TextView,android:textAppearance,setTextAppearance(Integer),
+TextView,android:textAppearance,setTextAppearance(Context,Integer),
 TextView,android:textColor,setTextColor(Integer),
 TextView,android:textColorHighlight,setHighlightColor(Integer),
 TextView,android:textColorHint,setHintTextColor(Integer),
@@ -328,7 +328,7 @@ Fragment,android:fragmentSharedElementEnterTransition,setSharedElementEnterTrans
 Fragment,android:fragmentSharedElementReturnTransition,setSharedElementReturnTransition(Transition),
 
 //ListView
-ListView,android:divider,setDivider(Drawable),0x00000300
+ListView,android:divider,setDivider(Drawable),0x00000003
 ListView,android:dividerHeight,setDividerHeight(Float),
 ListView,android:entries,,
 ListView,android:footerDividersEnabled,,

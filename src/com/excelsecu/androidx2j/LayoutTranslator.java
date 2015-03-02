@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
+
 import android.content.Context;
 
 /**
@@ -61,18 +63,34 @@ public class LayoutTranslator extends BaseTranslator {
     protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
         super.afterTranslateNode(codeBlock, node);
         
+        String setLayoutParamsMethod = node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n";
+        codeBlock.add(setLayoutParamsMethod);
+        
         AX2JNode parent = node.getParent();
         if (parent != null) {
             String addViewMethod = parent.getObjectName() + ".addView(" + node.getObjectName() + ");\n";
             codeBlock.add(addViewMethod);
         }
-        
-        codeBlock.add(node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n");
     }
+    
+    @Override
+	protected void translateAttribute(AX2JCodeBlock codeBlock,
+			Attribute attribute) {
+    	String name = attribute.getQualifiedName();
+    	String value = attribute.getValue();
+		if (name.equals("android:layout_width") ||
+				name.equals("android:layout_height")) {
+			//default value
+			if (value.equals("wrap_content")) {
+				return;
+			}
+		}
+		super.translateAttribute(codeBlock, attribute);
+	}
 
 
 
-    public static List<String> getIdList() {
+	public static List<String> getIdList() {
         return idList;
     }
     

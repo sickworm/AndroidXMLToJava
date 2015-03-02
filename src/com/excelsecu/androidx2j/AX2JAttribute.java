@@ -8,24 +8,45 @@ import org.dom4j.QName;
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
 
 public class AX2JAttribute implements Cloneable {
-    /** normal attribute **/
+    /** normal attribute, use default value**/
     public static final int TYPE_NORMAL = 0x00000000;
+    
     /** method has api limit. Range 0x00000000 - 0x000000ff **/
     public static final int TYPE_API_LIMIT = 0x00000ff;
+    public static final int TYPE_API_LIMIT_INDEX = 0;
+    
     /** method has priority in Java method list. Range 0x00000100 - 0x00000f00 **/
     public static final int TYPE_PRIORITY = 0x00000f00;
-    /** method has multi-arguments. Range 0x00001000 - 0x0000f000 **/
-    public static final int TYPE_ARGUMENTS = 0x0000f000;
+    public static final int TYPE_PRIORITY_INDEX = 8;
+    
+    /** the number of arguments. Range 0x00001000 - 0x0000f000 **/
+    public static final int TYPE_ARGUMENTS_TOTAL = 0x0000f000;
+    public static final int TYPE_ARGUMENTS_TOTAL_INDEX = 12;
+    
+    /** the order of this arguments. Range 0x00010000 - 0x000e0000. 0x000f0000 for all the value is the same**/
+    public static final int TYPE_ARGUMENTS_ORDER = 0x000f0000;
+    public static final int TYPE_ARGUMENTS_ORDER_INDEX = 16;
+    public static final int TYPE_ARGUMENTS_ALL_THE_SAME = 0xf;
+    
     /** attribute for LayoutParams. 0x00100000 **/
-    public static final int TYPE_LAYOUT_PARAMETER = 0x00010000;
+    public static final int TYPE_LAYOUT_PARAMETER = 0x00100000;
+    public static final int TYPE_LAYOUT_PARAMETER_INDEX = 20;
+    
     /** use style resource **/
-    public static final int TYPE_STYLE = 0x00020000;
+    public static final int TYPE_STYLE = 0x00200000;
+    public static final int TYPE_STYLE_INDEX = 21;
+    
     /** assign variable directly **/
-    public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00040000;
+    public static final int TYPE_VARIABLE_ASSIGNMENT = 0x00400000;
+    public static final int TYPE_VARIABLE_ASSIGNMENT_INDEX = 22;
+    
     /** use reflect to assign variable **/
-    public static final int TYPE_VARIABLE_REFLECTION = 0x00080000;
+    public static final int TYPE_VARIABLE_REFLECTION = 0x00800000;
+    public static final int TYPE_VARIABLE_REFLECTION_INDEX = 23;
+    
     /** use reflect to invoke method **/
-    public static final int TYPE_METHOD_REFLECTION = 0x00100000;
+    public static final int TYPE_METHOD_REFLECTION = 0x01000000;
+    public static final int TYPE_METHOD_REFLECTION_INDEX = 24;
 
     private Class<?> type;
     private QName name;
@@ -125,33 +146,43 @@ public class AX2JAttribute implements Cloneable {
             case TYPE_NORMAL:
                 break;
             case TYPE_API_LIMIT:
+            	value = value >> TYPE_API_LIMIT_INDEX;
                 if (value == 0) {
                     value = 1;
                 }
                 break;
             case TYPE_PRIORITY:
-                value = value >> 8;
+                value = value >> TYPE_PRIORITY_INDEX;
                 if (value == 0) {
                     value = AX2JCode.PRIORITY_DEFAULT;
                 }
                 break;
-            case TYPE_ARGUMENTS:
-                value = value >> 12;
+            case TYPE_ARGUMENTS_TOTAL:
+                value = value >> TYPE_ARGUMENTS_TOTAL_INDEX;
+                if (value == 0) {
+                    value = 1;
+                }
+                break;
+            case TYPE_ARGUMENTS_ORDER:
+                value = value >> TYPE_ARGUMENTS_ORDER_INDEX;
+                if (value == 0) {
+                    value = 1;
+                }
                 break;
             case TYPE_LAYOUT_PARAMETER:
-                value = value >> 16;
+                value = value >> TYPE_LAYOUT_PARAMETER_INDEX;
                 break;
             case TYPE_STYLE:
-                value = value >> 17;
+                value = value >> TYPE_STYLE_INDEX;
                 break;
             case TYPE_VARIABLE_ASSIGNMENT:
-                value = value >> 18;
+                value = value >> TYPE_VARIABLE_ASSIGNMENT_INDEX;
                 break;
             case TYPE_VARIABLE_REFLECTION:
-                value = value >> 19;
+                value = value >> TYPE_VARIABLE_REFLECTION_INDEX;
                 break;
             case TYPE_METHOD_REFLECTION:
-                value = value >> 20;
+                value = value >> TYPE_METHOD_REFLECTION_INDEX;
                 break;
         }
         return value;

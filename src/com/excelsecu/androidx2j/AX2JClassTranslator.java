@@ -189,11 +189,20 @@ public class AX2JClassTranslator {
      * @return the value after translating
      */
     protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
-        int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS);
-        Class<?> argType = method.getArgTypes()[argOrder];
         String value = attribute.getValue();
         String attrName = attribute.getName().getQualifiedName();
         
+        //just for debug
+    	if (attrName.equals("android:layout_width")) {
+    		System.out.println();
+    	}
+    	
+        int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+        if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
+        	argOrder = 1;
+        }
+        Class<?> argType = method.getArgType(argOrder);
+    	
         if (argType.equals(Integer.class)) {
             //dp, px, sp
             if (value.matches("[0-9.]+dp")) {

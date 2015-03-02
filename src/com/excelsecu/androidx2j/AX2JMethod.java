@@ -53,7 +53,7 @@ public class AX2JMethod implements Cloneable {
     
     public String getDefaultValue(int index) {
         if (index < 0 || index > argTypes.length - 1) {
-            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this.toString() + ", index: " + index);
+            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this.toString() + ", order: " + index);
         }
         
         String value = "";
@@ -69,6 +69,10 @@ public class AX2JMethod implements Cloneable {
     
     public String getName() {
         return methodName;
+    }
+    
+    public Class<?> getArgType(int order) {
+        return argTypes[order - 1];
     }
     
     public Class<?>[] getArgTypes() {

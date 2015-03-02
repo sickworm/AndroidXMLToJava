@@ -137,7 +137,7 @@ public class Config {
             "GradientDrawable,android:radius,setCornerRadius(float),",
             
             "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean),",
-            "ListView,android:divider,setDivider(Drawable)," + (TYPE_PRIORITY / 0xf * PRIORITY_THIRD),
+            "ListView,android:divider,setDivider(Drawable)," + (PRIORITY_THIRD << TYPE_PRIORITY),
             "ListView,android:dividerHeight,setDividerHeight(float),",
             
             //LayoutParams
@@ -152,9 +152,9 @@ public class Config {
             "View,android:layout_marginRight,rightMargin(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
             "View,android:layout_marginStart,setMarginStart(Integer)," + (TYPE_LAYOUT_PARAMETER),
             "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
-            "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER),
+            "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER + 4 << TYPE_ARGUMENTS_TOTAL_INDEX  + TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX),
             
-            "TextView,android:textAppearance,setTextAppearance(Context, Integer),",
+            "TextView,android:textAppearance,setTextAppearance(Context,Integer),",
             "TextView,android:text,setText(Integer),",
         };
     
