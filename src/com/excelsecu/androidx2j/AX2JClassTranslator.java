@@ -30,6 +30,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class AX2JClassTranslator {
@@ -159,9 +160,6 @@ public class AX2JClassTranslator {
     
     public static Class<?> getType(String typeString) {
         Class<?> type = typeMap.get(typeString);
-        if (type == null) {
-            throw new AX2JException(AX2JException.CLASS_NOT_FOUND, typeString);
-        }
         return type;
     }
     
@@ -172,7 +170,7 @@ public class AX2JClassTranslator {
         }
         attribute.setValue(attr.getValue());
         
-        //currently not support multi relative method, default choose the first one
+        //currently not support multiple relative methods, default choose the first one
         AX2JMethod method = attribute.getRelativeMethodList().get(0);
         if (method == null || method.getName().equals("")) {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
@@ -294,10 +292,23 @@ public class AX2JClassTranslator {
             	value = style;
             }
             
+            /** independent part **/
+            //RelativeLayout rule
+            if (method.getMethodName().equals("addRule")) {
+            	if (value.equals("true")) {
+                	value = "RelativeLayout.TRUE";
+            	} else if (value.equals("false")) {
+                	value = "RelativeLayout.FALSE";
+            	}
+                codeBlock.addImport(RelativeLayout.class.getName());
+            }
+            
+            //divider
             if (attrName.equals("android:divider")) {
                 codeBlock.addImport(ColorDrawable.class.getName());
             }
             
+            //id
             if (value.startsWith("@drawable/") ||
                     value.startsWith("@color/") ||
                     value.startsWith("@string/")) {

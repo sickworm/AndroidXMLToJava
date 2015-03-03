@@ -12,11 +12,11 @@ public class AX2JMethod implements Cloneable {
     private Class<?>[] argTypes;
     private List<AX2JAttribute> relativeAttributeList;
     private String[] args;
+    private int argsNum;
     
     public AX2JMethod(QName attributeName, String methodString) {
         setMethod(methodString);
         relativeAttributeList = new ArrayList<AX2JAttribute>();
-        args = null;
     }
     
     public void setMethod(String methodString) {
@@ -25,15 +25,24 @@ public class AX2JMethod implements Cloneable {
         if (methodString.indexOf('(') == -1) {
             methodName = methodString;
             argTypes = new Class<?>[0];
+            args = new String[0];
+            argsNum = 0;
         } else {
             methodName = methodString.substring(0, methodString.indexOf('('));
             
-            String[] args = methodString.substring(methodString.indexOf('(') + 1,
+            String[] argTypesString = methodString.substring(methodString.indexOf('(') + 1,
                     methodString.indexOf(')')).split(",");
-            if (!args[0].equals("")) {
-                argTypes = new Class<?>[args.length];
+            if (!argTypesString[0].equals("")) {
+                argTypes = new Class<?>[argTypesString.length];
+                args = new String[argTypesString.length];
+                argsNum = argTypesString.length;
                 for (int i = 0; i < args.length; i++) {
-                    argTypes[i] = AX2JClassTranslator.getType(args[i]);
+                    argTypes[i] = AX2JClassTranslator.getType(argTypesString[i]);
+                    if (argTypes[i] == null) {		//this means it already has a constant value in this position.
+                    								//e.g. addRule(RelativeLayout.START_OF,Integer)
+                    	argTypes[i] = Void.class;
+                    	this.args[i] = argTypesString[i];
+                    }
                 }
             } else {
                 argTypes = new Class<?>[0];
@@ -47,17 +56,40 @@ public class AX2JMethod implements Cloneable {
         relativeAttributeList = newMethod.getRelativeAttributeList();
     }
     
-    public void setArgs(String[] args) {
-        this.args = args;
+    public void setArg(int order, String value) {
+    	if (order > args.length || order < 0) {
+    		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
+    	}
+        args[order - 1] = value;
     }
     
-    public String getDefaultValue(int index) {
-        if (index < 0 || index > argTypes.length - 1) {
-            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this.toString() + ", order: " + index);
+    public String getArg(int order) {
+    	if (order > args.length || order < 0) {
+    		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
+    	}
+    	String value = args[order - 1];
+        if (value == null) {
+        	value = getDefaultValue(order);
+        }
+        
+        return value;
+    }
+    
+    public String[] getArgs() {
+        return args;
+    }
+    
+    public int getArgsNum() {
+    	return argsNum;
+    }
+    
+    public String getDefaultValue(int order) {
+        if (order < 1 || order > argTypes.length) {
+            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this.toString() + ", order: " + order);
         }
         
         String value = "";
-        Class<?> type = argTypes[index];
+        Class<?> type = argTypes[order - 1];
         if (type.equals(Context.class)) {
             value = "context";
         } else {
@@ -106,21 +138,21 @@ public class AX2JMethod implements Cloneable {
     @Override
     public String toString() {
         String argsString = "";
-        if (args != null) {
-            for (String arg : args) {
-                argsString += arg + ", ";
-            }
-            if (argsString.length() > 2) {
-                argsString = argsString.substring(0, argsString.length() - 2);
-            }
-        } else {
-            for (Class<?> clazz : argTypes) {
-                argsString += clazz.getSimpleName() + ",";
-            }
-            if (argsString.length() > 1) {
-                argsString = argsString.substring(0, argsString.length() - 1);
-            }
+        
+        for (int i = 0; i < argTypes.length; i++) {
+        	Class<?> type = argTypes[i];
+        	if (type == Void.class) {		//this means it already has a constant value in this position.
+        									//e.g. addRule(RelativeLayout.START_OF,Integer)
+                argsString += args[i];
+        	} else {
+                argsString += type.getSimpleName();
+        	}
+        	
+        	if (i < argTypes.length - 1) {
+        		argsString += ",";
+        	}
         }
+        
         String methodString = this.getMethodName() + (argsString.equals("")? "" : ("(" + argsString +")"));
         
         return methodString;

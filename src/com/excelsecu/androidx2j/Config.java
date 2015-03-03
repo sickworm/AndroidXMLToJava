@@ -58,7 +58,7 @@ public class Config {
         }
     };
     
-    /**TextView.InputType's map of attr to Java value**/
+    /**TextView.InputType's map of attribute to Java value**/
     public static final HashMap<String, String> INPUT_TYPE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 8702820407293253537L;
         

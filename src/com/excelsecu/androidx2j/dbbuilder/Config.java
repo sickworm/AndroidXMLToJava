@@ -152,10 +152,35 @@ public class Config {
             "View,android:layout_marginRight,rightMargin(Integer)," + (TYPE_LAYOUT_PARAMETER + TYPE_VARIABLE_ASSIGNMENT),
             "View,android:layout_marginStart,setMarginStart(Integer)," + (TYPE_LAYOUT_PARAMETER),
             "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
-            "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER + 4 << TYPE_ARGUMENTS_TOTAL_INDEX  + TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER + (TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX)),
             
-            "TextView,android:textAppearance,setTextAppearance(Context,Integer),",
+            "TextView,android:textAppearance,setTextAppearance(context,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
             "TextView,android:text,setText(Integer),",
+            
+            //RelativeLayout rule
+            "View,android:layout_above,addRule(RelativeLayout.ABOVE,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignBaseline,addRule(RelativeLayout.ALIGN_BASELINE,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignBottom,addRule(RelativeLayout.ALIGN_BOTTOM,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignEnd,addRule(RelativeLayout.ALIGN_END,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignLeft,addRule(RelativeLayout.ALIGN_LEFT,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentBottom,addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentEnd,addRule(RelativeLayout.ALIGN_PARENT_END,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentLeft,addRule(RelativeLayout.ALIGN_PARENT_LEFT,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentRight,addRule(RelativeLayout.ALIGN_PARENT_RIGHT,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentStart,addRule(RelativeLayout.ALIGN_PARENT_START,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignParentTop,addRule(RelativeLayout.ALIGN_PARENT_TOP,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignRight,addRule(RelativeLayout.ALIGN_RIGHT,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignStart,addRule(RelativeLayout.ALIGN_START,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_alignTop,addRule(RelativeLayout.ALIGN_TOP,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            //"View,android:layout_alignWithParentIfMissing,addRule(RelativeLayout.,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_below,addRule(RelativeLayout.BELOW,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_centerHorizontal,addRule(RelativeLayout.CENTER_HORIZONTAL,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            //"View,android:layout_centerInParent,addRule(RelativeLayout.,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_centerVertical,addRule(RelativeLayout.CENTER_VERTICAL,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_toEndOf,addRule(RelativeLayout.END_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_toLeftOf,addRule(RelativeLayout.LEFT_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_toRightOf,addRule(RelativeLayout.RIGHT_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+            "View,android:layout_toStartOf,addRule(RelativeLayout.START_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
         };
     
     /**the local Android doc path from SDK Manager**/

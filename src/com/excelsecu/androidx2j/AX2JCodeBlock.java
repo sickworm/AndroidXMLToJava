@@ -45,7 +45,7 @@ public class AX2JCodeBlock {
         for (j = 0; j < subCodeList.size(); j++) {
         	AX2JCode originCode = subCodeList.get(j);
             if (code.isDuplicateMethod(originCode)) {
-            	if (AX2JAttribute.getTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_TOTAL) != 1) {
+            	if (code.method != null && code.method.getArgsNum() > 1) {
             		int order = AX2JAttribute.getTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             		originCode.setValue(order, code.getValue(order));
             	}
@@ -138,7 +138,6 @@ public class AX2JCodeBlock {
         
         public AX2JMethod method;
         public String methodString;
-        public String[] value;
         public int type = AX2JAttribute.TYPE_NORMAL;
         public int priority = PRIORITY_NORMAL;
         /** not a common method **/
@@ -155,12 +154,6 @@ public class AX2JCodeBlock {
             special = true;
         }
         
-        public AX2JCode(String methodString, String valueString) {
-            this.methodString = methodString;
-            this.value = new String[1];
-            this.value[0] = valueString;
-        }
-        
         public AX2JCode(AX2JMethod method, String valueString, int type) {
             this.method = method;
             this.methodString = method.getMethodName();
@@ -168,12 +161,10 @@ public class AX2JCodeBlock {
             this.type = type;
             this.priority = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_PRIORITY);
             
-            int arguments = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_TOTAL);
-            this.value = new String[arguments];
             int order = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             if (order == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
-            	for (int i = 0; i < this.value.length; i++) {
-            		this.value[i] = valueString;
+            	for (int i = 1; i <= method.getArgs().length; i++) {
+            		method.setArg(i, valueString);
             	}
             } else {
             	setValue(order, valueString);
@@ -201,14 +192,14 @@ public class AX2JCodeBlock {
         }
         
         public void setValue(int order, String valueString) {
-        	value[order - 1] = valueString;
+        	method.setArg(order, valueString);
         }
         
         public String getValue(int order) {
-        	if (order >= value.length) {
+        	if (order >= method.getArgs().length) {
         		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
         	}
-        	return value[order - 1];
+        	return method.getArg(order);
         }
         
         @Override
@@ -217,14 +208,9 @@ public class AX2JCodeBlock {
                 return methodString;
             }
             
-            int arguments = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_TOTAL);
             String valueString = "";
-            for (int i = 0; i < arguments; i++) {
-                if (value[i] == null) {
-                    //multi-argument must have AX2JMethod member
-                    value[i] = method.getDefaultValue(i);
-                }
-                valueString += value[i] + ((i == arguments - 1)? "" : ", ");
+            for (int i = 1; i <= method.getArgsNum(); i++) {
+                valueString += method.getArg(i) + ((i == method.getArgsNum())? "" : ", ");
             }
             
             if (AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0) {

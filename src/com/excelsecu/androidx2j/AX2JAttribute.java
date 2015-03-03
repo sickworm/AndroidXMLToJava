@@ -20,17 +20,15 @@ public class AX2JAttribute implements Cloneable {
     public static final int TYPE_PRIORITY_INDEX = 8;
     
     /** the number of arguments. Range 0x00001000 - 0x0000f000 **/
-    public static final int TYPE_ARGUMENTS_TOTAL = 0x0000f000;
-    public static final int TYPE_ARGUMENTS_TOTAL_INDEX = 12;
     
     /** the order of this arguments. Range 0x00010000 - 0x000e0000. 0x000f0000 for all the value is the same**/
-    public static final int TYPE_ARGUMENTS_ORDER = 0x000f0000;
-    public static final int TYPE_ARGUMENTS_ORDER_INDEX = 16;
+    public static final int TYPE_ARGUMENTS_ORDER = 0x0000f000;
+    public static final int TYPE_ARGUMENTS_ORDER_INDEX = 12;
     public static final int TYPE_ARGUMENTS_ALL_THE_SAME = 0xf;
     
     /** attribute for LayoutParams. 0x00100000 **/
-    public static final int TYPE_LAYOUT_PARAMETER = 0x00100000;
-    public static final int TYPE_LAYOUT_PARAMETER_INDEX = 20;
+    public static final int TYPE_LAYOUT_PARAMETER = 0x00010000;
+    public static final int TYPE_LAYOUT_PARAMETER_INDEX = 16;
     
     /** use style resource **/
     public static final int TYPE_STYLE = 0x00200000;
@@ -155,12 +153,6 @@ public class AX2JAttribute implements Cloneable {
                 value = value >> TYPE_PRIORITY_INDEX;
                 if (value == 0) {
                     value = AX2JCode.PRIORITY_DEFAULT;
-                }
-                break;
-            case TYPE_ARGUMENTS_TOTAL:
-                value = value >> TYPE_ARGUMENTS_TOTAL_INDEX;
-                if (value == 0) {
-                    value = 1;
                 }
                 break;
             case TYPE_ARGUMENTS_ORDER:
