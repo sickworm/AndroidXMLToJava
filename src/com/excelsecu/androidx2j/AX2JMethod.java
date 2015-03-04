@@ -164,15 +164,19 @@ public class AX2JMethod implements Cloneable {
             AX2JMethod method2 = (AX2JMethod) object;
             if (methodName.equals(method2.getName())) {
                 Class<?>[] argTypes2 = method2.getArgTypes();
-                int i = 0;
-                for (; i < argTypes.length; i++) {
-                    if (!argTypes[i].equals(argTypes2[i])) {
-                        break;
-                    }
+                String[] args2 = method2.getArgs();
+                for (int i = 0; i < argTypes.length; i++) {
+                	if (argTypes[i].equals(Void.class)) {
+                        if (!args[i].equals(args2[i])) {
+                        	return false;
+                        }
+                	} else {
+                        if (!argTypes[i].equals(argTypes2[i])) {
+                        	return false;
+                        }
+                	}
                 }
-                if (i == argTypes.length) {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
