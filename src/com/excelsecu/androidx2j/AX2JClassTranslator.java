@@ -164,6 +164,7 @@ public class AX2JClassTranslator {
     }
     
     public void translate(AX2JCodeBlock codeBlock, Attribute attr) {
+    	
         AX2JAttribute attribute = findAttribute(attr.getQName());
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());

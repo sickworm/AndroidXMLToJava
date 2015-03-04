@@ -25,6 +25,7 @@ import com.excelsecu.androidx2j.AX2JParser;
 import com.excelsecu.androidx2j.AX2JStyle;
 import com.excelsecu.androidx2j.AX2JClassTranslator;
 import com.excelsecu.androidx2j.AX2JTranslatorMap;
+import com.excelsecu.androidx2j.Utils;
 
 /**
  * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
@@ -143,7 +144,13 @@ public class AndroidDocConverter {
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split("\n");
             for (String s : list) {
-                if (!(s.startsWith("//") || s.equals(""))) {
+            	if (s.startsWith("//")) {
+            		String typeString = s.replace("//", "");
+            		Class<?> type = Utils.matchClass(typeString);
+            		if (!type.equals(Void.class)) {
+            			attrToMethodMap.add(new AX2JClassTranslator(type));
+            		}
+            	} else if (!s.equals("")) {
                     attrToMethodMap.add(s);
                 }
             }

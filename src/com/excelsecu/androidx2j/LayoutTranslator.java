@@ -15,13 +15,11 @@ import android.content.Context;
  */
 public class LayoutTranslator extends BaseTranslator {
     private static List<String> idList = new ArrayList<String>();
-
+    
     public LayoutTranslator(File file) {
         super(file);
         AX2JNode.resetOrder();
     }
-    
-    
     
     @Override
     protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
