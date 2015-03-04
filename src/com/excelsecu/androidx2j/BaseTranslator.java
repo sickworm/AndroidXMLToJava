@@ -113,21 +113,25 @@ public class BaseTranslator {
         return topBlock + normalBlock + bottomBlock;
     }
     
-    protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
-    }
-    
-    protected AX2JCodeBlock translateNode(AX2JNode node) {
+    private final AX2JCodeBlock translateNode(AX2JNode node) {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
         
         preTranslateNode(codeBlock, node);
         
-        for (Attribute attribute : node.getAttributes()) {
-            translateAttribute(codeBlock, attribute);
-        }
+        translatingNode(codeBlock, node);
         
         afterTranslateNode(codeBlock, node);
         
         return codeBlock;
+    }
+    
+    protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+    }
+    
+    protected void translatingNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+        for (Attribute attribute : node.getAttributes()) {
+            translateAttribute(codeBlock, attribute);
+        }
     }
     
     protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {

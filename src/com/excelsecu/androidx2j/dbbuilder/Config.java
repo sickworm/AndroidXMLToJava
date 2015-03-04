@@ -47,7 +47,7 @@ public class Config {
         
         /** Layouts **/
         //<include> not a class
-        android.support.v7.widget.GridLayout.class,
+        //android.support.v7.widget.GridLayout.class,	//the same as android.widget.GridLayout.class
         android.widget.GridLayout.class,
         android.widget.RelativeLayout.class,
         android.widget.LinearLayout.class,

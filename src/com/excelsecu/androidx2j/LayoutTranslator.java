@@ -26,19 +26,19 @@ public class LayoutTranslator extends BaseTranslator {
         super.preTranslateNode(codeBlock, node);
 
         addImport(Context.class.getName());
-        
-        String newMethod = "";
         //include label
+        String newMethod = "";
         if (node.getLabelName().equals("include")) {
             String layout = node.attributeValue("layout");
             layout = layout.substring(layout.indexOf('/') + 1);
             newMethod = "View " + node.getObjectName() + " = " +
                     Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
-        } else {
-            newMethod = node.getType().getSimpleName() + " " + node.getObjectName() + " = new " + 
-                    node.getLabelName() + "(" + node.constructorParams() + ");\n";
+            codeBlock.add(newMethod);
+            return;
         }
         
+    	newMethod = node.getType().getSimpleName() + " " + node.getObjectName() + " = new " + 
+    			node.getLabelName() + "(" + node.constructorParams() + ");\n";
         codeBlock.add(newMethod);
         
         String parentName = getParentName(node);
@@ -53,16 +53,23 @@ public class LayoutTranslator extends BaseTranslator {
 //      }
     }
     
-    public static String getLayoutParamsName(String objectName) {
-    	return objectName + "_LayoutParams";
-    }
+    @Override
+	protected void translatingNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+        if (node.getLabelName().equals("include")) {
+        	return;
+        }
+        
+		super.translatingNode(codeBlock, node);
+	}
     
     @Override
     protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
-        super.afterTranslateNode(codeBlock, node);
-        
-        String setLayoutParamsMethod = node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n";
-        codeBlock.add(setLayoutParamsMethod);
+        super.afterTranslateNode(codeBlock, node);     
+
+        if (!node.getLabelName().equals("include")) {
+	        String setLayoutParamsMethod = node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n";
+	        codeBlock.add(setLayoutParamsMethod);
+        }
         
         AX2JNode parent = node.getParent();
         if (parent != null) {
@@ -85,11 +92,13 @@ public class LayoutTranslator extends BaseTranslator {
 		}
 		super.translateAttribute(codeBlock, attribute);
 	}
-
-
-
+    
 	public static List<String> getIdList() {
         return idList;
+    }
+
+	public static String getLayoutParamsName(String objectName) {
+    	return objectName + "_LayoutParams";
     }
     
 //

@@ -299,15 +299,6 @@ GridLayout,android:rowCount,setRowCount(Integer),
 GridLayout,android:rowOrderPreserved,setRowOrderPreserved(Boolean),
 GridLayout,android:useDefaultMargins,setUseDefaultMargins(Boolean),
 
-//GridLayout
-GridLayout,android:alignmentMode,setAlignmentMode(Integer),
-GridLayout,android:columnCount,setColumnCount(Integer),
-GridLayout,android:columnOrderPreserved,setColumnOrderPreserved(Boolean),
-GridLayout,android:orientation,setOrientation(Integer),
-GridLayout,android:rowCount,setRowCount(Integer),
-GridLayout,android:rowOrderPreserved,setRowOrderPreserved(Boolean),
-GridLayout,android:useDefaultMargins,setUseDefaultMargins(Boolean),
-
 //RelativeLayout
 RelativeLayout,android:gravity,setGravity(Integer),
 RelativeLayout,android:ignoreGravity,setIgnoreGravity(Integer),
