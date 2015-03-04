@@ -154,6 +154,14 @@ public class Config {
             "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
             "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER + (TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX)),
             
+            "View,android:padding,setPaddingRelative(Integer,Integer,Integer,Integer)," + (TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingStart,setPaddingRelative(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingTop,setPaddingRelative(Integer,Integer,Integer,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingRight,setPadding(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingBottom,setPaddingRelative(Integer,Integer,Integer,Integer)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingEnd,setPaddingRelative(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+            "View,android:paddingLeft,setPadding(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+            
             "TextView,android:textAppearance,setTextAppearance(context,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
             "TextView,android:text,setText(Integer),",
             

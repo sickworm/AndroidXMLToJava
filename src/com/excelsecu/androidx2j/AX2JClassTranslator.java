@@ -127,6 +127,7 @@ public class AX2JClassTranslator {
     }
     
     public void addAttribute(QName name, AX2JMethod method, int methodType) {
+    	
         AX2JAttribute attribute = findAttribute(name);
         if (attribute == null) {
             attribute = new AX2JAttribute(name, methodType, type);
@@ -141,9 +142,13 @@ public class AX2JClassTranslator {
         } else {
             methodList.add(method);
         }
-        method.addRelativeAttribute(attribute);
         
-        attribute.addRelativeMethod(method);
+        if (method.findAttribute(attribute) == null) {
+        	method.addRelativeAttribute(attribute);
+        }
+        if (attribute.findMethod(method) == null) {
+            attribute.addRelativeMethod(method); 
+        }
     }
     
     public static QName string2QName(String qNameString) {

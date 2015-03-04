@@ -56,6 +56,15 @@ public class AX2JMethod implements Cloneable {
         relativeAttributeList = newMethod.getRelativeAttributeList();
     }
     
+    public AX2JAttribute findAttribute(AX2JAttribute oldAttribute) {
+        for (AX2JAttribute attribute : relativeAttributeList) {
+            if (attribute.equals(oldAttribute)) {
+                return attribute;
+            }
+        }
+        return null;
+    }
+    
     public void setArg(int order, String value) {
     	if (order > args.length || order < 0) {
     		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
