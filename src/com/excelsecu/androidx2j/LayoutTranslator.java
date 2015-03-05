@@ -131,60 +131,6 @@ public class LayoutTranslator extends BaseTranslator {
 //            String attrName = attr.getQualifiedName();
 //            String javaBlock = "";
 //            
-//            
-//            //textAppearance
-//            if (attrName.equals("android:textAppearance") && node.getLabelName().equals("TextView")) {
-//                String style = AX2JStyle.getStyle(attr.getValue()).name;
-//                style = style.replace('.', '_');
-//                style = "android.R.style." + style;
-//                return node.getObjectName() + ".setTextAppearance(context, " + style + ");\n";
-//            }
-//            
-//            //padding
-//            if (attrName.equals("android:paddingBottom") || attrName.equals("android:paddingTop") ||
-//                    attrName.equals("android:paddingLeft") || attrName.equals("android:paddingRight") ||
-//                    attrName.equals("android:paddingStart") || attrName.equals("android:paddingEnd") ||
-//                    attrName.equals("android:padding")) {
-//                if (!padding) {
-//                    if (attrName.equals("android:padding")) {
-//                        String attrValue = translateValue(attr);
-//                        javaBlock = node.getObjectName() + ".setPadding(" +
-//                                attrValue + ", " + attrValue + ", " +
-//                                attrValue + ", " + attrValue + ");\n";
-//                    } else {
-//                        Attribute attrTop = findAttrByName("android:paddingTop");
-//                        Attribute attrBottom = findAttrByName("android:paddingBottom");
-//                        Attribute attrStart = findAttrByName("android:paddingStart");
-//                        Attribute attrEnd = findAttrByName("android:paddingEnd");
-//                        Attribute attrLeft = findAttrByName("android:paddingLeft");
-//                        Attribute attrRight = findAttrByName("android:paddingRight");
-//                        String top = (attrTop == null)? "0" : translateValue(attrTop);
-//                        String bottom = (attrBottom == null)? "0" : translateValue(attrBottom);
-//                        String start = (attrStart == null)? "0" : translateValue(attrRight);
-//                        String end = (attrEnd == null)? "0" : translateValue(attrBottom);
-//                        String left = (attrLeft == null)? "0" : translateValue(attrLeft);
-//                        String right = (attrRight == null)? "0" : translateValue(attrRight);
-//                        if (left != null || attrBottom != null) {
-//                            javaBlock += node.getObjectName() + ".setPadding(" +
-//                                    left + ", " + top + ", " +
-//                                    right + ", " + bottom + ");\n";
-//                        }
-//                        //padding should not be set in two ways, It may have translate problem
-//                        //here because of the order
-//                        //or I should add some warning
-//                        if (attrStart != null || attrEnd != null) {
-//                            javaBlock += node.getObjectName() + ".setPaddingRelative(" +
-//                                    start + ", " + top + ", " +
-//                                    end + ", " + bottom + ");\n";
-//                        }
-//                    }
-//                    
-//                    padding = true;
-//                    return javaBlock;
-//                }
-//                return "";
-//            }
-//            
 //            //drawable direction
 //            if (attrName.equals("android:drawableBottom") || attrName.equals("android:drawableTop") ||
 //                    attrName.equals("android:drawableLeft") || attrName.equals("android:drawableRight") ||
@@ -223,33 +169,6 @@ public class LayoutTranslator extends BaseTranslator {
 //            }
 //            
 //            
-//            //RelativeLayout rules
-//            String rule = Utils.findRule(attrName);
-//            if (rule != null) {
-//                if (!parentName.equals("RelativeLayout")) {
-//                    throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
-//                }
-//                rule = "RelativeLayout." + rule;
-//                String ruleValue = attr.getValue();
-//                String className = Utils.getParentName(node);
-//                //false means nothing
-//                if (ruleValue.equals("false")) {
-//                    return "";
-//                }
-//                if (ruleValue.equals("true")) {
-//                    ruleValue = className + ".TRUE";
-//                } else if (ruleValue.startsWith("@id/.*") ||
-//                        ruleValue.startsWith("@+id/")){
-//                    ruleValue = ruleValue.substring(ruleValue.indexOf('/') + 1);
-//                    ruleValue = Config.R_CLASS + ".id." + ruleValue;
-//                } else {
-//                    throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, ruleValue);
-//                }
-//                javaBlock += layoutParamName + ".addRule(" + rule + ", " + ruleValue + ");\n";
-//                
-//                return javaBlock;
-//            }
-//            
 //            throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
 //        }
 //        
@@ -267,35 +186,6 @@ public class LayoutTranslator extends BaseTranslator {
 //            } else {
 //                return attrStyle;
 //            }
-//        }
-//        
-//        public String setLayoutParams() {
-//            return node.getObjectName() + ".setLayoutParams(" + layoutParamName + ");\n";
-//        }
-//        
-//        public String prebuild() {
-//            String javaBlock = "";
-//            javaBlock += buildLayoutParams();
-//            javaBlock += buildStyle();
-//            return javaBlock;
-//        }
-//        
-//        /**
-//         * Initialize LayoutParams object
-//         * @return
-//         */
-//        private String buildLayoutParams() {
-//            String javaBlock;
-//            Attribute attrWidth = findAttrByName("android:layout_width");
-//            Attribute attrHeight = findAttrByName("android:layout_height");
-//            width = (attrWidth == null)?
-//                    parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrWidth);
-//            height = (attrHeight == null)?
-//                    parentName + ".LayoutParams.WRAP_CONTENT" : translateValue(attrHeight);
-//            String paramValue = width + ", " + height;
-//            javaBlock = parentName + ".LayoutParams " + layoutParamName +
-//                    " =\n\t\tnew " + parentName + ".LayoutParams(" + paramValue + ");\n";
-//            return javaBlock;
 //        }
 //        
 //        /**

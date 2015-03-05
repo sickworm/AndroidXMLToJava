@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.dom4j.Attribute;
+import org.dom4j.Element;
 import org.dom4j.QName;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
@@ -36,7 +37,7 @@ import android.widget.TextView;
 public class AX2JClassTranslator {
     public static HashMap<String, Class<?>> typeMap = new HashMap<String, Class<?>>() {
         private static final long serialVersionUID = -4934808097054114253L;
-
+        
         {
             put("int", Integer.class);
             put("float", Float.class);
@@ -180,12 +181,11 @@ public class AX2JClassTranslator {
     }
     
     public void translate(AX2JCodeBlock codeBlock, Attribute attr) {
-    	
         AX2JAttribute attribute = findAttribute(attr.getQName());
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
         }
-        attribute.setValue(attr.getValue());
+        attribute.setValue(attr);
         
         //currently not support multiple relative methods, default choose the first one
         AX2JMethod method = chooseMethod(attribute);
@@ -204,7 +204,7 @@ public class AX2JClassTranslator {
      * @return the value after translating
      */
     protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
-        String value = attribute.getValue();
+        String value = attribute.getValue().getValue();
         String attrName = attribute.getName().getQualifiedName();
     	
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
@@ -394,23 +394,31 @@ public class AX2JClassTranslator {
      */
     private AX2JMethod chooseMethod(AX2JAttribute attribute) {
         String name = attribute.getName().getQualifiedName();
-        String value = attribute.getValue();
+        String value = attribute.getValue().getValue();
         List<AX2JMethod> methodList = attribute.getRelativeMethodList();
         AX2JMethod bestMethod = methodList.get(0);
         
-        for (AX2JMethod method : methodList) {
-            if (name.equals("android:text")) {
-                if (method.getArgTypes().length == 1) {
-                    if (value.startsWith("@+id/") || value.startsWith("@id/")) {
-                        if (method.getArgType(1).equals(Integer.class)) {
-                            return method;
-                        }
-                    } else {
-                        if (method.getArgType(1).equals(CharSequence.class)) {
-                            return method;
-                        }
-                    }
-                }
+        if (name.equals("android:text")) {
+            if (value.startsWith("@+id/") || value.startsWith("@id/")) {
+                return attribute.findMethodByArgument(Integer.class);
+            } else {
+                return attribute.findMethodByArgument(CharSequence.class);
+            }
+        } else if (name.startsWith("android:padding") &&!name.equals("android:padding")) {
+            Element element = attribute.getValue().getParent();
+            if (element.attributeValue("android:paddingStart") != null ||
+                    element.attributeValue("android:paddingEnd") != null) {
+                return attribute.findMethodByName("setPaddingRelative");
+            } else {
+                return attribute.findMethodByName("setPadding");
+            }
+        } else if (name.startsWith("android:drawable") && !name.equals("android:drawablePadding")) {
+            Element element = attribute.getValue().getParent();
+            if (element.attributeValue("android:drawableStart") != null ||
+                    element.attributeValue("android:drawableEnd") != null) {
+                return attribute.findMethodByName("setCompoundDrawablesRelativeWithIntrinsicBounds");
+            } else {
+                return attribute.findMethodByName("setCompoundDrawablesWithIntrinsicBounds");
             }
         }
         

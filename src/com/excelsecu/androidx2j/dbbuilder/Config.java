@@ -136,7 +136,7 @@ public class Config {
         "GradientDrawable,android:radius,setCornerRadius(float),",
         
         "ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean),",
-        "ListView,android:divider,setDivider(Drawable)," + (PRIORITY_THIRD << TYPE_PRIORITY),
+        "ListView,android:divider,setDivider(Drawable)," + (PRIORITY_THIRD << TYPE_PRIORITY_INDEX),
         "ListView,android:dividerHeight,setDividerHeight(float),",
         
         //LayoutParams
@@ -153,13 +153,25 @@ public class Config {
         "View,android:layout_marginEnd,setMarginEnd(Integer),"+ (TYPE_LAYOUT_PARAMETER),
         "View,android:layout_margin,setMargins(Integer,Integer,Integer,Integer)," + (TYPE_LAYOUT_PARAMETER + (TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX)),
         
-        "View,android:padding,setPaddingRelative(Integer,Integer,Integer,Integer)," + (TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX),
+        "View,android:padding,setPaddingRelative(Integer,Integer,Integer,Integer)," + ((TYPE_ARGUMENTS_ALL_THE_SAME << TYPE_ARGUMENTS_ORDER_INDEX) + (PRIORITY_THIRD << TYPE_PRIORITY_INDEX)),
         "View,android:paddingStart,setPaddingRelative(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
         "View,android:paddingTop,setPaddingRelative(Integer,Integer,Integer,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
-        "View,android:paddingRight,setPadding(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
         "View,android:paddingBottom,setPaddingRelative(Integer,Integer,Integer,Integer)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
         "View,android:paddingEnd,setPaddingRelative(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
         "View,android:paddingLeft,setPadding(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "View,android:paddingTop,setPadding(Integer,Integer,Integer,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "View,android:paddingRight,setPadding(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "View,android:paddingBottom,setPadding(Integer,Integer,Integer,Integer)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        
+        "TextView,android:drawablePadding,setCompoundDrawablePadding(Integer)," + (PRIORITY_THIRD << TYPE_PRIORITY_INDEX),
+        "TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableTop,setCompoundDrawablesRelativeWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableBottom,setCompoundDrawablesRelativeWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(Integer,Integer,Integer,Integer)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
         
         "TextView,android:textAppearance,setTextAppearance(context,Integer)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
         "TextView,android:text,setText(Integer),",

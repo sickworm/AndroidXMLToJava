@@ -3,6 +3,7 @@ package com.excelsecu.androidx2j;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.QName;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
@@ -50,7 +51,7 @@ public class AX2JAttribute implements Cloneable {
     private QName name;
     private List<AX2JMethod> relativeMethodList;
     private int methodType;
-    private String value;
+    private Attribute value;
     
     public AX2JAttribute(QName name, Class<?> type) {
         this.name = name;
@@ -99,6 +100,25 @@ public class AX2JAttribute implements Cloneable {
         return null;
     }
     
+    public AX2JMethod findMethodByArgument(Class<?> type) {
+        int order = getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+        for (AX2JMethod method : relativeMethodList) {
+            if (method.getArgType(order).equals(type)) {
+                return method;
+            }
+        }
+        return null;
+    }
+    
+    public AX2JMethod findMethodByName(String methodName) {
+        for (AX2JMethod method : relativeMethodList) {
+            if (method.getMethodName().equals(methodName)) {
+                return method;
+            }
+        }
+        return null;
+    }
+    
     public boolean removeMethod(AX2JMethod oldMethod) {
         for (AX2JMethod method : relativeMethodList) {
             if (method.equals(oldMethod)) {
@@ -109,7 +129,7 @@ public class AX2JAttribute implements Cloneable {
         return false;
     }
     
-    public void setValue(String value) {
+    public void setValue(Attribute value) {
         this.value = value;
     }
     
@@ -125,7 +145,7 @@ public class AX2JAttribute implements Cloneable {
         return methodType;
     }
     
-    public String getValue() {
+    public Attribute getValue() {
         return value;
     }
     
