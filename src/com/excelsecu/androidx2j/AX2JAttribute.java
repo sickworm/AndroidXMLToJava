@@ -99,6 +99,16 @@ public class AX2JAttribute implements Cloneable {
         return null;
     }
     
+    public boolean removeMethod(AX2JMethod oldMethod) {
+        for (AX2JMethod method : relativeMethodList) {
+            if (method.equals(oldMethod)) {
+                relativeMethodList.remove(method);
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void setValue(String value) {
         this.value = value;
     }

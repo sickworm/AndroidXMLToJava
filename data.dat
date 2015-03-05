@@ -219,7 +219,7 @@ ProgressBar,android:secondaryProgressTintMode,setSecondaryProgressTintMode(Mode)
 //TextView
 TextView,android:autoLink,setAutoLinkMask(Integer),
 TextView,android:autoText,setKeyListener(KeyListener),
-TextView,android:bufferType,setText(CharSequence,BufferType),
+TextView,android:bufferType,setText(<AX2J_OBJECT_NAME>.getText(),BufferType),0x00002000
 TextView,android:capitalize,setKeyListener(KeyListener),
 TextView,android:cursorVisible,setCursorVisible(Boolean),
 TextView,android:digits,setKeyListener(KeyListener),
@@ -273,8 +273,8 @@ TextView,android:shadowDx,setShadowLayer(Float,Float,Float,Integer),
 TextView,android:shadowDy,setShadowLayer(Float,Float,Float,Integer),
 TextView,android:shadowRadius,setShadowLayer(Float,Float,Float,Integer),
 TextView,android:singleLine,setTransformationMethod(TransformationMethod),
-TextView,android:text,setText(CharSequence,BufferType),
 TextView,android:text,setText(Integer),
+TextView,android:text,setText(CharSequence),
 TextView,android:textAllCaps,setAllCaps(Boolean),
 TextView,android:textAppearance,setTextAppearance(context,Integer),0x00002000
 TextView,android:textColor,setTextColor(Integer),

@@ -67,6 +67,7 @@ public class AX2JCodeBlock {
                 className.equals(Void.class.getName())) {
             return;
         }
+        className.replace("$", ".");
         if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
@@ -163,7 +164,7 @@ public class AX2JCodeBlock {
             
             int order = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             if (order == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
-            	for (int i = 1; i <= method.getArgs().length; i++) {
+            	for (int i = 1; i <= method.getArgsNum(); i++) {
             		method.setArg(i, valueString);
             	}
             } else {
@@ -196,10 +197,10 @@ public class AX2JCodeBlock {
         }
         
         public String getValue(int order) {
-        	if (order >= method.getArgs().length) {
+        	if (order >= method.getArgsNum()) {
         		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
         	}
-        	return method.getArg(order);
+        	return method.getArg(AX2JCodeBlock.this, order);
         }
         
         @Override
@@ -210,7 +211,7 @@ public class AX2JCodeBlock {
             
             String valueString = "";
             for (int i = 1; i <= method.getArgsNum(); i++) {
-                valueString += method.getArg(i) + ((i == method.getArgsNum())? "" : ", ");
+                valueString += method.getArg(AX2JCodeBlock.this, i) + ((i == method.getArgsNum())? "" : ", ");
             }
             
             if (AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0) {

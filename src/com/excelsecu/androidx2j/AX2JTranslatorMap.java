@@ -57,6 +57,23 @@ public class AX2JTranslatorMap {
         translator.add(qNameString, methodString, methodType);
     }
     
+    public boolean remove(String attributeString) {
+        int index1 = attributeString.indexOf(',');
+        int index2 = attributeString.indexOf(',', index1 + 1);
+        int index3 = attributeString.lastIndexOf(',');
+        String typeString = attributeString.substring(0, index1);
+        String qNameString = attributeString.substring(index1 + 1, index2);
+        String methodString = attributeString.substring(index2 + 1, index3);
+        
+        Class<?> type = getType(typeString);
+        AX2JClassTranslator translator = attribute2MethodMap.get(type);
+        if (translator == null) {
+            return false;
+        }
+        
+        return translator.remove(qNameString, methodString);
+    }
+    
     public AX2JClassTranslator get(Class<?> type) {
         return attribute2MethodMap.get(type);
     }

@@ -98,6 +98,17 @@ public class AX2JClassTranslator {
         addAttribute(name, method, methodType);
     }
     
+    public boolean remove(String qNameString, String methodString) {
+        QName name = string2QName(qNameString);
+        AX2JAttribute attribute = findAttribute(name);
+        if (attribute != null) {
+            AX2JMethod method = new AX2JMethod(name, methodString);
+            return attribute.removeMethod(method);
+        }
+        
+        return false;
+    }
+    
     public AX2JAttribute get(QName name) {
         for (AX2JAttribute attribute : attributeList) {
             if (attribute.getName().equals(name)) {
@@ -177,7 +188,7 @@ public class AX2JClassTranslator {
         attribute.setValue(attr.getValue());
         
         //currently not support multiple relative methods, default choose the first one
-        AX2JMethod method = attribute.getRelativeMethodList().get(0);
+        AX2JMethod method = chooseMethod(attribute);
         if (method == null || method.getName().equals("")) {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
         }
@@ -195,11 +206,6 @@ public class AX2JClassTranslator {
     protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
         String value = attribute.getValue();
         String attrName = attribute.getName().getQualifiedName();
-        
-        //just for debug
-    	if (attrName.equals("android:layout_width")) {
-    		System.out.println();
-    	}
     	
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
         if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
@@ -326,6 +332,11 @@ public class AX2JClassTranslator {
             }
         }
         
+        //CharSequence & String
+        else if (argType.equals(CharSequence.class) || argType.equals(String.class)) {
+            value = "\"" + value + "\"";
+        }
+        
         else if (argType.equals(Float.class)) {
             //float
             value = value + "f";
@@ -368,7 +379,42 @@ public class AX2JClassTranslator {
             }
         }
         
+        else if (argType.equals(TextView.BufferType.class)) {
+            value = "TextView.BufferType." + value.toUpperCase();
+            codeBlock.addImport(TextView.class.getName());
+        }
+        
         return value;
+    }
+    
+    /**
+     * find the best method that suits the attribute value
+     * @param attribute
+     * @return the best method or the first relative method in relative list
+     */
+    private AX2JMethod chooseMethod(AX2JAttribute attribute) {
+        String name = attribute.getName().getQualifiedName();
+        String value = attribute.getValue();
+        List<AX2JMethod> methodList = attribute.getRelativeMethodList();
+        AX2JMethod bestMethod = methodList.get(0);
+        
+        for (AX2JMethod method : methodList) {
+            if (name.equals("android:text")) {
+                if (method.getArgTypes().length == 1) {
+                    if (value.startsWith("@+id/") || value.startsWith("@id/")) {
+                        if (method.getArgType(1).equals(Integer.class)) {
+                            return method;
+                        }
+                    } else {
+                        if (method.getArgType(1).equals(CharSequence.class)) {
+                            return method;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return bestMethod;
     }
     
     public Class<?> getType() {

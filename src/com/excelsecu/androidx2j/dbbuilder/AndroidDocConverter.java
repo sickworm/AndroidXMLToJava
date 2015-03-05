@@ -51,12 +51,20 @@ public class AndroidDocConverter {
             System.out.println(translator + "\n");
             attrToMethodMap.add(translator);
         }
-        
-        //some attributes don't shown in Android doc (like setEnabled), add them in here.
-        System.out.println("Additional\n");
+       
+        //some attributes don't shown in Android doc, or the type value should be updated, add them in here
+        System.out.println("Addition\n");
         for (String attribute : Config.ADDITION_LIST) {
             System.out.println(attribute);
             attrToMethodMap.add(attribute);
+        }
+        System.out.println();
+        
+        //some attributes in Android doc is useless, or the arg value should be set as constant, remove them in here
+        System.out.println("Removal\n");
+        for (String attribute : Config.REMOVAL_LIST) {
+            System.out.println(attribute);
+            attrToMethodMap.remove(attribute);
         }
         System.out.println();
         

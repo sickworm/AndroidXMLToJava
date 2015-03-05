@@ -31,7 +31,7 @@ public class AX2JMethod implements Cloneable {
             methodName = methodString.substring(0, methodString.indexOf('('));
             
             String[] argTypesString = methodString.substring(methodString.indexOf('(') + 1,
-                    methodString.indexOf(')')).split(",");
+                    methodString.lastIndexOf(')')).split(",");
             if (!argTypesString[0].equals("")) {
                 argTypes = new Class<?>[argTypesString.length];
                 args = new String[argTypesString.length];
@@ -72,11 +72,14 @@ public class AX2JMethod implements Cloneable {
         args[order - 1] = value;
     }
     
-    public String getArg(int order) {
+    public String getArg(AX2JCodeBlock codeBlock, int order) {
     	if (order > args.length || order < 0) {
     		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
     	}
     	String value = args[order - 1];
+    	if (value != null && value.startsWith(Config.MAP_OBJECT_NAME)) {
+    	    value = value.replaceFirst(Config.MAP_OBJECT_NAME, codeBlock.getName());
+    	}
         if (value == null) {
         	value = getDefaultValue(order);
         }
@@ -84,7 +87,7 @@ public class AX2JMethod implements Cloneable {
         return value;
     }
     
-    public String[] getArgs() {
+    public String[] getOriginArgs() {
         return args;
     }
     
@@ -173,7 +176,11 @@ public class AX2JMethod implements Cloneable {
             AX2JMethod method2 = (AX2JMethod) object;
             if (methodName.equals(method2.getName())) {
                 Class<?>[] argTypes2 = method2.getArgTypes();
-                String[] args2 = method2.getArgs();
+                String[] args2 = method2.getOriginArgs();
+                if (argTypes.length != argTypes2.length) {
+                    return false;
+                }
+                
                 for (int i = 0; i < argTypes.length; i++) {
                 	if (argTypes[i].equals(Void.class)) {
                         if (!args[i].equals(args2[i])) {

@@ -20,6 +20,7 @@ public class Config {
     public static final String RESOURCES_NAME = "resources";
     public static final String UTILS_CLASS = "Utils";
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
+    public static final String MAP_OBJECT_NAME = com.excelsecu.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
     public static final int API_LEVEL = 8;
     
     public static final String DEFAULT_THEME = "@android:Theme";
