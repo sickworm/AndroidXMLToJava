@@ -49,11 +49,6 @@ public class LayoutTranslator extends BaseTranslator {
         		getLayoutParamsName(node.getObjectName()) + " =\n\t\tnew " + parentName +
         		".LayoutParams(" + params + ", " + params + ");\n";
         codeBlock.add(paramsMethod, AX2JCode.PRIORITY_SECOND);
-        
-//      String id = attrValue.substring(attrValue.indexOf('/') + 1);
-//      if (!Utils.hasString(idList, id)) {
-//          idList.add(id);
-//      }
     }
     
     @Override
@@ -86,6 +81,14 @@ public class LayoutTranslator extends BaseTranslator {
 			Attribute attribute) {
     	String name = attribute.getQualifiedName();
     	String value = attribute.getValue();
+
+        if (name.equals("android:id") && value.startsWith("@+id/")) {
+        	String id = value.substring(value.indexOf('/') + 1);
+        	if (!Utils.hasString(idList, id)) {
+        		idList.add(id);
+        	}
+        }
+    	
 		if (name.equals("android:layout_width") ||
 				name.equals("android:layout_height")) {
 			//default value
