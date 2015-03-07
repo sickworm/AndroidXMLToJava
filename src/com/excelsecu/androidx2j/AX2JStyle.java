@@ -52,7 +52,7 @@ public class AX2JStyle {
             if (attrName == null) {
                 continue;
             }
-            element.addAttribute(attrName, n.getText());
+            element.addAttribute(AX2JClassTranslator.string2QName(attrName), n.getText());
         }
         
         return new AX2JStyle(name, parent, element.attributes());

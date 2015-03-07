@@ -30,6 +30,9 @@ public class AX2JCodeBlock {
     }
     
     public void add(String codeString, int priority) {
+    	if (priority < PRIORITY_FIRST || priority > PRIORITY_LAST) {
+    		priority = PRIORITY_DEFAULT;
+    	}
         AX2JCode code = new AX2JCode(codeString, priority);
         add(code);
     }
@@ -40,7 +43,7 @@ public class AX2JCodeBlock {
     }
     
     public void add(AX2JCode code) {
-        List<AX2JCode> subCodeList = codeList.get(code.priority - 1);
+        List<AX2JCode> subCodeList = get(code.priority);
         int j = 0;
         for (j = 0; j < subCodeList.size(); j++) {
         	AX2JCode originCode = subCodeList.get(j);
@@ -106,7 +109,7 @@ public class AX2JCodeBlock {
     public String toString() {
         StringBuffer codeBlock = new StringBuffer();
         for (int i = PRIORITY_SECOND; i <= PRIORITY_SECONDLY_LAST; i++) {
-            for (AX2JCode code : codeList.get(i - 1)) {
+            for (AX2JCode code : get(i)) {
                 if (code.isSpecial()) {
                     codeBlock.append(code);
             	} else if (code.isLayoutParam()){
@@ -137,10 +140,10 @@ public class AX2JCodeBlock {
         public static final int PRIORITY_LAST = 7;
         public static final int PRIORITY_DEFAULT = PRIORITY_NORMAL;
         
-        public AX2JMethod method;
-        public String methodString;
-        public int type = AX2JAttribute.TYPE_NORMAL;
-        public int priority = PRIORITY_NORMAL;
+        private AX2JMethod method;
+        private String methodString;
+        private int type = AX2JAttribute.TYPE_NORMAL;
+        private int priority = PRIORITY_NORMAL;
         /** not a common method **/
         public boolean special = false;
         

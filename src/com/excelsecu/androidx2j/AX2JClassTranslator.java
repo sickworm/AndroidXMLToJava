@@ -37,7 +37,7 @@ import android.widget.TextView;
 public class AX2JClassTranslator {
     public static HashMap<String, Class<?>> typeMap = new HashMap<String, Class<?>>() {
         private static final long serialVersionUID = -4934808097054114253L;
-        
+
         {
             put("int", Integer.class);
             put("float", Float.class);
@@ -181,13 +181,17 @@ public class AX2JClassTranslator {
     }
     
     public void translate(AX2JCodeBlock codeBlock, Attribute attr) {
+    	translate(codeBlock, attr, 0);
+    }
+    
+    public void translate(AX2JCodeBlock codeBlock, Attribute attr, int priority) {
+    	
         AX2JAttribute attribute = findAttribute(attr.getQName());
         if (attribute == null) {
             throw new AX2JException(AX2JException.ATTRIBUTE_NOT_FOUND, attr.asXML());
         }
         attribute.setValue(attr);
         
-        //currently not support multiple relative methods, default choose the first one
         AX2JMethod method = chooseMethod(attribute);
         if (method == null || method.getName().equals("")) {
             throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.asXML());
@@ -195,7 +199,7 @@ public class AX2JClassTranslator {
         
         String value = translateValue(codeBlock, attribute, method);
         
-        codeBlock.add(method, value, attribute.getType());
+        codeBlock.add(method, value, attribute.getType() + (priority << AX2JAttribute.TYPE_PRIORITY_INDEX));
     }
     
     /**

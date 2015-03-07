@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
+import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
+
 import android.content.Context;
 
 /**
@@ -33,19 +35,20 @@ public class LayoutTranslator extends BaseTranslator {
             layout = layout.substring(layout.indexOf('/') + 1);
             newMethod = "View " + node.getObjectName() + " = " +
                     Config.PACKAGE_NAME + ".layout." + layout + ".get(context);\n";
-            codeBlock.add(newMethod);
+            codeBlock.add(newMethod, AX2JCode.PRIORITY_SECOND);
             return;
         }
         
     	newMethod = node.getType().getSimpleName() + " " + node.getObjectName() + " = new " + 
     			node.getLabelName() + "(" + node.constructorParams() + ");\n";
-        codeBlock.add(newMethod);
+        codeBlock.add(newMethod, AX2JCode.PRIORITY_SECOND);
         
         String parentName = getParentName(node);
         String params = parentName + ".LayoutParams.WRAP_CONTENT";
-        codeBlock.add(parentName + ".LayoutParams " +
+        String paramsMethod = parentName + ".LayoutParams " +
         		getLayoutParamsName(node.getObjectName()) + " =\n\t\tnew " + parentName +
-        		".LayoutParams(" + params + ", " + params + ");\n");
+        		".LayoutParams(" + params + ", " + params + ");\n";
+        codeBlock.add(paramsMethod, AX2JCode.PRIORITY_SECOND);
         
 //      String id = attrValue.substring(attrValue.indexOf('/') + 1);
 //      if (!Utils.hasString(idList, id)) {
@@ -68,7 +71,7 @@ public class LayoutTranslator extends BaseTranslator {
 
         if (!node.getLabelName().equals("include")) {
 	        String setLayoutParamsMethod = node.getObjectName() + ".setLayoutParams(" + getLayoutParamsName(node.getObjectName()) + ");\n";
-	        codeBlock.add(setLayoutParamsMethod);
+	        codeBlock.add(setLayoutParamsMethod, AX2JCode.PRIORITY_SECONDLY_LAST);
         }
         
         AX2JNode parent = node.getParent();
@@ -89,158 +92,62 @@ public class LayoutTranslator extends BaseTranslator {
 			if (value.equals("wrap_content")) {
 				return;
 			}
+		} else if (name.equals("style")) {
+			buildStyle(codeBlock, value);
+			return;
 		}
 		super.translateAttribute(codeBlock, attribute);
 	}
     
-	public static List<String> getIdList() {
-        return idList;
+    /**
+     * Translate style to Java block
+     * @return Java code
+     */
+    private void buildStyle(AX2JCodeBlock codeBlock, String styleValue) {
+    	try {
+    		codeBlock.add("/** <style=" + styleValue + "> **/\n", AX2JCode.PRIORITY_SECOND);
+    		List<Attribute> styleAttrList = new ArrayList<Attribute>();
+    		buildStyleAttrList(styleValue, styleAttrList);
+    		for (Attribute attribute : styleAttrList) {
+    			translateAttribute(codeBlock, attribute, AX2JCode.PRIORITY_SECOND);
+    		}
+    		codeBlock.add("/** </style=" + styleValue + "> **/\n", AX2JCode.PRIORITY_SECOND);
+    	} catch (AX2JException e) {
+    		codeBlock.add("// style=\"" + styleValue + "\"not support\n", AX2JCode.PRIORITY_SECOND);
+    	}
     }
+ 
+    private void buildStyleAttrList(String styleValue, List<Attribute> styleAttrList) {
+    	AX2JStyle style = AX2JStyle.getStyle(styleValue);
+    	
+    	//if there is a parent, first handle the parent
+    	String parent = style.parent;
+    	if (parent != null && !parent.equals("")) {
+    		buildStyleAttrList(parent, styleAttrList);
+    	}
+    	
+    	//remove the same attribute, the new replace the old
+    	for (int i = 0; i < styleAttrList.size(); i++) {
+    		int j = 0;
+    		for (j = 0; j < style.attrList.size(); j++) {
+    			if (styleAttrList.get(i).getQualifiedName().equals(
+    					style.attrList.get(j).getQualifiedName())) {
+    				break;
+    			}
+    		}
+    		if (j != style.attrList.size()) {
+    			styleAttrList.remove(i);
+    		}
+    	}
+    	
+    	styleAttrList.addAll(style.attrList);
+    }
+      
+	public static List<String> getIdList() {
+		return idList;
+	}
 
 	public static String getLayoutParamsName(String objectName) {
-    	return objectName + "_LayoutParams";
-    }
-    
-//
-//    /**
-//     * Handle the method not exists in the attr-to-method map.
-//     * @author ch
-//     *
-//     */
-//    public class SpecialTranslator {
-//        private AX2JNode node;
-//        private String parentName;
-//        private String layoutParamName;
-//        private String width;
-//        private String height;
-//        
-//        private boolean margin = false;
-//        private boolean padding = false;
-//        private boolean drawable = false;
-//        
-//        private AX2JNode styleNode = null;
-//        
-//        public SpecialTranslator(AX2JNode node) {
-//            this.node = node;
-//            parentName = Utils.getParentName(node);
-//            addImport(Utils.matchClass(parentName).getName());
-//            layoutParamName = node.getObjectName() + "Params";
-//        }
-//        
-//        public String translate(Attribute attr) throws AX2JException {
-//            String attrName = attr.getQualifiedName();
-//            String javaBlock = "";
-//            
-//            //drawable direction
-//            if (attrName.equals("android:drawableBottom") || attrName.equals("android:drawableTop") ||
-//                    attrName.equals("android:drawableLeft") || attrName.equals("android:drawableRight") ||
-//                    attrName.equals("android:drawableStart") || attrName.equals("android:drawableEnd")) {
-//                if (!drawable) {
-//                    Attribute attrTop = findAttrByName("android:drawableTop");
-//                    Attribute attrBottom = findAttrByName("android:drawableBottom");
-//                    Attribute attrStart = findAttrByName("android:drawableStart");
-//                    Attribute attrEnd = findAttrByName("android:drawableEnd");
-//                    Attribute attrLeft = findAttrByName("android:drawableLeft");
-//                    Attribute attrRight = findAttrByName("android:drawableRight");
-//                    String top = (attrTop == null)? "null" : translateValue(attrTop);
-//                    String bottom = (attrBottom == null)? "null" : translateValue(attrBottom);
-//                    String start = (attrStart == null)? "null" : translateValue(attrRight);
-//                    String end = (attrEnd == null)? "null" : translateValue(attrBottom);
-//                    String left = (attrLeft == null)? "null" : translateValue(attrLeft);
-//                    String right = (attrRight == null)? "null" : translateValue(attrRight);
-//                    if (left != null || attrBottom != null) {
-//                        javaBlock += node.getObjectName() + ".setCompoundDrawablesWithIntrinsicBounds(" +
-//                                left + ", " + top + ", " +
-//                                right + ", " + bottom + ");\n";
-//                    }
-//                    //drawable direction should not be set in two ways, It may have translate problem
-//                    //here because of the order
-//                    //or I should add some warning
-//                    if (attrStart != null || attrEnd != null) {
-//                        javaBlock += node.getObjectName() + ".setCompoundDrawablesRelativeWithIntrinsicBounds(" +
-//                                start + ", " + top + ", " +
-//                                end + ", " + bottom + ");\n";
-//                    }
-//                    
-//                    drawable = true;
-//                    return javaBlock;
-//                }
-//                return "";
-//            }
-//            
-//            
-//            throw new AX2JException(AX2JException.METHOD_NOT_FOUND);
-//        }
-//        
-//        private Attribute findAttrByName(String attrName) {
-//            Attribute attrStyle = null;
-//            if (styleNode != null) {
-//                attrStyle = styleNode.findAttrByName(attrName);
-//            }
-//            Attribute attrNode = null;
-//            attrNode = node.findAttrByName(attrName);
-//            
-//            //attrNode has priority
-//            if (attrNode != null) {
-//                return attrNode;
-//            } else {
-//                return attrStyle;
-//            }
-//        }
-//        
-//        /**
-//         * Translate style to Java block
-//         * @return Java code
-//         */
-//        private String buildStyle() {
-//            String styleValue = node.attributeValue("style");
-//            if (styleValue == null) {
-//                return "";
-//            }
-//            
-//            String javaBlock = "";
-//            try {
-//                javaBlock += "/** " + styleValue + " block **/\n";
-//                List<Attribute> styleAttrList = new ArrayList<Attribute>();
-//                buildStyleAttrList(styleValue, styleAttrList);
-//                for (Attribute a : styleAttrList) {
-//                    String attrMethod = translateAttribute(a, node, this);
-//                    if (!attrMethod.startsWith("//")) {
-//                        extraHandle(node, a);
-//                    }
-//                    javaBlock += attrMethod;
-//                }
-//                javaBlock += "/** " + styleValue + " block **/\n";
-//            } catch (AX2JException e) {
-//                javaBlock = "// style=\"" + styleValue + "\"not support\n";
-//            }
-//            return javaBlock;
-//        }
-//        
-//        private void buildStyleAttrList(String styleValue, List<Attribute> styleAttrList) {
-//            AX2JStyle style = AX2JStyle.getStyle(styleValue);
-//            
-//            //if there is a parent, first handle the parent
-//            String parent = style.parent;
-//            if (parent != null && !parent.equals("")) {
-//                buildStyleAttrList(parent, styleAttrList);
-//            }
-//            
-//            //remove the same attribute, the new replace the old
-//            for (int i = 0; i < styleAttrList.size(); i++) {
-//                int j = 0;
-//                for (j = 0; j < style.attrList.size(); j++) {
-//                    if (styleAttrList.get(i).getQualifiedName().equals(
-//                            style.attrList.get(j).getQualifiedName())) {
-//                        break;
-//                    }
-//                }
-//                if (j != style.attrList.size()) {
-//                    styleAttrList.remove(i);
-//                }
-//            }
-//            
-//            styleAttrList.addAll(style.attrList);
-//        }
-//    }
+      	return objectName + "_LayoutParams";
+	}
 }

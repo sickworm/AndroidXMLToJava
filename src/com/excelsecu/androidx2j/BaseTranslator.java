@@ -138,15 +138,19 @@ public class BaseTranslator {
     }
     
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute) {
+    	translateAttribute(codeBlock, attribute, 0);
+    }
+    
+    protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute, int priority) {
         Class<?> type = codeBlock.getType();
         while (true) {
             AX2JClassTranslator translator = map.get(type);
             if (translator == null) {
-                codeBlock.add("//" + attribute.asXML() + "\t//not support\n");
+                codeBlock.add("//" + attribute.asXML() + "\t//not support\n", priority);
                 break;
             } else {
                 try {
-                    translator.translate(codeBlock, attribute);
+                    translator.translate(codeBlock, attribute, priority);
                     break;
                 } catch(AX2JException e) {
                     type = type.getSuperclass();
