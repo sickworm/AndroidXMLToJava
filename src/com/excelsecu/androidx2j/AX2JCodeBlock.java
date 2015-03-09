@@ -88,6 +88,10 @@ public class AX2JCodeBlock {
         return type;
     }
     
+    public List<String> getImportList() {
+        return importList;
+    }
+    
     public List<AX2JCode> getCode(int priority) {
         return get(priority);
     }

@@ -2,6 +2,7 @@ package com.excelsecu.androidx2j;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -53,6 +54,13 @@ public class BaseTranslator {
         for (AX2JNode child : root.getChildren()) {
             List<AX2JCodeBlock> childCodeBlockList = translate(child);
             codeBlockList.addAll(childCodeBlockList);
+        }
+        
+        for (AX2JCodeBlock codeBlock : codeBlockList) {
+            List<String> subImportList = codeBlock.getImportList();
+            for (String importItem : subImportList) {
+                addImport(importItem);
+            }
         }
         
         return codeBlockList;
@@ -207,6 +215,7 @@ public class BaseTranslator {
     }
     
     public List<String> getImportList() {
+        Collections.sort(importList);
         return importList;
     }
 
