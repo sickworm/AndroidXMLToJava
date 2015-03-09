@@ -207,16 +207,20 @@ public class AX2JClassTranslator {
      * @param attr the attribute to be translated
      * @return the value after translating
      */
-    protected String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
-        String value = attribute.getValue().getValue();
-        String attrName = attribute.getName().getQualifiedName();
-    	
+    private String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
         int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
         if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
         	argOrder = 1;
         }
         Class<?> argType = method.getArgType(argOrder);
-    	
+        
+        return translateValue(codeBlock, method, attribute.getValue(), argType);
+    }
+    
+    protected final String translateValue(AX2JCodeBlock codeBlock, AX2JMethod method, Attribute attribute, Class<?> argType) {
+        String value = attribute.getValue();
+        String name = attribute.getQualifiedName();
+        
         if (argType.equals(Integer.class)) {
             //dp, px, sp
             if (value.matches("[0-9.]+dp")) {
@@ -247,8 +251,8 @@ public class AX2JClassTranslator {
                 value = value.substring(value.indexOf('/') + 1);
                 value = Config.R_CLASS + ".string." + value;
                 value = Config.RESOURCES_NAME + ".getString(" + value + ")";
-            } else if (attrName.equals("android:text") ||
-                    attrName.equals("android:hint")) {
+            } else if (name.equals("android:text") ||
+                    name.equals("android:hint")) {
                 value = "\"" + value + "\"";
             }
             
@@ -289,19 +293,19 @@ public class AX2JClassTranslator {
             }
             
             //gravity
-            else if (attrName.equals("android:gravity") ||
-                    attrName.equals("android:layout_gravity")) {
+            else if (name.equals("android:gravity") ||
+                    name.equals("android:layout_gravity")) {
                 value = Utils.prefixParams(value, "Gravity");
                 codeBlock.addImport(Gravity.class.getName());
             }
             
             //margin
-            else if (attrName.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
+            else if (name.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
                 codeBlock.addImport(ViewGroup.class.getName());
             }
             
             //text
-            else if (attrName.equals("android:textAppearance")) {
+            else if (name.equals("android:textAppearance")) {
             	String style = AX2JStyle.getStyle(value).name;
             	style = style.replace('.', '_');
             	style = "android.R.style." + style;
@@ -310,7 +314,7 @@ public class AX2JClassTranslator {
             
             /** independent part **/
             //RelativeLayout rule
-            if (method.getMethodName().equals("addRule")) {
+            if (method != null && method.getMethodName().equals("addRule")) {
             	if (value.equals("true")) {
                 	value = "RelativeLayout.TRUE";
             	} else if (value.equals("false")) {
@@ -320,7 +324,7 @@ public class AX2JClassTranslator {
             }
             
             //divider
-            if (attrName.equals("android:divider")) {
+            if (name.equals("android:divider")) {
                 codeBlock.addImport(ColorDrawable.class.getName());
             }
             
@@ -351,8 +355,8 @@ public class AX2JClassTranslator {
             if (value.startsWith("@drawable/")) {
                 value = value.substring(value.indexOf('/') + 1);
                 value = Config.R_CLASS + ".drawable." + value;
-                if (attrName.contains("Color") ||
-                        attrName.contains("TintList")) {
+                if (name.contains("Color") ||
+                        name.contains("TintList")) {
                     value = "resources.getColorStateList(" + value + ")";
                 } else {
                     value = "resources.getDrawable(" + value + ")";
@@ -362,13 +366,13 @@ public class AX2JClassTranslator {
         
         else if (argType.equals(TransformationMethod.class)) {
             //text
-            if (attrName.equals("android:password")) {
+            if (name.equals("android:password")) {
                 value = "new PasswordTransformationMethod()";
                 codeBlock.addImport(PasswordTransformationMethod.class.getName());
-            } else if (attrName.equals("android:singleLine")) {
+            } else if (name.equals("android:singleLine")) {
                 value = "new SingleLineTransformationMethod()";
                 codeBlock.addImport(SingleLineTransformationMethod.class.getName());
-            } else if (attrName.equals("android:inputType")) {
+            } else if (name.equals("android:inputType")) {
                 String error = value; 
                 value = Config.INPUT_TYPE_MAP.get(value);
                 if (value == null) {
@@ -376,7 +380,7 @@ public class AX2JClassTranslator {
                 }
                 value = Utils.prefixParams(value, "InputType");
                 codeBlock.addImport(InputType.class.getName());
-            } else if (attrName.equals("android:ellipsize")) {
+            } else if (name.equals("android:ellipsize")) {
                 value = value.toUpperCase();
                 value = "TextUtils.TruncateAt." + value;
                 codeBlock.addImport(TextUtils.class.getName());

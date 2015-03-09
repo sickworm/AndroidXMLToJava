@@ -167,6 +167,28 @@ public class BaseTranslator {
         }
     }
     
+    protected final String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
+        String value = attribute.getValue();
+        Class<?> type = codeBlock.getType();
+        
+        while (true) {
+            AX2JClassTranslator translator = map.get(type);
+            if (translator == null) {
+                codeBlock.add("//" + attribute.asXML() + "\t//not support\n");
+                break;
+            } else {
+                try {
+                    value = translator.translateValue(codeBlock, null, attribute, argType);
+                    break;
+                } catch(AX2JException e) {
+                    type = type.getSuperclass();
+                }
+            }
+        }
+        
+        return value;
+    }
+    
     /**
      *  Add the class to the import list. If already exists, ignore. 
      *  @param className the class try to be added in import list
