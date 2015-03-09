@@ -47,6 +47,10 @@ public class AX2JAttribute implements Cloneable {
     public static final int TYPE_METHOD_REFLECTION = 0x01000000;
     public static final int TYPE_METHOD_REFLECTION_INDEX = 24;
 
+    /** build arguments as a array **/
+    public static final int TYPE_ARGUMENTS_ARRAY = 0x02000000;
+    public static final int TYPE_ARGUMENTS_ARRAY_INDEX = 25;
+    
     private Class<?> type;
     private QName name;
     private List<AX2JMethod> relativeMethodList;

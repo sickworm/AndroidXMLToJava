@@ -3,10 +3,10 @@ package com.excelsecu.androidx2j;
 import org.dom4j.Attribute;
 
 import android.graphics.drawable.GradientDrawable;
+import android.provider.DocumentsContract.Root;
 
 public class ShapeTranslater extends BaseTranslator {
-    private static final String[] ORIENTATION = new String[] {"RIGHT_LEFT", "BR_TL",
-                        "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR", "TOP_BOTTOM", "TR_BL"};
+    AX2JCodeBlock codeBlock = new AX2JCodeBlock(GradientDrawable.class, getRoot().getObjectName());
     
     public ShapeTranslater(AX2JNode root) {
         super(root);
@@ -21,31 +21,36 @@ public class ShapeTranslater extends BaseTranslator {
         return javaBlock;
     }
     
-    public String translateValue(Attribute attr) {
-        String attrName = attr.getQualifiedName();
-        String value = attr.getValue();
-        if (attrName.equals("android:type")) {
+    @Override
+    protected String translateValue(AX2JCodeBlock codeBlock,
+            Attribute attribute, Class<?> argType) {
+        String name = attribute.getQualifiedName();
+        String value = attribute.getValue();
+        
+        //shape
+        if (name.equals("android:type")) {
             value = "GradientDrawable." + value.toUpperCase() + "_GRADIENT";
-        } else if (attrName.equals("android:shape")) {
+        } else if (name.equals("android:shape")) {
             value = "GradientDrawable." + value.toUpperCase();
-        } else if (attrName.equals("android:angle")) {
+        } else if (name.equals("android:angle")) {
             int ordinal = Integer.parseInt(value);
             ordinal = ordinal / 45;
             if (ordinal < 0) {
                 ordinal += 8;
             }
+            final String[] ORIENTATION = new String[] {"RIGHT_LEFT", "BR_TL",
+                "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR", "TOP_BOTTOM", "TR_BL"};
             value = "GradientDrawable.Orientation." + ORIENTATION[ordinal];
         }
-
+        
         //nothing change
-        if (value.equals(attr.getValue())) {
-            //return super.translateValue(attr);
-        	return value;
+        if (value.equals(attribute.getValue())) {
+            return super.translateValue(codeBlock, attribute, argType);
         } else {
             return value;
         }
     }
-    
+
     private String construct() {
         String javaBlock = "";
         for (AX2JNode n : getRoot().getChildren()) {

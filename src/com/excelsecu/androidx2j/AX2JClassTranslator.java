@@ -214,10 +214,10 @@ public class AX2JClassTranslator {
         }
         Class<?> argType = method.getArgType(argOrder);
         
-        return translateValue(codeBlock, method, attribute.getValue(), argType);
+        return translateValue(codeBlock, attribute.getValue(), argType);
     }
     
-    protected final String translateValue(AX2JCodeBlock codeBlock, AX2JMethod method, Attribute attribute, Class<?> argType) {
+    protected final String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
         String value = attribute.getValue();
         String name = attribute.getQualifiedName();
         
@@ -314,7 +314,7 @@ public class AX2JClassTranslator {
             
             /** independent part **/
             //RelativeLayout rule
-            if (method != null && method.getMethodName().equals("addRule")) {
+            if (Utils.findRule(name) != null) {
             	if (value.equals("true")) {
                 	value = "RelativeLayout.TRUE";
             	} else if (value.equals("false")) {

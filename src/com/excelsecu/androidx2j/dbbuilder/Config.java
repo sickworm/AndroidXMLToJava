@@ -202,6 +202,20 @@ public class Config {
         "View,android:layout_toLeftOf,addRule(RelativeLayout.LEFT_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
         "View,android:layout_toRightOf,addRule(RelativeLayout.RIGHT_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
         "View,android:layout_toStartOf,addRule(RelativeLayout.START_OF,Integer)," + (TYPE_LAYOUT_PARAMETER + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        
+        //shape
+        //stroke
+        "GradientDrawable,android:width,setStroke(Integer, Integer, Float, Float)" + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:color,setStroke(Integer, Integer, Float, Float)" + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:dashWidth,setStroke(Integer, Integer, Float, Float)" + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:dashGap,setStroke(Integer, Integer, Float, Float)" + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:dashGap,setStroke(Integer, Integer, Float, Float)" + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        //corners
+        "GradientDrawable,android:radius,setCornerRadius(Integer)",
+        "GradientDrawable,android:topLeftRadius,setCornerRadii(Integer, Integer, Integer, Integer)" + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:topRightRadius,setCornerRadii(Integer, Integer, Integer, Integer)" + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:bottomRightRadius,setCornerRadii(Integer, Integer, Integer, Integer)" + (TYPE_ARGUMENTS_ARRAY + (3 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:bottomLeftRadius,setCornerRadii(Integer, Integer, Integer, Integer))" + (TYPE_ARGUMENTS_ARRAY + (4 << TYPE_ARGUMENTS_ORDER_INDEX)),
     };
     
     public static String[] REMOVAL_LIST = new String[] {

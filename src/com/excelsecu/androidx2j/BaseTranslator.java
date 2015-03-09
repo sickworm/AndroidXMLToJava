@@ -45,7 +45,7 @@ public class BaseTranslator {
     }
     
     public String translate() {
-        return printCodeBlock(translate(getRoot()));
+        return printCodeBlockList(translate(getRoot()));
     }
     
     protected List<AX2JCodeBlock> translate(AX2JNode root) throws AX2JException {
@@ -66,7 +66,7 @@ public class BaseTranslator {
         return codeBlockList;
     }
     
-    private String printCodeBlock(List<AX2JCodeBlock> codeBlockList) {
+    private String printCodeBlockList(List<AX2JCodeBlock> codeBlockList) {
         String topBlock = "";
         List<AX2JCode> topCodeList = new ArrayList<AX2JCode>();
         for (AX2JCodeBlock codeBlock : codeBlockList) {
@@ -167,7 +167,7 @@ public class BaseTranslator {
         }
     }
     
-    protected final String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
+    protected String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
         String value = attribute.getValue();
         Class<?> type = codeBlock.getType();
         
@@ -178,7 +178,7 @@ public class BaseTranslator {
                 break;
             } else {
                 try {
-                    value = translator.translateValue(codeBlock, null, attribute, argType);
+                    value = translator.translateValue(codeBlock, attribute, argType);
                     break;
                 } catch(AX2JException e) {
                     type = type.getSuperclass();
