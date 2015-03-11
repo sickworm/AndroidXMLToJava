@@ -6,11 +6,9 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-import org.dom4j.Namespace;
 import org.dom4j.QName;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
-import com.sun.xml.internal.fastinfoset.stax.events.NamespaceBase;
 
 import android.animation.LayoutTransition;
 import android.content.Context;

@@ -20,14 +20,13 @@ public class LayoutTranslator extends BaseTranslator {
     
     public LayoutTranslator(File file) {
         super(file);
-        AX2JNode.resetOrder();
+        addImport(Context.class.getName());
     }
     
     @Override
     protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
         super.preTranslateNode(codeBlock, node);
-
-        addImport(Context.class.getName());
+        
         //include label
         String newMethod = "";
         if (node.getLabelName().equals("include")) {

@@ -218,6 +218,7 @@ public class Utils {
             }
             scan.close();
             if (returnObject.equals("")) {
+            	System.out.println(content);
                 throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
             }
             
@@ -384,5 +385,18 @@ public class Utils {
     	
     	return javaNameBuffer.toString();
     	
+    }
+    
+    /**
+     * convert class to value type name
+     * @param argType class type
+     * @return value type or exception
+     */
+    public static String getValueType(Class<?> argType) {
+        if (argType.equals(Integer.class)) return "int";
+        else if (argType.equals(Float.class)) return "float";
+        else if (argType.equals(Boolean.class)) return "boolean";
+        else if (argType.equals(Long.class)) return "long";
+        else throw new AX2JException(AX2JException.CLASS_NOT_FOUND, argType.getName());
     }
 }

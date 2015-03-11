@@ -30,6 +30,7 @@ public class BaseTranslator {
         if (Utils.getFileExtension(file).equals("xml")) {
             init();
         }
+        AX2JNode.resetOrder();
     }
     
     public BaseTranslator(AX2JNode root) {

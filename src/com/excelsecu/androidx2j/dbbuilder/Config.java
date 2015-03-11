@@ -202,18 +202,27 @@ public class Config {
         "GradientDrawable,android:type,setGradientType(int),",
         "GradientDrawable,android:gradientRadius,setGradientRadius(float),",
         "GradientDrawable,android:useLevel,setUseLevel(boolean),",
+        "GradientDrawable,android:centerX,setGradientCenter(float,float)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:centerY,setGradientCenter(float,float)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
         //"GradientDrawable,android:angle,setOrientation(int)",    //use in API 16 or higher
         //stroke
-        "GradientDrawable,android:width,setStroke(int, int, int, int)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
-        "GradientDrawable,android:color,setStroke(int, int, int, int)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
-        "GradientDrawable,android:dashWidth,setStroke(int, int, int, int)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
-        "GradientDrawable,android:dashGap,setStroke(int, int, int, int)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:startColor,setColors(int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:centerColor,setColors(int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:endColor,setColors(int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (3 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:startColor,setColors(int,int)," + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:endColor,setColors(int,int)," + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:width,setStroke(int,int,int,int)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:color,setStroke(int,int,int,int)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:dashWidth,setStroke(int,int,int,int)," + (3 << TYPE_ARGUMENTS_ORDER_INDEX),
+        "GradientDrawable,android:dashGap,setStroke(int,int,int,int)," + (4 << TYPE_ARGUMENTS_ORDER_INDEX),
+        //solid
+        "GradientDrawable,android:color,setColor(int),",
         //corners
         "GradientDrawable,android:radius,setCornerRadius(int),",
-        "GradientDrawable,android:topLeftRadius,setCornerRadii(int, int, int, int)," + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
-        "GradientDrawable,android:topRightRadius,setCornerRadii(int, int, int, int)," + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
-        "GradientDrawable,android:bottomRightRadius,setCornerRadii(int, int, int, int)," + (TYPE_ARGUMENTS_ARRAY + (3 << TYPE_ARGUMENTS_ORDER_INDEX)),
-        "GradientDrawable,android:bottomLeftRadius,setCornerRadii(int, int, int, int)," + (TYPE_ARGUMENTS_ARRAY + (4 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:topLeftRadius,setCornerRadii(int,int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:topRightRadius,setCornerRadii(int,int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:bottomRightRadius,setCornerRadii(int,int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (3 << TYPE_ARGUMENTS_ORDER_INDEX)),
+        "GradientDrawable,android:bottomLeftRadius,setCornerRadii(int,int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (4 << TYPE_ARGUMENTS_ORDER_INDEX)),
     };
     
     public static String[] REMOVAL_LIST = new String[] {

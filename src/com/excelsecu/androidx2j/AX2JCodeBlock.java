@@ -218,15 +218,6 @@ public class AX2JCodeBlock {
         	return method.getArg(AX2JCodeBlock.this, order);
         }
         
-        public String getValueType() {
-        	Class<?> argType = method.getArgType(1);
-            if (argType.equals(Integer.class)) return "int";
-            else if (argType.equals(Float.class)) return "float";
-            else if (argType.equals(Boolean.class)) return "boolean";
-            else if (argType.equals(Long.class)) return "long";
-            else throw new AX2JException(AX2JException.CLASS_NOT_FOUND, argType.getName());
-        }
-        
         @Override
         public String toString() {            
             if (special) {
@@ -241,7 +232,7 @@ public class AX2JCodeBlock {
             if (isVariableAssignment()) {
                 return methodString + " = " + valueString + ";\n";
             } else if (isArray()){
-                return methodString + "(new " + getValueType() +"[" + valueString + "]);\n";
+                return methodString + "(new " + Utils.getValueType(method.getArgType(1)) +"[" + valueString + "]);\n";
             } else {
                 return methodString + "(" + valueString + ");\n";
             }

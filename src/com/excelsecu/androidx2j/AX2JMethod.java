@@ -104,6 +104,8 @@ public class AX2JMethod implements Cloneable {
         Class<?> type = argTypes[order - 1];
         if (type.equals(Context.class)) {
             value = "context";
+        } else if (methodName.equals("setGradientCenter")) {
+        	value = "0.5f";
         } else {
             value = "0";
         }
@@ -160,7 +162,11 @@ public class AX2JMethod implements Cloneable {
         									//e.g. addRule(RelativeLayout.START_OF,Integer)
                 argsString += args[i];
         	} else {
-                argsString += type.getSimpleName();
+        		try {
+                    argsString += Utils.getValueType(type);
+        		} catch (AX2JException e) {
+                    argsString += type.getSimpleName();
+        		}
         	}
         	
         	if (i < argTypes.length - 1) {
