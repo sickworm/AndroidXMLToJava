@@ -199,6 +199,14 @@ public class AX2JCodeBlock {
             return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_LAYOUT_PARAMETER) != 0;
         }
         
+        public boolean isArray() {
+            return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ARRAY) != 0;
+        }
+        
+        public boolean isVariableAssignment() {
+            return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0;
+        }
+        
         public void setValue(int order, String valueString) {
         	method.setArg(order, valueString);
         }
@@ -208,6 +216,15 @@ public class AX2JCodeBlock {
         		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
         	}
         	return method.getArg(AX2JCodeBlock.this, order);
+        }
+        
+        public String getValueType() {
+        	Class<?> argType = method.getArgType(1);
+            if (argType.equals(Integer.class)) return "int";
+            else if (argType.equals(Float.class)) return "float";
+            else if (argType.equals(Boolean.class)) return "boolean";
+            else if (argType.equals(Long.class)) return "long";
+            else throw new AX2JException(AX2JException.CLASS_NOT_FOUND, argType.getName());
         }
         
         @Override
@@ -221,8 +238,10 @@ public class AX2JCodeBlock {
                 valueString += method.getArg(AX2JCodeBlock.this, i) + ((i == method.getArgsNum())? "" : ", ");
             }
             
-            if (AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0) {
+            if (isVariableAssignment()) {
                 return methodString + " = " + valueString + ";\n";
+            } else if (isArray()){
+                return methodString + "(new " + getValueType() +"[" + valueString + "]);\n";
             } else {
                 return methodString + "(" + valueString + ");\n";
             }

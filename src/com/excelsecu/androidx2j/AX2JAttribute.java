@@ -210,6 +210,9 @@ public class AX2JAttribute implements Cloneable {
             case TYPE_METHOD_REFLECTION:
                 value = value >> TYPE_METHOD_REFLECTION_INDEX;
                 break;
+            case TYPE_ARGUMENTS_ARRAY:
+                value = value >> TYPE_ARGUMENTS_ARRAY_INDEX;
+                break;
         }
         return value;
     }

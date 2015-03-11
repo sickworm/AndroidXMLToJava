@@ -6,6 +6,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.provider.DocumentsContract.Root;
 
 public class ShapeTranslater extends BaseTranslator {
+    public final static String[] ORIENTATION = new String[] {"RIGHT_LEFT", "BR_TL",
+            "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR", "TOP_BOTTOM", "TR_BL"};
+        value = "GradientDrawable.Orientation." + ORIENTATION[ordinal];
     AX2JCodeBlock codeBlock = new AX2JCodeBlock(GradientDrawable.class, getRoot().getObjectName());
     
     public ShapeTranslater(AX2JNode root) {
@@ -38,9 +41,6 @@ public class ShapeTranslater extends BaseTranslator {
             if (ordinal < 0) {
                 ordinal += 8;
             }
-            final String[] ORIENTATION = new String[] {"RIGHT_LEFT", "BR_TL",
-                "BOTTOM_TOP", "BL_TR", "LEFT_RIGHT", "TL_BR", "TOP_BOTTOM", "TR_BL"};
-            value = "GradientDrawable.Orientation." + ORIENTATION[ordinal];
         }
         
         //nothing change

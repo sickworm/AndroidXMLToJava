@@ -66,14 +66,14 @@ public class AX2JMethod implements Cloneable {
     }
     
     public void setArg(int order, String value) {
-    	if (order > args.length || order < 0) {
+    	if (order > args.length || order <= 0) {
     		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
     	}
         args[order - 1] = value;
     }
     
     public String getArg(AX2JCodeBlock codeBlock, int order) {
-    	if (order > args.length || order < 0) {
+    	if (order > args.length || order <= 0) {
     		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
     	}
     	String value = args[order - 1];
@@ -116,6 +116,9 @@ public class AX2JMethod implements Cloneable {
     }
     
     public Class<?> getArgType(int order) {
+    	if (order > args.length || order <= 0) {
+    		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
+    	}
         return argTypes[order - 1];
     }
     
