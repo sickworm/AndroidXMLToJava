@@ -528,9 +528,9 @@ GradientDrawable,android:bottom,,
 GradientDrawable,android:centerColor,,
 GradientDrawable,android:centerX,,
 GradientDrawable,android:centerY,,
-GradientDrawable,android:color,,
-GradientDrawable,android:dashGap,,
-GradientDrawable,android:dashWidth,,
+GradientDrawable,android:color,setStroke(Integer, int, int, int),0x00002000
+GradientDrawable,android:dashGap,setStroke(Integer, int, int, int),0x00004000
+GradientDrawable,android:dashWidth,setStroke(Integer, int, int, int),0x00003000
 GradientDrawable,android:endColor,,
 GradientDrawable,android:gradientRadius,setGradientRadius(Float),
 GradientDrawable,android:height,,
@@ -546,8 +546,12 @@ GradientDrawable,android:top,,
 GradientDrawable,android:type,setGradientType(Integer),
 GradientDrawable,android:useLevel,setUseLevel(Boolean),
 GradientDrawable,android:visible,,
-GradientDrawable,android:width,,
-GradientDrawable,android:radius,setCornerRadius(Float),
+GradientDrawable,android:width,setStroke(Integer, int, int, int),0x00001000
+GradientDrawable,android:radius,setCornerRadius(Integer),
+GradientDrawable,android:topLeftRadius,setCornerRadii(Integer, int, int, int),0x02001000
+GradientDrawable,android:topRightRadius,setCornerRadii(Integer, int, int, int),0x02002000
+GradientDrawable,android:bottomRightRadius,setCornerRadii(Integer, int, int, int),0x02003000
+GradientDrawable,android:bottomLeftRadius,setCornerRadii(Integer, int, int, int),0x02004000
 
 //ColorStateList
 

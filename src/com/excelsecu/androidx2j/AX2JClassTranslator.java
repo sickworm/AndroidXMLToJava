@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
 import org.dom4j.QName;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
+import com.sun.xml.internal.fastinfoset.stax.events.NamespaceBase;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -165,12 +167,16 @@ public class AX2JClassTranslator {
     
     public static QName string2QName(String qNameString) {
         QName name = null;
-        String prefixString = qNameString.substring(0, qNameString.indexOf(':'));
-        String nameString = qNameString.substring(qNameString.indexOf(':') + 1);
-        if (prefixString.equals("android")) {
-            name = new QName(nameString, Config.ANDROID_NAMESPACE);
+        if (qNameString.indexOf(':') != -1) {
+            String prefixString = qNameString.substring(0, qNameString.indexOf(':'));
+            String nameString = qNameString.substring(qNameString.indexOf(':') + 1);
+            if (prefixString.equals("android")) {
+                name = new QName(nameString, Config.ANDROID_NAMESPACE);
+            } else {		//only support android name space
+                name = new QName(nameString);
+            }
         } else {
-            name = new QName(nameString);
+            name = new QName(qNameString);
         }
         return name;
     }
