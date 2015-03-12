@@ -405,8 +405,9 @@ public class AX2JClassTranslator {
      * @return the best method or the first relative method in relative list
      */
     private AX2JMethod chooseMethod(AX2JAttribute attribute) {
-        String name = attribute.getName().getQualifiedName();
-        String value = attribute.getValue().getValue();
+        Attribute attr = attribute.getValue();
+        String name = attr.getQualifiedName();
+        String value = attr.getValue();
         List<AX2JMethod> methodList = attribute.getRelativeMethodList();
         AX2JMethod bestMethod = methodList.get(0);
         Element element = attribute.getValue().getParent();
@@ -436,6 +437,12 @@ public class AX2JClassTranslator {
                 bestMethod = attribute.findMethodByArgument(3);
             } else {
                 bestMethod = attribute.findMethodByArgument(2);
+            }
+        } else if (name.equals("android:color")) {
+            if (attr.getParent().getName().equals("stroke")) {
+                bestMethod = attribute.findMethodByName("setStroke");
+            } else if (attr.getParent().getName().equals("solid")) {
+                bestMethod = attribute.findMethodByName("setColor");
             }
         }
         
