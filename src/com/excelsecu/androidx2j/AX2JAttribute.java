@@ -53,45 +53,29 @@ public class AX2JAttribute implements Cloneable {
     
     private Class<?> type;
     private QName name;
-    private List<AX2JMethod> relativeMethodList;
-    private int methodType;
+    private List<AX2JMethod> relativeMethodList = new ArrayList<AX2JMethod>();
+    private List<Integer> methodTypeList = new ArrayList<Integer>();
     private Attribute value;
     
     public AX2JAttribute(QName name, Class<?> type) {
         this.name = name;
-        this.methodType = TYPE_NORMAL;
         this.type = type;
-        relativeMethodList = new ArrayList<AX2JMethod>();
         value = null;
     }
     
-    public AX2JAttribute(QName name, int methodType, Class<?> type) {
-        this.name = name;
-        this.methodType = methodType;
-        this.type = type;
-        relativeMethodList = new ArrayList<AX2JMethod>();
-        value = null;
-    }
-    
-    public AX2JAttribute(QName name, AX2JMethod method, Class<?> type) {
-        this.name = name;
-        this.type = type;
-        relativeMethodList = new ArrayList<AX2JMethod>();
-        relativeMethodList.add(method);
-        value = null;
-    }
-    
-    public void addRelativeMethod(AX2JMethod method) {
+    public void addRelativeMethod(AX2JMethod method, int methodType) {
         if (relativeMethodList.size() == 1) {
-            if (relativeMethodList.get(0).getName().equals("")
-                && !method.getName().equals("")) {
-                relativeMethodList = new ArrayList<AX2JMethod>();
+            if (!method.getName().equals("")) {
+                if (relativeMethodList.get(0).getName().equals("")) {
+                    relativeMethodList.remove(0);
+                    methodTypeList.remove(0);
+                }
                 relativeMethodList.add(method);
-            } else if (!method.getName().equals("")) {
-                relativeMethodList.add(method);
+                methodTypeList.add(methodType);
             }
         } else {
             relativeMethodList.add(method);
+            methodTypeList.add(methodType);
         }
     }
     
@@ -104,9 +88,18 @@ public class AX2JAttribute implements Cloneable {
         return null;
     }
     
-    public AX2JMethod findMethodByArgument(Class<?> type) {
-        int order = getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+    public AX2JMethod findMethodByArgument(int argsNum) {
         for (AX2JMethod method : relativeMethodList) {
+            if (method.getArgsNum() == argsNum) {
+                return method;
+            }
+        }
+        return null;
+    }
+    
+    public AX2JMethod findMethodByArgument(Class<?> type) {
+        for (AX2JMethod method : relativeMethodList) {
+            int order = getTypeValue(method, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             if (method.getArgType(order).equals(type)) {
                 return method;
             }
@@ -137,16 +130,17 @@ public class AX2JAttribute implements Cloneable {
         this.value = value;
     }
     
-    public void setMethodType(int methodType) {
-        this.methodType = methodType;
-    }
-    
     public QName getName() {
         return name;
     }
     
-    public int getType() {
-        return methodType;
+    public int getType(AX2JMethod method) {
+        int index = relativeMethodList.indexOf(method);
+        if (index == -1) {
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, method.toString());
+        } else {
+            return methodTypeList.get(index);
+        }
     }
     
     public Attribute getValue() {
@@ -168,8 +162,13 @@ public class AX2JAttribute implements Cloneable {
         return attribute;
     }
     
-    public int getTypeValue(int mask) {
-        return getTypeValue(methodType, mask);
+    public int getTypeValue(AX2JMethod method, int mask) {
+        int index = relativeMethodList.indexOf(method);
+        if (index == -1) {
+            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, method.toString());
+        } else {
+            return getTypeValue(methodTypeList.get(index), mask);
+        }
     }
     
     public static int getTypeValue(int methodType, int mask) {
@@ -219,7 +218,10 @@ public class AX2JAttribute implements Cloneable {
     
     public String toString() {
         StringBuffer stringBuffer = new StringBuffer();
-        for (AX2JMethod method : relativeMethodList) {
+        for (int i = 0; i < relativeMethodList.size(); i++) {
+            AX2JMethod method = relativeMethodList.get(i);
+            int methodType = methodTypeList.get(i);
+            
             String methodString = method.toString();
             String methodTypeString = "";
             if (!methodString.equals("") && methodType != 0) {

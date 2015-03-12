@@ -72,7 +72,6 @@ public class AX2JNode implements Cloneable {
                     getLabelName().equals("solid") ||
                     getLabelName().equals("stroke")) {
                 type = GradientDrawable.class;
-                setObjectName(getParent().getObjectName());
             }
         }
     }
@@ -137,7 +136,14 @@ public class AX2JNode implements Cloneable {
                 }
             }
             
-            if (objectName.equals("")) {
+            if (getLabelName().equals("corners") ||
+                    getLabelName().equals("gradient") ||
+                    getLabelName().equals("padding") ||
+                    getLabelName().equals("size") ||
+                    getLabelName().equals("solid") ||
+                    getLabelName().equals("stroke")) {
+                objectName = getParent().getObjectName();
+            } else if (objectName.equals("")) {
                 String className = getLabelName();
                 if (className == null || className.length() < 1) {
                     return null;

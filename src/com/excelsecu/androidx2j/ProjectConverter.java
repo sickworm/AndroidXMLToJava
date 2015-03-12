@@ -109,16 +109,7 @@ public class ProjectConverter {
                 try {
                     LayoutTranslator translator = new LayoutTranslator(f);
                     String content = translator.translate();
-                    
-                    try {
-                        content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);
-                    } catch (AX2JException e) {
-                        System.out.println(f.getName() + " build Java file error: " +
-                                e.getErrorCode() + " " + e.getDetails() + "");
-                        content = "//Temp file. Error occurred when building this file.\n" +
-                                "//Error: " + Integer.toHexString(e.getErrorCode()) + " " +
-                                e.getDetails() + "\n\n" + content;
-                    }
+                    content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);
                     Utils.generateFile(f, content);
                     layoutRList.add(Utils.getClassName(f));
                 } catch (AX2JException e) {

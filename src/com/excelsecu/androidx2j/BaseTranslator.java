@@ -9,6 +9,7 @@ import org.dom4j.Attribute;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
 
+import android.graphics.drawable.GradientDrawable;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
  */
 public class BaseTranslator {
     private static AX2JTranslatorMap map = AX2JTranslatorMap.getInstance();
+    private List<AX2JCodeBlock> codeBlockList = new ArrayList<AX2JCodeBlock>();
     /** translate **/
     private AX2JNode root = null;
     private File file = null;
@@ -46,25 +48,22 @@ public class BaseTranslator {
     }
     
     public String translate() {
-        return printCodeBlockList(translate(getRoot()));
+        translate(getRoot());
+        return printCodeBlockList(codeBlockList);
     }
     
-    protected List<AX2JCodeBlock> translate(AX2JNode root) throws AX2JException {
-        List<AX2JCodeBlock> codeBlockList = new ArrayList<AX2JCodeBlock>();
-        codeBlockList.add(translateNode(root));
+    protected void translate(AX2JNode root) throws AX2JException {
+        AX2JCodeBlock codeBlock = translateNode(root);
+        
+        List<String> subImportList = codeBlock.getImportList();
+        for (String importItem : subImportList) {
+            addImport(importItem);
+        }
+        codeBlockList.add(codeBlock);
+        
         for (AX2JNode child : root.getChildren()) {
-            List<AX2JCodeBlock> childCodeBlockList = translate(child);
-            codeBlockList.addAll(childCodeBlockList);
+            translate(child);
         }
-        
-        for (AX2JCodeBlock codeBlock : codeBlockList) {
-            List<String> subImportList = codeBlock.getImportList();
-            for (String importItem : subImportList) {
-                addImport(importItem);
-            }
-        }
-        
-        return codeBlockList;
     }
     
     private String printCodeBlockList(List<AX2JCodeBlock> codeBlockList) {
@@ -94,8 +93,14 @@ public class BaseTranslator {
         
         String normalBlock = "";
         for (AX2JCodeBlock codeBlock : codeBlockList) {
-            normalBlock += codeBlock.toString();
-            normalBlock += "\n";
+            String codeBlockString = codeBlock.toString();
+            if (!codeBlock.toString().equals("")) {
+                normalBlock += codeBlockString;
+                //GradientDrawable just has one object
+                if (!codeBlock.getType().equals(GradientDrawable.class)) {
+                    normalBlock += "\n";
+                }
+            }
         }
         
         String bottomBlock = "";
@@ -244,6 +249,10 @@ public class BaseTranslator {
 
     public void setImportList(List<String> importList) {
         this.importList = importList;
+    }
+    
+    public void addCodeBlock(AX2JCodeBlock codeBlock) {
+        codeBlockList.add(codeBlock);
     }
     
 }

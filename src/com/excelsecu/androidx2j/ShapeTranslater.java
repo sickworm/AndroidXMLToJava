@@ -2,6 +2,8 @@ package com.excelsecu.androidx2j;
 
 import org.dom4j.Attribute;
 
+import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
+
 import android.graphics.drawable.GradientDrawable;
 
 public class ShapeTranslater extends BaseTranslator {
@@ -17,16 +19,19 @@ public class ShapeTranslater extends BaseTranslator {
     public String translate() {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(GradientDrawable.class, getRoot().getObjectName());
         for (AX2JNode node : getRoot().getChildren()) {
-        	if (node.getLabelName().equals("graident")) {
+        	if (node.getLabelName().equals("gradient")) {
+        	    String orientation;
         		Attribute attribute = node.findAttrByName("android:angle");
+        		orientation = (attribute == null)? "Orientation.TOP_BOTTOM" : translateValue(codeBlock, attribute, Integer.class);
         		codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
-        				translateValue(codeBlock, attribute, Integer.class) + ", null);\n");
+        		        orientation + ", null);\n", AX2JCode.PRIORITY_SECOND);
         	} else if(node.getLabelName().equals("solid")) {
-        		codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n");
+        		codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n", AX2JCode.PRIORITY_SECOND);
         	}
         }
+        addCodeBlock(codeBlock);
 
-        return codeBlock + super.translate();
+        return super.translate();
     }
 
 	@Override
@@ -60,28 +65,13 @@ public class ShapeTranslater extends BaseTranslator {
     @Override
 	protected void translateAttribute(AX2JCodeBlock codeBlock,
 			Attribute attribute) {
-    	if (attribute.equals("android:centerX") || attribute.equals("android:centerY")) {
-            codeBlock.add("//Attention GradientDrawable.setGradientCenter doesn't support setting center when the type is linear, but XML does. Weird\n");
-    	}
+        String name = attribute.getQualifiedName();
+    	if (name.equals("android:centerX") || name.equals("android:centerY")) {
+            codeBlock.add("//Attention: GradientDrawable.setGradientCenter doesn't support setting center when the type is linear, but XML does. Weird\n");
+    	} else if (name.equals("android:angle")) {
+            return;
+        }
+        
 		super.translateAttribute(codeBlock, attribute);
 	}
-    
-    public class SpecialTranslator {
-        private AX2JNode node;
-        
-        public SpecialTranslator(AX2JNode node) {
-            this.node = node;
-        }
-        
-        public String translate(Attribute attr) throws AX2JException {
-            if (node.getLabelName().equals("gradient")) {
-                return "";
-            } else if (node.getLabelName().equals("solid")) {
-                return "";
-            } else if (node.getLabelName().equals("stroke")) {
-                return "";
-            }
-            throw new AX2JException(AX2JException.METHOD_NOT_FOUND, attr.getQualifiedName());
-        }
-    }
 }

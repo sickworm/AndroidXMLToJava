@@ -212,7 +212,7 @@ public class AX2JCodeBlock {
         }
         
         public String getValue(int order) {
-        	if (order >= method.getArgsNum()) {
+        	if (order > method.getArgsNum() || order <= 0) {
         		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
         	}
         	return method.getArg(AX2JCodeBlock.this, order);

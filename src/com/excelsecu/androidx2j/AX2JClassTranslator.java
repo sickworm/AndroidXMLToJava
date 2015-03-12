@@ -139,13 +139,10 @@ public class AX2JClassTranslator {
     }
     
     public void addAttribute(QName name, AX2JMethod method, int methodType) {
-    	
         AX2JAttribute attribute = findAttribute(name);
         if (attribute == null) {
-            attribute = new AX2JAttribute(name, methodType, type);
+            attribute = new AX2JAttribute(name, type);
             attributeList.add(attribute);
-        } else {
-            attribute.setMethodType(methodType);
         }
         
         AX2JMethod oldMethod = findMethod(method);
@@ -159,7 +156,7 @@ public class AX2JClassTranslator {
         	method.addRelativeAttribute(attribute);
         }
         if (attribute.findMethod(method) == null) {
-            attribute.addRelativeMethod(method); 
+            attribute.addRelativeMethod(method, methodType); 
         }
     }
     
@@ -203,7 +200,7 @@ public class AX2JClassTranslator {
         
         String value = translateValue(codeBlock, attribute, method);
         
-        codeBlock.add(method, value, attribute.getType() + (priority << AX2JAttribute.TYPE_PRIORITY_INDEX));
+        codeBlock.add(method, value, attribute.getType(method) + (priority << AX2JAttribute.TYPE_PRIORITY_INDEX));
     }
     
     /**
@@ -212,7 +209,7 @@ public class AX2JClassTranslator {
      * @return the value after translating
      */
     private String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
-        int argOrder = attribute.getTypeValue(AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+        int argOrder = attribute.getTypeValue(method, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
         if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
         	argOrder = 1;
         }
@@ -224,82 +221,85 @@ public class AX2JClassTranslator {
     protected final String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
         String value = attribute.getValue();
         String name = attribute.getQualifiedName();
+        String newValue = value;
         
         if (argType.equals(Integer.class)) {
             //dp, px, sp
             if (value.matches("[0-9.]+dp")) {
-                value = value.substring(0, value.length() - 2);
-                value = "(int) (" + value + " * scale + 0.5f)";
+                newValue = value.substring(0, value.length() - 2);
+                newValue = "(int) (" + value + " * scale + 0.5f)";
                 codeBlock.add("final float scale = context.getResources().getDisplayMetrics().density;\n", AX2JCode.PRIORITY_FIRST);
             } else if (value.matches("[0-9.]+sp")) {
-                value = value.substring(0, value.length() - 2);
+                newValue = value.substring(0, value.length() - 2);
             } else if (value.matches("[0-9]+px")) {
-                value = value.substring(0, value.length() - 2);
+                newValue = value.substring(0, value.length() - 2);
             } else if (value.equals("fill_parent") || value.equals("match_parent")) {
-                value = "ViewGroup.LayoutParams.MATCH_PARENT";
+                newValue = "ViewGroup.LayoutParams.MATCH_PARENT";
                 codeBlock.addImport(ViewGroup.class.getName());
             } else if (value.equals("wrap_content")) {
-                value = "ViewGroup.LayoutParams.WRAP_CONTENT";
+                newValue ="ViewGroup.LayoutParams.WRAP_CONTENT";
                 codeBlock.addImport(ViewGroup.class.getName());
             }
             
             //id
             else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
-                value = value.substring(value.indexOf('/') + 1);
-                value = Config.R_CLASS + ".id." + value;
+                newValue =value.substring(value.indexOf('/') + 1);
+                newValue =Config.R_CLASS + ".id." + value;
                 codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
             }
             
             //string
             else if (value.contains("@string/")) {
-                value = value.substring(value.indexOf('/') + 1);
-                value = Config.R_CLASS + ".string." + value;
-                value = Config.RESOURCES_NAME + ".getString(" + value + ")";
+                newValue =value.substring(value.indexOf('/') + 1);
+                newValue =Config.R_CLASS + ".string." + value;
+                newValue =Config.RESOURCES_NAME + ".getString(" + value + ")";
             } else if (name.equals("android:text") ||
                     name.equals("android:hint")) {
-                value = "\"" + value + "\"";
+                newValue ="\"" + value + "\"";
             }
             
             //color
             else if (value.matches("#[0-9a-fA-F]+")) {
                 if (value.length() == 4) {
-                    value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                    newValue ="#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
                             value.charAt(3) + '0';
                 } else if (value.length() == 5) {
-                    value = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
+                    newValue ="#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
                             value.charAt(3) + '0' + value.charAt(4) + '0';
                 }
-                value = "Color.parseColor(\"" + value + "\")";
+                newValue ="Color.parseColor(\"" + value + "\")";
                 codeBlock.addImport(Color.class.getName());
             } else if (value.matches("@android:color/.+")) {
-                value = value.substring(value.indexOf('/') + 1);
-                value = value.toUpperCase();
-                value = "Color." + value;
+                newValue =value.substring(value.indexOf('/') + 1);
+                newValue =value.toUpperCase();
+                newValue ="Color." + value;
                 codeBlock.addImport(Color.class.getName());
             } else if (value.matches("@color/.+")) {
-                value = value.substring(value.indexOf('/') + 1);
-                value = Config.R_CLASS + ".color." + value;
-                value = Config.RESOURCES_NAME + ".getColor(" + value + ")";
+                newValue =value.substring(value.indexOf('/') + 1);
+                newValue =Config.R_CLASS + ".color." + value;
+                newValue =Config.RESOURCES_NAME + ".getColor(" + value + ")";
+            } else if (value.equals("@null")) {
+                newValue =Config.RESOURCES_NAME + ".getColor(android.R.color.transparent)";
             }
             
             //visibility
             else if (value.equals("gone") || value.equals("visibile") ||
                     value.equals("invisibile")) {
-                value = "View." + value.toUpperCase();
+                newValue ="View." + value.toUpperCase();
                 codeBlock.addImport(View.class.getName());
             }
             
             //orientation
             else if (value.equals("vertical")) {
-                value = "LinearLayout.VERTICAL";
+                newValue ="LinearLayout.VERTICAL";
             } else if (value.equals("horizontal")) {
-                value = "LinearLayout.HORIZONTAL";
+                newValue ="LinearLayout.HORIZONTAL";
             }
             
             //gravity
             else if (name.equals("android:gravity") ||
                     name.equals("android:layout_gravity")) {
-                value = Utils.prefixParams(value, "Gravity");
+                newValue =Utils.prefixParams(value, "Gravity");
                 codeBlock.addImport(Gravity.class.getName());
             }
             
@@ -313,16 +313,16 @@ public class AX2JClassTranslator {
             	String style = AX2JStyle.getStyle(value).name;
             	style = style.replace('.', '_');
             	style = "android.R.style." + style;
-            	value = style;
+            	newValue =style;
             }
             
             /** independent part **/
             //RelativeLayout rule
             if (Utils.findRule(name) != null) {
             	if (value.equals("true")) {
-                	value = "RelativeLayout.TRUE";
+                	newValue ="RelativeLayout.TRUE";
             	} else if (value.equals("false")) {
-                	value = "RelativeLayout.FALSE";
+                	newValue ="RelativeLayout.FALSE";
             	}
                 codeBlock.addImport(RelativeLayout.class.getName());
             }
@@ -346,24 +346,24 @@ public class AX2JClassTranslator {
         
         //CharSequence & String
         else if (argType.equals(CharSequence.class) || argType.equals(String.class)) {
-            value = "\"" + value + "\"";
+            newValue ="\"" + value + "\"";
         }
         
         else if (argType.equals(Float.class)) {
             //float
-            value = value + "f";
+            newValue =value + "f";
         }
         
         else if (argType.equals(Drawable.class) || argType.equals(ColorStateList.class)) {
             //drawable
             if (value.startsWith("@drawable/")) {
-                value = value.substring(value.indexOf('/') + 1);
-                value = Config.R_CLASS + ".drawable." + value;
+                newValue =value.substring(value.indexOf('/') + 1);
+                newValue =Config.R_CLASS + ".drawable." + value;
                 if (name.contains("Color") ||
                         name.contains("TintList")) {
-                    value = "resources.getColorStateList(" + value + ")";
+                    newValue ="resources.getColorStateList(" + value + ")";
                 } else {
-                    value = "resources.getDrawable(" + value + ")";
+                    newValue ="resources.getDrawable(" + value + ")";
                 }
             }
         }
@@ -371,32 +371,32 @@ public class AX2JClassTranslator {
         else if (argType.equals(TransformationMethod.class)) {
             //text
             if (name.equals("android:password")) {
-                value = "new PasswordTransformationMethod()";
+                newValue ="new PasswordTransformationMethod()";
                 codeBlock.addImport(PasswordTransformationMethod.class.getName());
             } else if (name.equals("android:singleLine")) {
-                value = "new SingleLineTransformationMethod()";
+                newValue ="new SingleLineTransformationMethod()";
                 codeBlock.addImport(SingleLineTransformationMethod.class.getName());
             } else if (name.equals("android:inputType")) {
                 String error = value; 
-                value = Config.INPUT_TYPE_MAP.get(value);
+                newValue =Config.INPUT_TYPE_MAP.get(value);
                 if (value == null) {
                     throw new AX2JException(AX2JException.ATTRIBUTE_VALUE_ERROR, error);
                 }
-                value = Utils.prefixParams(value, "InputType");
+                newValue =Utils.prefixParams(value, "InputType");
                 codeBlock.addImport(InputType.class.getName());
             } else if (name.equals("android:ellipsize")) {
-                value = value.toUpperCase();
-                value = "TextUtils.TruncateAt." + value;
+                newValue =value.toUpperCase();
+                newValue ="TextUtils.TruncateAt." + value;
                 codeBlock.addImport(TextUtils.class.getName());
             }
         }
         
         else if (argType.equals(TextView.BufferType.class)) {
-            value = "TextView.BufferType." + value.toUpperCase();
+            newValue ="TextView.BufferType." + value.toUpperCase();
             codeBlock.addImport(TextView.class.getName());
         }
         
-        return value;
+        return newValue;
     }
     
     /**
@@ -409,28 +409,33 @@ public class AX2JClassTranslator {
         String value = attribute.getValue().getValue();
         List<AX2JMethod> methodList = attribute.getRelativeMethodList();
         AX2JMethod bestMethod = methodList.get(0);
+        Element element = attribute.getValue().getParent();
         
         if (name.equals("android:text")) {
             if (value.startsWith("@+id/") || value.startsWith("@id/")) {
-                return attribute.findMethodByArgument(Integer.class);
+                bestMethod = attribute.findMethodByArgument(Integer.class);
             } else {
-                return attribute.findMethodByArgument(CharSequence.class);
+                bestMethod = attribute.findMethodByArgument(CharSequence.class);
             }
         } else if (name.startsWith("android:padding") &&!name.equals("android:padding")) {
-            Element element = attribute.getValue().getParent();
-            if (element.attributeValue("android:paddingStart") != null ||
-                    element.attributeValue("android:paddingEnd") != null) {
-                return attribute.findMethodByName("setPaddingRelative");
+            if (element.attributeValue(string2QName("android:centerColor")) != null ||
+                    element.attributeValue(string2QName("android:centerColor")) != null) {
+                bestMethod = attribute.findMethodByName("setPaddingRelative");
             } else {
-                return attribute.findMethodByName("setPadding");
+                bestMethod = attribute.findMethodByName("setPadding");
             }
         } else if (name.startsWith("android:drawable") && !name.equals("android:drawablePadding")) {
-            Element element = attribute.getValue().getParent();
-            if (element.attributeValue("android:drawableStart") != null ||
-                    element.attributeValue("android:drawableEnd") != null) {
-                return attribute.findMethodByName("setCompoundDrawablesRelativeWithIntrinsicBounds");
+            if (element.attributeValue(string2QName("android:centerColor")) != null ||
+                    element.attributeValue(string2QName("android:centerColor")) != null) {
+                bestMethod = attribute.findMethodByName("setCompoundDrawablesRelativeWithIntrinsicBounds");
             } else {
-                return attribute.findMethodByName("setCompoundDrawablesWithIntrinsicBounds");
+                bestMethod = attribute.findMethodByName("setCompoundDrawablesWithIntrinsicBounds");
+            }
+        } else if (name.equals("android:startColor") || name.equals("android:endColor")) {
+            if (element.attributeValue(string2QName("android:centerColor")) != null) {
+                bestMethod = attribute.findMethodByArgument(3);
+            } else {
+                bestMethod = attribute.findMethodByArgument(2);
             }
         }
         
