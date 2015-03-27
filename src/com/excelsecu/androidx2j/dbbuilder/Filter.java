@@ -19,23 +19,23 @@ import com.excelsecu.androidx2j.AX2JClassTranslator;
 
 public class Filter {
     private Class<?> type;
-    
+
     public Filter(Class<?> type) {
         this.type = type;
     }
-    
+
     public AX2JClassTranslator filterDoc(String fileName) throws AndroidDocException {
         String docContent = readDoc(fileName);
         AX2JClassTranslator attrToMethodList = filter(docContent);
         return attrToMethodList;
     }
-    
+
     private String readDoc(String fileName) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)), Config.ENCODE));
             String content = "";
             String buf;
-            
+
             boolean start = false;
             while ((buf = reader.readLine())!= null) {
                 //all we need is <table id="lattrs"> ... </table>, the XML Attributes
@@ -62,7 +62,7 @@ public class Filter {
             throw new AndroidDocException(AndroidDocException.DOC_READ_ERROR);
         }
     }
-    
+
     private AX2JClassTranslator filter(String content) {
         try {
             Parser parser = Parser.createParser(content, Config.ENCODE);
@@ -74,7 +74,7 @@ public class Filter {
             OrFilter orFilter = new OrFilter(andFilter1, andFilter2);
             NodeList tableNodeList = parser.parse(orFilter);
             NodeIterator tableIt = tableNodeList.elements();
-            
+
             AX2JClassTranslator map = new AX2JClassTranslator(type);
             while(tableIt.hasMoreNodes()) {
                 Node trNode = tableIt.nextNode();
@@ -102,7 +102,7 @@ public class Filter {
                 if (trNodeList.size() != 7) {
                     throw new AndroidDocException(AndroidDocException.ATM_FORMAT_ERROR);
                 }
-                
+
                 String attr = trNodeList.elementAt(1).toPlainTextString();
                 attr = attr.replace("\n", "");
                 String method = trNodeList.elementAt(3).toPlainTextString();

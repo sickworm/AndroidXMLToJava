@@ -13,14 +13,14 @@ import android.view.View;
 
 public class AX2JNode implements Cloneable {
     private static int order = 0;
-    
+
     private AX2JNode parent;
     private List<AX2JNode> children;
     private Element element;
     private List<Attribute> attrList;
     private String objectName = "";
     private Class<?> type = null;
-    
+
     @SuppressWarnings("unchecked")
     public AX2JNode(AX2JNode parent, Element element) {
         if (element == null) {
@@ -29,7 +29,7 @@ public class AX2JNode implements Cloneable {
         } else {
             this.element = element;
         }
-        
+
         this.parent = parent;
         this.children = new ArrayList<AX2JNode>();
         this.attrList = element.attributes();
@@ -39,7 +39,7 @@ public class AX2JNode implements Cloneable {
         }
         initType();
     }
-    
+
     /**
      * Find out the Java class relative to the XML label
      */
@@ -75,9 +75,9 @@ public class AX2JNode implements Cloneable {
             }
         }
     }
-    
+
     public Attribute findAttrByName(String attrName) {
-        List<Attribute> attrList = this.getAttributes(); 
+        List<Attribute> attrList = this.getAttributes();
         for (Attribute a : attrList) {
             if (a.getQualifiedName().equals(attrName)) {
                 return a;
@@ -85,48 +85,48 @@ public class AX2JNode implements Cloneable {
         }
         return null;
     }
-    
+
     public String toString() {
         return asXML();
     }
-    
+
     public void addChild(AX2JNode child) {
         children.add(child);
     }
-    
+
     public AX2JNode getParent() {
         return parent;
     }
-    
+
     public List<AX2JNode> getChildren() {
         return children;
     }
-    
+
     public Class<?> getType() {
         return type;
     }
-    
+
     public void setType(Class<?> type) {
         this.type = type;
     }
-    
+
     public String getLabelName() {
         return element.getName();
     }
-    
+
     public void setObjectName(String objectName) {
         this.objectName = objectName;
     }
-    
+
     /**
      * If the node has android:id, use id name. If not, transform a class name to a class object name. Change the first letter to lower case.
      * @param node
      * @return
      */
     public String getObjectName() {
-        if (objectName != null && !objectName.equals(""))
+        if (objectName != null && !objectName.equals("")) {
             return objectName;
-        else {
+        } else {
             for (Attribute a : getAttributes()) {
                 if (a.getQualifiedName().equals("android:id")) {
                     objectName = a.getValue();
@@ -135,7 +135,7 @@ public class AX2JNode implements Cloneable {
                     }
                 }
             }
-            
+
             if (getLabelName().equals("corners") ||
                     getLabelName().equals("gradient") ||
                     getLabelName().equals("padding") ||
@@ -157,39 +157,39 @@ public class AX2JNode implements Cloneable {
                 objectName = firstLetter + objectName + ((order == 0)? "" : order);
                 order++;
             }
-            
+
             return objectName;
         }
     }
-    
+
     public List<Attribute> getAttributes() {
         return attrList;
     }
-    
+
     public String getText() {
         return element.getText();
     }
-    
+
     public String attributeValue(String name) {
         return element.attributeValue(name);
     }
-    
+
     public String asXML() {
         return element.asXML();
     }
-    
+
     public Element getElement() {
         return element;
     }
-    
+
     public static void resetOrder() {
         order = 0;
     }
-    
+
     public AX2JNode clone() {
         return new AX2JNode(this.parent, this.element);
     }
-    
+
     public String constructorParams() {
         CustomWidget customWidget = CustomWidget.findCustomWidget(getLabelName());
         if (customWidget != null) {

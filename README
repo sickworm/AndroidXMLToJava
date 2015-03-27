@@ -1,8 +1,13 @@
 Android XML to Java code. Still on Development.
 
-2015/3/12 Refactor finished.
+2015/3/27
+Fix lots of bugs due to refactor, remove trailing spaces
 
-2015/2/9 Support android:textAppearance. style supporting is still improving. many attributes of system styles cannot support.
+2015/3/12
+Refactor finished.
+
+2015/2/9
+Support android:textAppearance. style supporting is still improving. many attributes of system styles cannot support.
 
 2015/1/29
 Support style.

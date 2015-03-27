@@ -26,7 +26,7 @@ public class BaseTranslator {
     private AX2JNode root = null;
     private File file = null;
     private List<String> importList = new ArrayList<String>();
-    
+
     public BaseTranslator(File file) {
         this.file = file;
         if (Utils.getFileExtension(file).equals("xml")) {
@@ -34,39 +34,34 @@ public class BaseTranslator {
         }
         AX2JNode.resetOrder();
     }
-    
+
     public BaseTranslator(AX2JNode root) {
         this.root = root;
     }
-    
+
     protected void init() {
         if (root == null) {
             AX2JParser parser = new AX2JParser(file);
             root = parser.parse();
-            root.setObjectName(file.getName().substring(0, file.getName().indexOf('.')));
+            root.setObjectName(file.getName().substring(0, file.getName().indexOf('.')) +  "_root");
         }
     }
-    
+
     public String translate() {
         translate(getRoot());
-        return printCodeBlockList(codeBlockList);
+        return printCodeBlockList();
     }
-    
+
     protected void translate(AX2JNode root) throws AX2JException {
         AX2JCodeBlock codeBlock = translateNode(root);
-        
-        List<String> subImportList = codeBlock.getImportList();
-        for (String importItem : subImportList) {
-            addImport(importItem);
-        }
-        codeBlockList.add(codeBlock);
-        
+        addCodeBlock(codeBlock);
+
         for (AX2JNode child : root.getChildren()) {
             translate(child);
         }
     }
-    
-    private String printCodeBlockList(List<AX2JCodeBlock> codeBlockList) {
+
+    protected String printCodeBlockList() {
         String topBlock = "";
         List<AX2JCode> topCodeList = new ArrayList<AX2JCode>();
         for (AX2JCodeBlock codeBlock : codeBlockList) {
@@ -90,7 +85,7 @@ public class BaseTranslator {
         if (!topBlock.equals("")) {
             topBlock += "\n";
         }
-        
+
         String normalBlock = "";
         for (AX2JCodeBlock codeBlock : codeBlockList) {
             String codeBlockString = codeBlock.toString();
@@ -102,7 +97,7 @@ public class BaseTranslator {
                 }
             }
         }
-        
+
         String bottomBlock = "";
         List<AX2JCode> bottomCodeList = new ArrayList<AX2JCode>();
         for (AX2JCodeBlock codeBlock : codeBlockList) {
@@ -123,38 +118,39 @@ public class BaseTranslator {
         for (AX2JCode code : bottomCodeList) {
             bottomBlock += code.toString();
         }
-        
+
         return topBlock + normalBlock + bottomBlock;
     }
-    
+
     private final AX2JCodeBlock translateNode(AX2JNode node) {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
-        
+
         preTranslateNode(codeBlock, node);
-        
+
         translatingNode(codeBlock, node);
-        
+
         afterTranslateNode(codeBlock, node);
-        
+
         return codeBlock;
     }
-    
+
     protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
     }
-    
+
     protected void translatingNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+        addImport(node.getType());
         for (Attribute attribute : node.getAttributes()) {
             translateAttribute(codeBlock, attribute);
         }
     }
-    
+
     protected void afterTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
     }
-    
+
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute) {
     	translateAttribute(codeBlock, attribute, 0);
     }
-    
+
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute, int priority) {
         Class<?> type = codeBlock.getType();
         while (true) {
@@ -172,11 +168,11 @@ public class BaseTranslator {
             }
         }
     }
-    
-    protected String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
+
+    protected final String translateValue(AX2JCodeBlock codeBlock, Attribute attribute, Class<?> argType) {
         String value = attribute.getValue();
         Class<?> type = codeBlock.getType();
-        
+
         while (true) {
             AX2JClassTranslator translator = map.get(type);
             if (translator == null) {
@@ -191,12 +187,12 @@ public class BaseTranslator {
                 }
             }
         }
-        
+
         return value;
     }
-    
+
     /**
-     *  Add the class to the import list. If already exists, ignore. 
+     *  Add the class to the import list. If already exists, ignore.
      *  @param className the class try to be added in import list
      */
     protected void addImport(String className) {
@@ -204,44 +200,49 @@ public class BaseTranslator {
                 className.equals(Void.class.getName())) {
             return;
         }
+        className = className.replace("$", ".");
         if (!Utils.hasString(importList, className)) {
             importList.add(className);
         }
     }
 
+    protected void addImport(Class<?> type) {
+        addImport(type.getName());
+    }
+
     /**
-     * Get the name of parent to build the LayoutParams
+     * Get the type of parent to build the LayoutParams
      * @param node
      * @return
      */
-    public static String getParentName(AX2JNode node) {
+    public static Class<?> getParentType(AX2JNode node) {
         if (node.getParent() == null) {
             List<Attribute> attrList = node.getAttributes();
             for (Attribute a : attrList) {
                 if (Config.RULE_MAP.get(a.getQualifiedName()) != null) {
-                    return RelativeLayout.class.getSimpleName();
+                    return RelativeLayout.class;
                 }
                 if (a.getQualifiedName().equals("android:layout_gravity")) {
-                    return LinearLayout.class.getSimpleName();
+                    return LinearLayout.class;
                 }
             }
-            return ViewGroup.class.getSimpleName();
+            return ViewGroup.class;
         }
-        return node.getParent().getLabelName();
+        return node.getParent().getType();
     }
-    
+
     public AX2JNode getRoot() {
         return root;
     }
-    
+
     public Class<?> getType() {
         return root.getType();
     }
-    
+
     public File getFile() {
         return file;
     }
-    
+
     public List<String> getImportList() {
         Collections.sort(importList);
         return importList;
@@ -250,9 +251,13 @@ public class BaseTranslator {
     public void setImportList(List<String> importList) {
         this.importList = importList;
     }
-    
+
     public void addCodeBlock(AX2JCodeBlock codeBlock) {
         codeBlockList.add(codeBlock);
+        List<String> subImportList = codeBlock.getImportList();
+        for (String importItem : subImportList) {
+            addImport(importItem);
+        }
     }
-    
+
 }

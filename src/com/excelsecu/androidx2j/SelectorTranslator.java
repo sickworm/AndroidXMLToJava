@@ -7,25 +7,27 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 
 public class SelectorTranslator extends BaseTranslator {
-    
+
     public SelectorTranslator(AX2JNode node) {
         super(node);
         AX2JNode.resetOrder();
     }
-    
+
     public String translate() {
+        AX2JCodeBlock codeBlock = new AX2JCodeBlock(getRoot().getType(), getRoot().getObjectName());
         if (getType() == ColorStateList.class) {
-            return translateToColorStateList().toString();
+            codeBlock = translateToColorStateList();
         } else if (getType() == StateListDrawable.class) {
-            return translateToStateListDrawable().toString();
-        } else {
-            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, "not a selector type");
+            codeBlock = translateToStateListDrawable();
         }
+        addCodeBlock(codeBlock);
+
+        return printCodeBlockList();
     }
-    
+
     private AX2JCodeBlock translateToColorStateList() {
-        addImport(Context.class.getName());
-        addImport(ColorStateList.class.getName());
+        addImport(Context.class);
+        addImport(ColorStateList.class);
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(ColorStateList.class, getRoot().getObjectName());
         String stateSetList = "";
         String colorList = "";
@@ -66,13 +68,13 @@ public class SelectorTranslator extends BaseTranslator {
         codeBlock.add("ColorStateList colorStateList = new ColorStateList(stateSet, colorSet);\n");
         return codeBlock;
     }
-    
+
     private AX2JCodeBlock translateToStateListDrawable() {
-        addImport(Context.class.getName());
-        addImport(StateListDrawable.class.getName());
+        addImport(Context.class);
+        addImport(StateListDrawable.class);
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(ColorStateList.class, getRoot().getObjectName());
         int num = 0;
-        
+
         codeBlock.add("StateListDrawable stateListDrawable = new StateListDrawable();\n");
         for (AX2JNode node : getRoot().getChildren()) {
             if (!node.getLabelName().equals("item")) {
@@ -96,13 +98,13 @@ public class SelectorTranslator extends BaseTranslator {
                     }
                 }
             }
-            
+
             String setName = "stateSet" + num;
             codeBlock.add("int[] " + setName + " = new int[] {" + stateSet + "};\n");
             codeBlock.add("stateListDrawable.addState(" + setName + ", " + drawable + ");\n");
             num++;
         }
-        
+
         return codeBlock;
     }
 }

@@ -23,7 +23,7 @@ import com.excelsecu.androidx2j.Config;
  *
  */
 public class Utils {
-    
+
     /**
      * Check the class if it's in the support list CLASSES_LIST.
      */
@@ -35,7 +35,7 @@ public class Utils {
         }
         return false;
     }
-    
+
     /**
      * Read a file
      * @param fileName
@@ -57,7 +57,7 @@ public class Utils {
             return "";
         }
     }
-    
+
     /**
      * Write a file
      * @param fileName
@@ -76,7 +76,7 @@ public class Utils {
             return false;
         }
     }
-    
+
     /**
      * Find out the class which matches the XML label
      * @param XML label
@@ -94,12 +94,12 @@ public class Utils {
                 return Config.CLASSES_LIST[i];
             }
         }
-        
+
         return Void.class;
     }
-    
+
     /**
-     * 
+     *
      * Generate Java file according to the path and content. Auto override and create directory.
      * @param path the path of the file to be built
      * @param content the content of the file
@@ -120,10 +120,10 @@ public class Utils {
         if (!dirFile.exists() || !dirFile.isDirectory()) {
             dirFile.mkdirs();
         }
-        
+
         File javaFile = new File(path);
         System.out.println("Generating " + new File(path).getPath() + "...");
-        
+
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
             out.write(content);
@@ -133,7 +133,7 @@ public class Utils {
             throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
         }
     }
-    
+
     /**
      * Get the file extension, return "" if no extension
      * @param file
@@ -147,7 +147,7 @@ public class Utils {
             return "";
         }
     }
-    
+
     /**
      * Delete directory with files.
      * @param file directory to be deleted
@@ -163,7 +163,7 @@ public class Utils {
             }
         }
     }
-    
+
     /**
      * Gives the Java code{@param content} a complete construct.
      * @param file the origin XML file
@@ -174,7 +174,7 @@ public class Utils {
         subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
         subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
         String title = "package " + Config.PACKAGE_NAME + "." + subPath + ";\n\n";
-        
+
         //add import list
         if (subPath.equals("values")) {
             if (importList == null) {
@@ -191,10 +191,10 @@ public class Utils {
             title += "import " + s + ";\n";
         }
         title += "\n";
-        
+
         String className = Utils.getClassName(file);
         title += "public final class " + className + " {\n";
-        
+
         //in this condition, Java file need a return type
         if (!subPath.equals("values")) {
             //find the main object to return
@@ -221,7 +221,7 @@ public class Utils {
             	System.out.println(content);
                 throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
             }
-            
+
             title += "\n\tpublic static final " + returnClass + " get(Context context) {\n";
             content = "\t\t" + content.replace("\n", "\n\t\t") +
                     "return " + returnObject + ";\n";
@@ -257,7 +257,7 @@ public class Utils {
             return title + content + "}";
         }
     }
-    
+
     /**
      * Find out whether the string is in the list
      * @param list  the list to be searched
@@ -272,7 +272,7 @@ public class Utils {
         }
         return false;
     }
-    
+
     /**
      * Find out whether the attribute has corresponding RelativeLayout rule.
      * @param attr the attribute to find
@@ -281,7 +281,7 @@ public class Utils {
     public static String findRule(String attrName) {
         return Config.RULE_MAP.get(attrName);
     }
-    
+
     /**
      * Prefix each parameter divided by '|'
      * @param value value to be divided
@@ -311,7 +311,7 @@ public class Utils {
         value = value.substring(0, value.length() - 3);
         return value;
     }
-    
+
     /**
      * Copy file from oldPath to newPath
      * @param oldPath old file path
@@ -332,7 +332,7 @@ public class Utils {
                     return false;
                 }
             }
-            
+
             if (oldFile.exists()) {
                 InputStream inStream = new FileInputStream(oldPath);
                 FileOutputStream outStream = new FileOutputStream(newPath);
@@ -351,7 +351,7 @@ public class Utils {
         }
         return false;
     }
-    
+
     /**
      * Get the class name according to the file path
      * @param file the XML file to be converted
@@ -363,10 +363,10 @@ public class Utils {
         } else if (file.getName().indexOf('.') == -1) {
             return "";
         }
-        
+
         return file.getName().substring(0, file.getName().indexOf('.'));
     }
-    
+
     /**
      * change name like "main_g_title_bar" to "mainGTitleBar"
      * @return
@@ -382,11 +382,11 @@ public class Utils {
     		}
     		javaNameBuffer.deleteCharAt(index);
     	}
-    	
+
     	return javaNameBuffer.toString();
-    	
+
     }
-    
+
     /**
      * convert class to value type name
      * @param argType class type

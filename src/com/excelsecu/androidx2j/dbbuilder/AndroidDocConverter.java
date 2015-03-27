@@ -31,7 +31,7 @@ import com.excelsecu.androidx2j.Utils;
  * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
  * In current test version, this program will run every time to generate the HashMap.<p>
  * The table will storage like "View$set.orientation=setOrientation(int)".
- * 
+ *
  * @author ch
  *
  */
@@ -39,10 +39,10 @@ public class AndroidDocConverter {
     private static AX2JTranslatorMap attrToMethodMap = AX2JTranslatorMap.getInstance();
     private static HashMap<String, AX2JStyle> systemStylesMap = new LinkedHashMap<String, AX2JStyle>();
     private static HashMap<String, AX2JStyle> systemThemesMap = new LinkedHashMap<String, AX2JStyle>();
-    
+
     public static void main(String[] argv) throws DocumentException {
         System.out.println("Prasering Android documents...\n");
-        
+
         String[] listPage = listPage();
         for (int i = 0; i < listPage.length; i++) {
             String path = listPage[i];
@@ -51,15 +51,7 @@ public class AndroidDocConverter {
             System.out.println(translator + "\n");
             attrToMethodMap.add(translator);
         }
-       
-        //some attributes don't shown in Android doc, or the type value should be updated, add them in here
-        System.out.println("Addition\n");
-        for (String attribute : Config.ADDITION_LIST) {
-            System.out.println(attribute);
-            attrToMethodMap.add(attribute);
-        }
-        System.out.println();
-        
+
         //some attributes in Android doc is useless, or the arg value should be set as constant, remove them in here
         System.out.println("Removal\n");
         for (String attribute : Config.REMOVAL_LIST) {
@@ -67,18 +59,26 @@ public class AndroidDocConverter {
             attrToMethodMap.remove(attribute);
         }
         System.out.println();
-        
+
+        //some attributes don't shown in Android doc, or the type value should be updated, add them in here
+        System.out.println("Addition\n");
+        for (String attribute : Config.ADDITION_LIST) {
+            System.out.println(attribute);
+            attrToMethodMap.add(attribute);
+        }
+        System.out.println();
+
         System.out.println("Prasering system styles XML...\n");
         buildSystem(Config.SYSTEM_STYLES_PATH, systemStylesMap);
-        
+
         System.out.println("Prasering system themes XML...\n");
         buildSystem(Config.SYSTEM_THEMES_PATH, systemThemesMap);
-        
+
         System.out.println("Generating data.dat...\n");
         generateDat();
         System.out.println("Done!");
     }
-    
+
     private static void buildSystem(String path, HashMap<String, AX2JStyle> map) throws DocumentException {
         Document document;
         document = new SAXReader().read(path).getDocument();
@@ -109,26 +109,26 @@ public class AndroidDocConverter {
             }
         }
     }
-    
+
     private static void generateDat() {
         File dat = new File(Config.DAT_PATH);
         if (dat.isFile()) {
             dat.delete();
         }
-        
+
         appendFile(dat.getPath(), Config.DAT_COMMENT + "\n");
-        
+
         StringBuffer mapString = new StringBuffer();
         mapString.append(attrToMethodMap.toString());
         mapString = mapString.insert(0, Config.DAT_BLOCK + "\n");
         mapString = mapString.insert(mapString.length(), "\n" + Config.DAT_BLOCK);
         appendFile(dat.getPath(), mapString + "\n\n");
-        
+
         generateSystem(systemStylesMap, Config.STYLE_BLOCK);
-        
+
         generateSystem(systemThemesMap, Config.THEME_BLOCK);
     }
-    
+
     private static void generateSystem(HashMap<String, AX2JStyle> map, String block) {
         File dat = new File(Config.DAT_PATH);
         Iterator<Entry<String, AX2JStyle>> styleIterator = map.entrySet().iterator();
@@ -141,14 +141,14 @@ public class AndroidDocConverter {
         styleString.insert(styleString.length(), block);
         appendFile(dat.getPath(), styleString + "\n\n");
     }
-    
+
     public static AX2JTranslatorMap getMap() {
         if (attrToMethodMap.getMap().size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
-            
+
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split("\n");
             for (String s : list) {
@@ -163,25 +163,25 @@ public class AndroidDocConverter {
                 }
             }
         }
-        
+
         return attrToMethodMap;
     }
-    
+
     public static HashMap<String, AX2JStyle> getSystemStyles() {
         return getSystem(systemStylesMap, Config.STYLE_BLOCK);
     }
-    
+
     public static HashMap<String, AX2JStyle> getSystemThemes() {
         return getSystem(systemThemesMap, Config.THEME_BLOCK);
     }
-    
+
     public static HashMap<String, AX2JStyle> getSystem(HashMap<String, AX2JStyle> map, String block) {
         if (map.size() == 0) {
             File dat = new File(Config.DAT_PATH);
             if (!dat.isFile()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
-            
+
             Document document = DocumentHelper.createDocument();
             String content = readFile(dat.getPath(), block);
             String[] stylesString = content.split("\n");
@@ -191,7 +191,7 @@ public class AndroidDocConverter {
                 String name = styleString.substring(0, index1);
                 String parent = styleString.substring(index1 + 1, index2);
                 String attrs = styleString.substring(index2 + 1);
-                
+
                 Element element = document.addElement("container");
                 if (!attrs.equals("")) {
                     String[] attrsArray = attrs.split(",");
@@ -208,10 +208,10 @@ public class AndroidDocConverter {
                 document.remove(element);
             }
         }
-        
+
         return map;
     }
-    
+
     /**
      * Include all the HTML path which has XML attribute to java method table.
      * @return The list of XML attribute to Java method table.
@@ -226,7 +226,7 @@ public class AndroidDocConverter {
         }
         return list;
     }
-    
+
     /**
      * Write a file
      * @param fileName
@@ -245,7 +245,7 @@ public class AndroidDocConverter {
             return false;
         }
     }
-    
+
     /**
      * Read a file between the specific block
      * @param filePath
@@ -257,7 +257,7 @@ public class AndroidDocConverter {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
             String content = "";
             String buf;
-            
+
             boolean start = false;
             while ((buf = reader.readLine())!= null) {
                 if (buf.equals(block)) {

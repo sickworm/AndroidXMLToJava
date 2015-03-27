@@ -20,16 +20,16 @@ public class AX2JException extends RuntimeException {
     public static final int STYLE_NOT_FOUND = 0x00000007;
     /**array out of range**/
     public static final int ARRAY_OUT_OF_RANGE = 0x00000008;
-    
+
     /**the parameter haven't initialize**/
     public static final int PARAMETER_NOT_INITIALIZE = 0x00010001;
-    
+
     /**error when generating the Java file**/
     public static final int FILE_BUILD_ERROR = 0x00020001;
     /**the value of attribute is not correct**/
     public static final int ATTRIBUTE_VALUE_ERROR = 0x00020002;
     /**system style block in data.dat error**/
-    
+
     public static final int DAT_SYSTEM_STYLE_ERROR = 0x00030001;
     /**system theme block in data.dat error**/
     public static final int DAT_SYSTEM_THEME_ERROR = 0x00030002;
@@ -40,20 +40,20 @@ public class AX2JException extends RuntimeException {
     public AX2JException(int errorCode) {
         this.errorCode = errorCode;
     }
-    
+
     public AX2JException(int errorCode, String details) {
         this.errorCode = errorCode;
         this.details = details;
     }
-    
+
     public int getErrorCode() {
         return errorCode;
     }
-    
+
     public void setDetails(String details) {
         this.details = details;
     }
-    
+
     public String getDetails() {
         return details;
     }

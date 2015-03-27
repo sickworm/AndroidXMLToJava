@@ -3,8 +3,8 @@
 //View
 View,android:accessibilityLiveRegion,setAccessibilityLiveRegion(int),
 View,android:alpha,setAlpha(float),
-View,android:background,setBackgroundResource(int),
-View,android:background,setBackground(Drawable),
+View,android:background,setBackgroundDrawable(Drawable),
+View,android:background,setBackgroundColor(int),
 View,android:backgroundTint,setBackgroundTintList(ColorStateList),
 View,android:backgroundTintMode,setBackgroundTintMode(Mode),
 View,android:clickable,setClickable(boolean),
@@ -221,19 +221,27 @@ ProgressBar,android:secondaryProgressTintMode,setSecondaryProgressTintMode(Mode)
 //TextView
 TextView,android:autoLink,setAutoLinkMask(int),
 TextView,android:autoText,setKeyListener(KeyListener),
-TextView,android:bufferType,setText(<AX2J_OBJECT_NAME>.getText(),BufferType),
+TextView,android:bufferType,setText(<AX2J_OBJECT_NAME>.getText(),BufferType),0x00002000
 TextView,android:capitalize,setKeyListener(KeyListener),
 TextView,android:cursorVisible,setCursorVisible(boolean),
 TextView,android:digits,setKeyListener(KeyListener),
 TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
 TextView,android:drawableBottom,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00004000
+TextView,android:drawableBottom,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00004000
+TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00004000
 TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00003000
 TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00001000
 TextView,android:drawablePadding,setCompoundDrawablePadding(int),
 TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00003000
 TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00001000
 TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
 TextView,android:drawableTop,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00002000
+TextView,android:drawableTop,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00002000
+TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00002000
 TextView,android:editable,,
 TextView,android:editorExtras,setInputExtras(int),
 TextView,android:elegantTextHeight,setElegantTextHeight(boolean),
@@ -277,11 +285,11 @@ TextView,android:shadowDx,setShadowLayer(float,float,float,int),
 TextView,android:shadowDy,setShadowLayer(float,float,float,int),
 TextView,android:shadowRadius,setShadowLayer(float,float,float,int),
 TextView,android:singleLine,setTransformationMethod(TransformationMethod),
-TextView,android:text,setText(int),
 TextView,android:text,setText(CharSequence),
 TextView,android:textAllCaps,setAllCaps(boolean),
 TextView,android:textAppearance,setTextAppearance(context,int),0x00002000
 TextView,android:textColor,setTextColor(int),
+TextView,android:textColor,setTextColor(ColorStateList),
 TextView,android:textColorHighlight,setHighlightColor(int),
 TextView,android:textColorHint,setHintTextColor(int),
 TextView,android:textColorLink,setLinkTextColor(int),
@@ -345,7 +353,7 @@ Fragment,android:fragmentSharedElementReturnTransition,setSharedElementReturnTra
 
 //ListView
 ListView,android:divider,setDivider(Drawable),0x00000300
-ListView,android:dividerHeight,setDividerHeight(float),
+ListView,android:dividerHeight,setDividerHeight(int),
 ListView,android:entries,,
 ListView,android:footerDividersEnabled,,
 ListView,android:headerDividersEnabled,setHeaderDividersEnabled(boolean),
@@ -394,7 +402,7 @@ ImageView,android:baselineAlignBottom,setBaselineAlignBottom(boolean),
 ImageView,android:cropToPadding,setCropToPadding(boolean),
 ImageView,android:maxHeight,setMaxHeight(int),
 ImageView,android:maxWidth,setMaxWidth(int),
-ImageView,android:scaleType,setScaleType(TruncateAt),
+ImageView,android:scaleType,setScaleType(ScaleType),
 ImageView,android:src,setImageResource(int),
 ImageView,android:tint,setImageTintList(ColorStateList),
 ImageView,android:tintMode,setImageTintMode(Mode),
@@ -551,10 +559,10 @@ GradientDrawable,android:useLevel,setUseLevel(boolean),
 GradientDrawable,android:visible,,
 GradientDrawable,android:width,setStroke(int,int,int,int),0x00001000
 GradientDrawable,android:radius,setCornerRadius(int),
-GradientDrawable,android:topLeftRadius,setCornerRadii(int,int,int,int),0x02001000
-GradientDrawable,android:topRightRadius,setCornerRadii(int,int,int,int),0x02002000
-GradientDrawable,android:bottomRightRadius,setCornerRadii(int,int,int,int),0x02003000
-GradientDrawable,android:bottomLeftRadius,setCornerRadii(int,int,int,int),0x02004000
+GradientDrawable,android:topLeftRadius,setCornerRadii(float,float,float,float),0x02001000
+GradientDrawable,android:topRightRadius,setCornerRadii(float,float,float,float),0x02002000
+GradientDrawable,android:bottomRightRadius,setCornerRadii(float,float,float,float),0x02003000
+GradientDrawable,android:bottomLeftRadius,setCornerRadii(float,float,float,float),0x02004000
 
 //ColorStateList
 

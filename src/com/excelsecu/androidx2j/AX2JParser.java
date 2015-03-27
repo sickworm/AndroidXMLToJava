@@ -29,7 +29,7 @@ public class AX2JParser {
     public AX2JParser(Element rootElement) {
         this.rootElement = rootElement;
     }
-    
+
     /**
      * Parse Android XML file info AXMLNode structure.
      * @return the root of AXMLNode
@@ -49,7 +49,7 @@ public class AX2JParser {
         }
         return rootNode;
     }
-    
+
     /**
      * Recursion to iterate the Android XML elements.
      * @param parent the parent of the return node, null if it has no parent
@@ -59,18 +59,15 @@ public class AX2JParser {
      */
     private AX2JNode parseElements(AX2JNode parent, Element rootElement) {
         AX2JNode node = new AX2JNode(parent, rootElement);
-        
+
         @SuppressWarnings("unchecked")
         List<Element> list = rootElement.elements();
-        if (list == null || list.size() == 0) {
-            return node;
-        }
         for(Element e : list){
             parseElements(node, e);
         }
         return node;
     }
-    
+
     /**
      * Print the Android XML tree structure.
      * @param the root elements
@@ -82,7 +79,7 @@ public class AX2JParser {
         printNode(rootNode, 0);
     }
 
-    
+
     /**
      * Print the Android XML tree structure.
      * @param the root elements
@@ -103,7 +100,7 @@ public class AX2JParser {
         for (Attribute a : attrList) {
             System.out.println(tab + "\t" + a.getQualifiedName() + " = " + a.getValue());
         }
-        
+
         List<AX2JNode> children = rootNode.getChildren();
         for (AX2JNode n : children) {
             printNode(n, layer + 1);

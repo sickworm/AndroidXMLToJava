@@ -32,10 +32,10 @@ public class ProjectConverter {
                     idRList, layoutRList, menuRList, styleRList, stringRList));
     /** List<dpi + "." + name> use to storage all the resources in different dpi-drawable folder **/
     private static List<String> drawableDpiList = new ArrayList<String>();
-    
+
     private static String stringContent = "";
     private static String colorContent = "";
-    
+
     public static void main(String[] argv) {
         System.out.println("Initializing resources...\n");
         try {
@@ -48,9 +48,9 @@ public class ProjectConverter {
             System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
             return;
         }
-        
+
         addCustomWidget();
-        
+
         File res = new File(Config.PROJECT_RES_PATH);
         if (!res.isDirectory()) {
             throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
@@ -59,28 +59,28 @@ public class ProjectConverter {
         if (resOut.exists()) {
             Utils.deleteDir(resOut);
         }
-        
+
         File[] dirList = res.listFiles();
-        
+
         //First we need to get the build the style list of the project
         for (File f : dirList) {
             String path = f.getPath();
             if (f.isFile()) {
                 continue;
             }
-            
+
             if (path.matches(".+values.*")) {
                 ValueOutput(f);
             }
         }
-        
+
         //Then we can use AX2JStyle to replace android:style
         for (File f : dirList) {
             String path = f.getPath();
             if (f.isFile()) {
                 continue;
             }
-            
+
             if (path.matches(".+layout")) {
                 LayoutOutput(f);
             } else if (path.matches(".+anim")) {
@@ -89,7 +89,7 @@ public class ProjectConverter {
             } else if (path.matches(".+menu.*")) {
             }
         }
-        
+
         GenerateR();
         GenerateString();
         GenerateColor();
@@ -97,7 +97,7 @@ public class ProjectConverter {
         GenerateUtils();
         System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
     }
-    
+
     private static void LayoutOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
@@ -122,7 +122,7 @@ public class ProjectConverter {
         }
         idRList.addAll(LayoutTranslator.getIdList());
     }
-    
+
     private static void addCustomWidget() {
         //for now it don't support customize settings
         System.out.println("Adding custom widget...");
@@ -134,7 +134,7 @@ public class ProjectConverter {
                 "context, true");
         System.out.println();
     }
-    
+
     private static void ValueOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
@@ -142,7 +142,7 @@ public class ProjectConverter {
             AX2JNode root = new AX2JParser(f).parse();
             if (!root.getLabelName().equals("resources"))
                 return;
-            
+
             for (AX2JNode n : root.getChildren()) {
                 if (n.getLabelName().equals("string")) {
                     String text = n.getText();
@@ -151,7 +151,7 @@ public class ProjectConverter {
                             " = \"" + text + "\";\n";
                     stringRList.add(n.attributeValue("name"));
                 }
-                
+
                 else if (n.getLabelName().equals("color")) {
                     String value = n.getText();
                     if (value.matches("#[0-9a-fA-F]+")) {
@@ -166,8 +166,8 @@ public class ProjectConverter {
                     }
                     colorContent += "public static final int " + n.attributeValue("name") + " = " + value + ";\n";
                     colorRList.add(n.attributeValue("name"));
-                } 
-                
+                }
+
                 else if (n.getLabelName().equals("style")) {
                     AX2JStyle.addStyle(n);
                 }
@@ -175,7 +175,7 @@ public class ProjectConverter {
             System.out.println();
         }
     }
-    
+
     private static void DrawableOutput(File dir) {
         File[] fileList = dir.listFiles();
         for (File f : fileList) {
@@ -189,7 +189,7 @@ public class ProjectConverter {
             }
             if (content.equals(""))
                 continue;
-            
+
             //package name can't use '-'
             File outFile = new File(f.getPath().replace('-', '_'));
             content = Utils.buildJavaFile(outFile, content, translator.getImportList(), drawableRList);
@@ -201,7 +201,7 @@ public class ProjectConverter {
             System.out.println();
         }
     }
-    
+
     private static void GenerateR() {
         String content = "";
         content += "package " + Config.PACKAGE_NAME + ";\n\npublic final class " + Config.R_CLASS + " {\n";
@@ -215,7 +215,7 @@ public class ProjectConverter {
             content += "\t}\n\n";
         }
         content += "}";
-        
+
         String rPath = Config.JAVA_OUT_PATH + Config.R_CLASS + ".java";
         System.out.println("Generating " + new File(rPath).getPath() + "...");
         try {
@@ -228,14 +228,14 @@ public class ProjectConverter {
         }
         System.out.println();
     }
-    
+
     private static void GenerateString() {
         File file = new File("res/values/strings.xml");
         stringContent = Utils.buildJavaFile(file, stringContent, null, stringRList);
         Utils.generateFile(file, stringContent);
         System.out.println();
     }
-    
+
     private static void GenerateColor() {
         List<String> importList = new ArrayList<String>();
         importList.add(Color.class.getName());
@@ -244,7 +244,7 @@ public class ProjectConverter {
         Utils.generateFile(file, colorContent);
         System.out.println();
     }
-    
+
     private static void GenerateManager() {
         //Resources.java
         File resourcesFile = new File(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java");
@@ -254,16 +254,16 @@ public class ProjectConverter {
         resources = resources.replace(Config.TEMPLAT_RESOURCES_CLASS, Config.RESOURCES_CLASS);
         Utils.writeFile(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java", resources);
         System.out.println();
-        
+
         //drawables.java
         File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
         System.out.println("Generating " + drawablesFile.getPath() + "...");
-        
+
         String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
         for (int i = 0; i < dpiCaseList.length; i++) {
             dpiCaseList[i] = "";
         }
-        
+
         for (String dpi : drawableDpiList) {
             String dpiLevel = dpi.substring(0, dpi.indexOf('.'));
             String id = dpi.substring(dpi.indexOf('.') + 1);
@@ -276,7 +276,7 @@ public class ProjectConverter {
                 }
             }
         }
-        
+
         String drawables = Utils.readFile("templet/drawables.java");
         drawables = drawables.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         for (int i = 0; i < Config.TEMPLET_DPI_BLOCK_LIST.length; i++) {
@@ -284,14 +284,14 @@ public class ProjectConverter {
         }
         Utils.writeFile(Config.JAVA_OUT_PATH + "drawables.java", drawables);
         System.out.println();
-        
+
         //layouts.java
         File layoutsFile = new File(Config.JAVA_OUT_PATH + "layouts.java");
         System.out.println("Generating " + layoutsFile.getPath() + "...");
-        
+
         String layouts = Utils.readFile("templet/layouts.java");
         layouts = layouts.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
-        
+
         String layoutCaseList = "";
         for(String id : layoutRList) {
             layoutCaseList += "\t\tcase " + Config.R_CLASS + ".layout." + id + ":\n\t\t\treturn " +
@@ -301,7 +301,7 @@ public class ProjectConverter {
         Utils.writeFile(layoutsFile.getPath(), layouts);
         System.out.println();
     }
-    
+
     private static void GenerateUtils() {
         File utilsFile = new File(Config.JAVA_OUT_PATH + Config.UTILS_CLASS + ".java");
         String content = Utils.readFile("templet/" + Config.TEMPLAT_UTILS_CLASS + ".java");

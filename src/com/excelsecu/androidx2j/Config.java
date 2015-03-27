@@ -13,7 +13,7 @@ public class Config {
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.excelsecu.androidx2j.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.excelsecu.androidx2j.dbbuilder.Config.ENCODE;
-    
+
     public static final String RESOURCES_CLASS = "JResources";
     public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
     public static final String R_CLASS = "JR";
@@ -22,7 +22,7 @@ public class Config {
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
     public static final String MAP_OBJECT_NAME = com.excelsecu.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
     public static final int API_LEVEL = 8;
-    
+
     public static final String DEFAULT_THEME = "@android:Theme";
 
     /**base of R resources id**/
@@ -31,7 +31,7 @@ public class Config {
     /**RelativeLayout.Rule's map of attribute to Java value**/
     public static final HashMap<String, String> RULE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 2080190935307088596L;
-        
+
         {
             put("android:layout_above", "ABOVE");
             put("android:layout_alignBaseline", "ALIGN_BASELINE");
@@ -58,11 +58,11 @@ public class Config {
             put("layout_toStartOf", "START_OF");
         }
     };
-    
+
     /**TextView.InputType's map of attribute to Java value**/
     public static final HashMap<String, String> INPUT_TYPE_MAP = new HashMap<String, String>() {
         private static final long serialVersionUID = 8702820407293253537L;
-        
+
         {
             put("none", "TYPE_NULL");
             put("text", "TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_NORMAL");
@@ -98,7 +98,7 @@ public class Config {
             put("time", "TYPE_CLASS_DATETIME | TYPE_DATETIME_VARIATION_TIME");
         }
     };
-    
+
     public static final String TEMPLET_PACKAGE_NAME = "<!PACKAGE_NAME>";
     public static final String TEMPLET_LAYOUT_BLOCK = "<!LAYOUT_BLOCK>";
     public static final String TEMPLET_NODPI_BLOCK = "<!NODPI_BLOCK>";

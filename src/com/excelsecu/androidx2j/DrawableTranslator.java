@@ -11,7 +11,7 @@ public class DrawableTranslator extends BaseTranslator {
     public DrawableTranslator(File file) {
         super(file);
     }
-    
+
     @Override
     public String translate() {
         File file = getFile();
@@ -28,9 +28,9 @@ public class DrawableTranslator extends BaseTranslator {
                     file.getPath().replace(Config.PROJECT_RES_PATH.replace('/', File.separatorChar), "/assets/").replace("\\", "/").replace('-', '_') + "\"); \n";
             content += "Drawable drawable = Drawable.createFromStream(inStream" +
                     ", \"" + className +"\");\n";
-            addImport(Drawable.class.getName());
-            addImport(Context.class.getName());
-            addImport(InputStream.class.getName());
+            addImport(Drawable.class);
+            addImport(Context.class);
+            addImport(InputStream.class);
         } else {
             String name = getRoot().getLabelName();
             BaseTranslator translator = new SelectorTranslator(getRoot());
