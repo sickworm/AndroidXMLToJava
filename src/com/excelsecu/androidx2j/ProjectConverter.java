@@ -14,6 +14,11 @@ import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+/**
+ * Use to convert a whole project
+ * @author sickworm
+ *
+ */
 public class ProjectConverter {
     private static List<String> animRList = new ArrayList<String>();
     private static List<String> attrRList = new ArrayList<String>();
@@ -37,25 +42,22 @@ public class ProjectConverter {
     private static String colorContent = "";
 
     public static void main(String[] argv) {
-        System.out.println("Initializing resources...\n");
-        try {
-            AndroidDocConverter.getMap();
-            AndroidDocConverter.getSystemStyles();
-            AndroidDocConverter.getSystemThemes();
-            AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
-        } catch (AX2JException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ", error: " + e.getDetails());
-            System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
-            return;
-        }
+    	translateProject(Config.PROJECT_RES_PATH, Config.PROJECT_OUT_ROOT);
+    }
+    
+    public static void translateProject(String srcPath, String desPath) {
+    	if (!AndroidDocConverter.init()) {
+    		return;
+    	}
 
+        AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
         addCustomWidget();
 
-        File res = new File(Config.PROJECT_RES_PATH);
+        File res = new File(srcPath);
         if (!res.isDirectory()) {
             throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
         }
-        File resOut = new File(Config.PROJECT_OUT_ROOT);
+        File resOut = new File(desPath);
         if (resOut.exists()) {
             Utils.deleteDir(resOut);
         }
@@ -114,7 +116,7 @@ public class ProjectConverter {
                     layoutRList.add(Utils.getClassName(f));
                 } catch (AX2JException e) {
                     System.out.println(f.getName() + " convert error: " +
-                            e.getErrorCode() + " " + e.getDetails() + "");
+                            e.getErrorCode() + " " + e.getLocalizedMessage() + "");
                     e.printStackTrace();
                 }
             }

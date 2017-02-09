@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Use for add custom widget
- * @author ch
+ * @author sickworm
  *
  */
 public class CustomWidget {

@@ -13,7 +13,7 @@ import android.view.View;
 
 /**
  * Translate Android XML layout resources to Java method block.
- * @author ch
+ * @author sickworm
  *
  */
 public class LayoutTranslator extends BaseTranslator {
@@ -21,6 +21,15 @@ public class LayoutTranslator extends BaseTranslator {
 
     public LayoutTranslator(File file) {
         super(file);
+        init();
+    }
+
+    public LayoutTranslator(String content) {
+        super(content);
+        init();
+    }
+    
+    private void init() {
         addImport(Context.class);
     }
 
@@ -55,6 +64,7 @@ public class LayoutTranslator extends BaseTranslator {
 
     @Override
 	protected void translatingNode(AX2JCodeBlock codeBlock, AX2JNode node) {
+    	// <include> handled in preTranslateNode()
         if (node.getLabelName().equals("include")) {
         	return;
         }

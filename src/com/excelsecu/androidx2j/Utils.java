@@ -19,7 +19,7 @@ import com.excelsecu.androidx2j.Config;
 
 /**
  * Utils of com.excelsecu.axml package
- * @author ch
+ * @author sickworm
  *
  */
 public class Utils {
@@ -140,6 +140,9 @@ public class Utils {
      * @return extension of the file
      */
     public static String getFileExtension(File file) {
+    	if (file == null) {
+    		return "";
+    	}
         String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);

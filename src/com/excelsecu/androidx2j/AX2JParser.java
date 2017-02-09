@@ -1,6 +1,8 @@
 package com.excelsecu.androidx2j;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -11,19 +13,20 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Single Android XML file parse, export the root of AXMLNode.
- * @author ch
+ * @author sickworm
  *
  */
 public class AX2JParser {
     private String path;
+    private String content;
     private Element rootElement;
 
     public AX2JParser(File file) {
         this.path = file.getPath();
     }
 
-    public AX2JParser(String path) {
-        this.path = path;
+    public AX2JParser(String content) {
+    	this.content = content;
     }
 
     public AX2JParser(Element rootElement) {
@@ -37,16 +40,21 @@ public class AX2JParser {
     public AX2JNode parse() {
         AX2JNode rootNode = null;
         try {
-            if (rootElement == null) {
+            if (path != null) {
                 Document document;
                 document = new SAXReader().read(path).getDocument();
+                rootElement = document.getRootElement();
+            } else if (content != null) {
+                Document document;
+				document = new SAXReader().read(new ByteArrayInputStream(content.getBytes("UTF-8")));		//TODO GBK?
                 rootElement = document.getRootElement();
             }
             rootNode = parseElements(null, rootElement);
         } catch (DocumentException e) {
-            e.printStackTrace();
-            throw new AX2JException(AX2JException.AXML_PARSE_ERROR);
-        }
+            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, e.getLocalizedMessage());
+        } catch (UnsupportedEncodingException e) {
+            throw new AX2JException(AX2JException.AXML_PARSE_ERROR, e.getLocalizedMessage());
+		}
         return rootNode;
     }
 

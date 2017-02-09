@@ -24,7 +24,7 @@ public class AX2JNode implements Cloneable {
     @SuppressWarnings("unchecked")
     public AX2JNode(AX2JNode parent, Element element) {
         if (element == null) {
-            throw new AX2JException(AX2JException.PARAMETER_NOT_INITIALIZE,
+            throw new AX2JException(AX2JException.PARAMETER_NOT_INITIALIZED,
                     "AXMLNode constructor Element object is null");
         } else {
             this.element = element;

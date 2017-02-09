@@ -57,8 +57,7 @@ public class Filter {
             }
             reader.close();
             return content;
-        }
-        catch( Exception e ) {
+        } catch( Exception e ) {
             throw new AndroidDocException(AndroidDocException.DOC_READ_ERROR);
         }
     }

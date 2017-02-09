@@ -7,7 +7,7 @@ import static com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode.*;
 
 /**
  * Manage the Java code block of an AX2JNode
- * @author ch
+ * @author sickworm
  *
  */
 public class AX2JCodeBlock {

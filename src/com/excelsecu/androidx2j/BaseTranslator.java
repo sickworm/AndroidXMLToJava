@@ -8,6 +8,7 @@ import java.util.List;
 import org.dom4j.Attribute;
 
 import com.excelsecu.androidx2j.AX2JCodeBlock.AX2JCode;
+import com.sun.istack.internal.Nullable;
 
 import android.graphics.drawable.GradientDrawable;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import android.widget.RelativeLayout;
 
 /**
  * Super class for drawable and layout resources. Translate a AX2JNode to java block.
- * @author ch
+ * @author sickworm
  *
  */
 public class BaseTranslator {
@@ -30,8 +31,13 @@ public class BaseTranslator {
     public BaseTranslator(File file) {
         this.file = file;
         if (Utils.getFileExtension(file).equals("xml")) {
-            init();
+            init(file);
         }
+        AX2JNode.resetOrder();
+    }
+
+    public BaseTranslator(String content) {
+        init(content);
         AX2JNode.resetOrder();
     }
 
@@ -39,11 +45,19 @@ public class BaseTranslator {
         this.root = root;
     }
 
-    protected void init() {
+    protected void init(File file) {
         if (root == null) {
             AX2JParser parser = new AX2JParser(file);
             root = parser.parse();
             root.setObjectName(file.getName().substring(0, file.getName().indexOf('.')) +  "_root");
+        }
+    }
+
+    protected void init(String content) {
+        if (root == null) {
+            AX2JParser parser = new AX2JParser(content);
+            root = parser.parse();
+            root.setObjectName("root");
         }
     }
 
@@ -122,6 +136,11 @@ public class BaseTranslator {
         return topBlock + normalBlock + bottomBlock;
     }
 
+    /**
+     * this method defines the flow of translating XML.
+     * @param node
+     * @return
+     */
     private final AX2JCodeBlock translateNode(AX2JNode node) {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(node.getType(), node.getObjectName());
 
@@ -239,7 +258,11 @@ public class BaseTranslator {
         return root.getType();
     }
 
-    public File getFile() {
+    /**
+     * it will be null when it's called from ContentConvertor
+     * @return
+     */
+    public @Nullable File getFile() {
         return file;
     }
 

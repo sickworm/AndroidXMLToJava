@@ -62,14 +62,17 @@ public class AX2JStyle {
     public static AX2JStyle getStyle(String styleValue) {
         String type = "";
         String styleName = "";
-        //e.g. style="@android:style/Animation.PopupWindow"
+        // e.g. style="@android:style/Animation.PopupWindow"
         if (styleValue.indexOf('/') != -1) {
             type = styleValue.substring(0, styleValue.indexOf('/'));
             styleName = styleValue.substring(styleValue.indexOf('/') + 1);
-        //e.g. parent="android:Animation.PopupWindow"
-        } else {
+        // e.g. <style name="AppBaseTheme" parent="android:Animation.PopupWindow" in style declaration in Android SDK
+        } else if (styleValue.indexOf(':') != -1) {
             type = styleValue.substring(0, styleValue.indexOf(':'));
             styleName = styleValue.substring(styleValue.indexOf(':') + 1);
+        // e.g. style="?mystyle"
+        } else {
+        	// TODO support custom style
         }
 
         AX2JStyle style = null;

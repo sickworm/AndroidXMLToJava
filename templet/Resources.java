@@ -11,7 +11,7 @@ import android.view.View;
 /**
  * Get the resources with int id.
  * This file is used in output directory to manager the resources. No meaning to the AXML transform project.
- * @author ch
+ * @author sickworm
  *
  */
 public class Resources {

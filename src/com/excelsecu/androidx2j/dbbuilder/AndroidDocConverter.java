@@ -20,6 +20,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.excelsecu.androidx2j.AX2JException;
 import com.excelsecu.androidx2j.AX2JNode;
 import com.excelsecu.androidx2j.AX2JParser;
 import com.excelsecu.androidx2j.AX2JStyle;
@@ -32,7 +33,7 @@ import com.excelsecu.androidx2j.Utils;
  * In current test version, this program will run every time to generate the HashMap.<p>
  * The table will storage like "View$set.orientation=setOrientation(int)".
  *
- * @author ch
+ * @author sickworm
  *
  */
 public class AndroidDocConverter {
@@ -278,6 +279,24 @@ public class AndroidDocConverter {
         catch( Exception e ) {
             e.printStackTrace();
             return "";
+        }
+    }
+    
+    /**
+     * initialize the translate resources. Need to be called before translating start.
+     */
+    public static boolean init() {
+        System.out.println("Initializing resources...\n");
+        try {
+            AndroidDocConverter.getMap();
+            AndroidDocConverter.getSystemStyles();
+            AndroidDocConverter.getSystemThemes();
+            return true;
+        } catch (AX2JException e) {
+            System.out.println("Error code: " + e.getErrorCode() + ", " +
+            		": " + e.getLocalizedMessage());
+            System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
+            return false;
         }
     }
 }

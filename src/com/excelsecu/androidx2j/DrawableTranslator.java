@@ -16,7 +16,7 @@ public class DrawableTranslator extends BaseTranslator {
     public String translate() {
         File file = getFile();
         String content = "";
-        if (!Utils.getFileExtension(file).equals("xml")) {
+        if (file != null && !Utils.getFileExtension(file).equals("xml")) {		// it's a .jpg, .png, etc.
             String outPath = file.getPath();
             outPath = Config.ASSETS_OUT_PATH + outPath.substring(outPath.indexOf(File.separatorChar)).replace('-', '_');
             System.out.println("Copying " + file.getPath() + " to\n\t" +
