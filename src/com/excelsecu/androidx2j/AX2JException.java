@@ -4,7 +4,7 @@ public class AX2JException extends RuntimeException {
     private static final long serialVersionUID = 4451465808378003847L;
     /**succeed**/
     public static final int NO_ERROR = 0x00000000;
-    /**can not find the XML file**/
+    /**not a XML file**/
     public static final int AXML_PARSE_ERROR = 0x00000001;
     /**can not find the method relative to the attribute**/
     public static final int METHOD_NOT_FOUND = 0x00000002;

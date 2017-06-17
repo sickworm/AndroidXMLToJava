@@ -86,9 +86,11 @@ public class ProjectConverter {
             if (path.matches(".+layout")) {
                 LayoutOutput(f);
             } else if (path.matches(".+anim")) {
+            	// TODO
             } else if (path.matches(".+drawable.*")) {
                 DrawableOutput(f);
             } else if (path.matches(".+menu.*")) {
+            	// TODO
             }
         }
 

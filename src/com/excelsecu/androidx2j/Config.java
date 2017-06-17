@@ -16,14 +16,17 @@ public class Config {
 
     public static final String RESOURCES_CLASS = "JResources";
     public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
-    public static final String R_CLASS = "JR";
     public static final String RESOURCES_NAME = "resources";
     public static final String UTILS_CLASS = "Utils";
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
     public static final String MAP_OBJECT_NAME = com.excelsecu.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
+    public static final String INDENT = "    ";
     public static final int API_LEVEL = 8;
 
     public static final String DEFAULT_THEME = "@android:Theme";
+    
+    public static String R_CLASS = "JR";
+    public static boolean IS_CONTENT_TRANSLATE = false;
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

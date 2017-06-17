@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ImageView.ScaleType;
 
 public class AX2JClassTranslator {
     public static AX2JAttribute attribute123;
@@ -226,8 +227,8 @@ public class AX2JClassTranslator {
         String newValue = value;
         if (argType.equals(Integer.class)) {
             //dp, px, sp
-            if (value.matches("[0-9.]+dp")) {
-                newValue = value.substring(0, value.length() - 2);
+            if (value.matches("[0-9.]+dp") || value.matches("[0-9.]+dip")) {
+                newValue = value.substring(0, value.indexOf('d'));
                 newValue = "(int) (" + newValue + " * scale + 0.5f)";
                 codeBlock.add("final float scale = context.getResources().getDisplayMetrics().density;\n", AX2JCode.PRIORITY_FIRST);
             } else if (value.matches("[0-9]+px")) {
@@ -244,7 +245,9 @@ public class AX2JClassTranslator {
             else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
                 newValue = value.substring(value.indexOf('/') + 1);
                 newValue = Config.R_CLASS + ".id." + newValue;
-                codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
+                if (!Config.IS_CONTENT_TRANSLATE) {
+                    codeBlock.addImport(Config.PACKAGE_NAME + "." + Config.R_CLASS);
+                }
             }
 
             //string
@@ -426,6 +429,12 @@ public class AX2JClassTranslator {
         else if (argType.equals(TextView.BufferType.class)) {
             newValue = "TextView.BufferType." + value.toUpperCase();
             codeBlock.addImport(TextView.class);
+        }
+        
+        else if (argType.equals(ScaleType.class)) {
+        	newValue = value.toUpperCase();
+        	newValue = "ScaleType." + (newValue.matches("CENTER.+")? newValue.replace("CENTER", "CENTER_") : newValue);
+        	codeBlock.addImport(ScaleType.class);
         }
 
         /** independent part **/

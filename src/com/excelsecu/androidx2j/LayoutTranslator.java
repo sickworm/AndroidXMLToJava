@@ -37,9 +37,13 @@ public class LayoutTranslator extends BaseTranslator {
     protected void preTranslateNode(AX2JCodeBlock codeBlock, AX2JNode node) {
         super.preTranslateNode(codeBlock, node);
 
-        //include label
+        // include label
         String newMethod = "";
         if (node.getLabelName().equals("include")) {
+        	if (Config.IS_CONTENT_TRANSLATE) {
+                codeBlock.add("//" + node.asXML() + "\t//not support\n", AX2JCode.PRIORITY_DEFAULT);
+                return;
+        	}
             String layout = node.attributeValue("layout");
             layout = layout.substring(layout.indexOf('/') + 1);
             newMethod = "View " + node.getObjectName() + " = " +
