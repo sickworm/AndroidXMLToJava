@@ -1,7 +1,10 @@
 Android XML to Java code. Still on Development.
 
+2017/6/17
+Add GUI, add content translate function.
+
 2015/3/27
-Fix lots of bugs due to refactor, remove trailing spaces
+Fix lots of bugs due to refactor, remove trailing spaces.
 
 2015/3/12
 Refactor finished.
@@ -19,10 +22,10 @@ Support parts of shape in drawable.
 Support drawable selector, drawable picture.java not generated yet.
 
 2015/1/21:
-Support drawable picture, fix some value error
+Support drawable picture, fix some value error.
 
 2015/1/20:
-Support margin, gravity, padding, inputType, fix some error
+Support margin, gravity, padding, inputType, fix some error.
 
 2015/1/19:
 Improve behavior, support RelativeLayout rule, weight, color, and AXMLResources.getLayout() feature.
