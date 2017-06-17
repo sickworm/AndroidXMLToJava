@@ -1,4 +1,4 @@
-package com.excelsecu.androidx2j.gui;
+package com.sickworm.androidx2j.gui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.excelsecu.androidx2j.ContentConverter;
+import com.sickworm.androidx2j.ContentConverter;
 
 public class ScreenFrame extends JFrame {
 	private JTextField srcPathField = new JTextField();

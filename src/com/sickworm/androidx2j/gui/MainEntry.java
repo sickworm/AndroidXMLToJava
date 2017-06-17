@@ -1,4 +1,4 @@
-package com.excelsecu.androidx2j.gui;
+package com.sickworm.androidx2j.gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import com.excelsecu.androidx2j.ContentConverter;
+import com.sickworm.androidx2j.ContentConverter;
 
 public class MainEntry {
 	

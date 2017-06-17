@@ -1,8 +1,8 @@
-package com.excelsecu.androidx2j;
+package com.sickworm.androidx2j;
 
 import java.util.List;
 
-import com.excelsecu.androidx2j.dbbuilder.AndroidDocConverter;
+import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
 
 /**
  * Use to convert a XML block. To convert a whole project, see ProjectConverter
