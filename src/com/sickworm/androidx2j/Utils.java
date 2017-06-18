@@ -17,11 +17,6 @@ import java.util.Scanner;
 
 import com.sickworm.androidx2j.Config;
 
-/**
- * Utils of com.excelsecu.axml package
- * @author sickworm
- *
- */
 public class Utils {
 
     /**
@@ -172,7 +167,7 @@ public class Utils {
      * @param file the origin XML file
      * @param content Java code translated from XML file
      */
-    public static String buildJavaFile(File file, String content, List<String> importList, List<String> idList) {
+    public static String generateJavaClass(File file, String content, List<String> importList, List<String> idList) {
         String subPath = file.getPath();
         subPath = subPath.substring(0, subPath.lastIndexOf(File.separator));
         subPath = subPath.substring(subPath.lastIndexOf(File.separator) + 1);
@@ -225,10 +220,10 @@ public class Utils {
                 throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
             }
 
-            title += "\n\tpublic static final " + returnClass + " get(Context context) {\n";
-            content = "\t\t" + content.replace("\n", "\n\t\t") +
+            title += "\n" + Config.INDENT + "public static final " + returnClass + " get(Context context) {\n";
+            content = Config.INDENT + Config.INDENT + content.replace("\n", "\n" + Config.INDENT + Config.INDENT) +
                     "return " + returnObject + ";\n";
-            return title + content + "\t}\n}";
+            return title + content + Config.INDENT + "}\n}";
         } else {
             //build a map
             String fileName = file.getPath();
@@ -249,14 +244,14 @@ public class Utils {
                 rClass = "string";
                 break;
             }
-            String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n\t{\n";
+            String map = "\npublic static final HashMap<Integer, " + type + "> map = new HashMap<Integer, " + type + ">() {\n " + Config.INDENT + "{\n";
             for (String id : idList) {
-                map += "\t\tput(" + Config.R_CLASS + "." + rClass + "." + id + ", " + id + ");\n";
+                map += Config.INDENT + Config.INDENT + "put(" + Config.R_CLASS + "." + rClass + "." + id + ", " + id + ");\n";
             }
-            map += "\t}\n};\n";
+            map += Config.INDENT + "}\n};\n";
             content = content + map;
-            content = "\t" + content.replace("\n", "\n\t");
-            content = content.substring(0, content.lastIndexOf('\t'));
+            content = Config.INDENT + content.replace("\n", "\n" + Config.INDENT);
+            content = content.substring(0, content.lastIndexOf(Config.INDENT));
             return title + content + "}";
         }
     }

@@ -58,7 +58,7 @@ public class SelectorTranslator extends BaseTranslator {
             } else {
                 colorList += ", " + color;
             }
-            stateSetList += "\n\t{" + stateSet + "},";
+            stateSetList += "\n" + Config.INDENT + "{" + stateSet + "},";
         }
         //remove comma
         stateSetList = stateSetList.substring(0, stateSetList.length() - 1);

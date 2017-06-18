@@ -225,8 +225,9 @@ public class AX2JClassTranslator {
         String name = attribute.getQualifiedName();
 
         String newValue = value;
+        // int
         if (argType.equals(Integer.class)) {
-            //dp, px, sp
+            // dp, px, sp
             if (value.matches("[0-9.]+dp") || value.matches("[0-9.]+dip")) {
                 newValue = value.substring(0, value.indexOf('d'));
                 newValue = "(int) (" + newValue + " * scale + 0.5f)";
@@ -241,7 +242,7 @@ public class AX2JClassTranslator {
                 codeBlock.addImport(ViewGroup.class);
             }
 
-            //id
+            // id
             else if (value.startsWith("@+id/") || value.startsWith("@id/")) {
                 newValue = value.substring(value.indexOf('/') + 1);
                 newValue = Config.R_CLASS + ".id." + newValue;
@@ -250,7 +251,7 @@ public class AX2JClassTranslator {
                 }
             }
 
-            //string
+            // string
             else if (value.contains("@string/")) {
                 newValue = value.substring(value.indexOf('/') + 1);
                 newValue = Config.R_CLASS + ".string." + newValue;
@@ -260,7 +261,7 @@ public class AX2JClassTranslator {
                 newValue = "\"" + value + "\"";
             }
 
-            //color
+            // color
             else if (value.matches("#[0-9a-fA-F]+")) {
                 if (value.length() == 4) {
                     newValue = "#" + value.charAt(1) + '0' + value.charAt(2) + '0' +
@@ -284,33 +285,40 @@ public class AX2JClassTranslator {
                 newValue = Config.RESOURCES_NAME + ".getColor(android.R.color.transparent)";
             }
 
-            //visibility
+            // dimen
+	        else if (value.matches("@dimen/.+")) {
+	            newValue = value.substring(value.indexOf('/') + 1);
+	            newValue = Config.R_CLASS + ".dimen." + newValue;
+	            newValue = "(int) " + Config.RESOURCES_NAME + ".getDimension(" + newValue + ")";
+	        }
+
+            // visibility
             else if (value.equals("gone") || value.equals("visibile") ||
                     value.equals("invisibile")) {
                 newValue = "View." + value.toUpperCase();
                 codeBlock.addImport(View.class);
             }
 
-            //orientation
+            // orientation
             else if (value.equals("vertical")) {
                 newValue = "LinearLayout.VERTICAL";
             } else if (value.equals("horizontal")) {
                 newValue = "LinearLayout.HORIZONTAL";
             }
 
-            //gravity
+            // gravity
             else if (name.equals("android:gravity") ||
                     name.equals("android:layout_gravity")) {
                 newValue = Utils.prefixParams(value, "Gravity");
                 codeBlock.addImport(Gravity.class);
             }
 
-            //margin
+            // margin
             else if (name.matches("android:layout_margin(Left)|(Top)|(Right)|(Bottom)")) {
                 codeBlock.addImport(ViewGroup.class);
             }
 
-            //text
+            // text
             else if (name.equals("android:textAppearance")) {
             	String style = AX2JStyle.getStyle(value).name;
             	style = style.replace('.', '_');
@@ -327,7 +335,7 @@ public class AX2JClassTranslator {
                 codeBlock.addImport(InputType.class);
             }
 
-            //shape
+            // shape
             else if (name.equals("android:type")) {
                 newValue = "GradientDrawable." + value.toUpperCase() + "_GRADIENT";
             } else if (name.equals("android:shape")) {
@@ -342,7 +350,7 @@ public class AX2JClassTranslator {
             }
 
             /** independent part **/
-            //RelativeLayout rule
+            // RelativeLayout rule
             if (Utils.findRule(name) != null) {
             	if (value.equals("true")) {
                 	newValue = "RelativeLayout.TRUE";
@@ -352,8 +360,18 @@ public class AX2JClassTranslator {
                 codeBlock.addImport(RelativeLayout.class);
             }
         }
+        
+        // float
+        else if (argType.equals(Float.class)) {
+            // dimen
+            if (value.matches("@dimen/.+")) {
+                newValue = value.substring(value.indexOf('/') + 1);
+                newValue = Config.R_CLASS + ".dimen." + newValue;
+                newValue = Config.RESOURCES_NAME + ".getDimension(" + newValue + ")";
+            }
+        }
 
-        //CharSequence & String
+        // CharSequence & String
         else if (argType.equals(CharSequence.class) || argType.equals(String.class)) {
             newValue = "\"" + value + "\"";
         }

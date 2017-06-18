@@ -46,6 +46,10 @@ public class ProjectConverter {
     }
     
     public static void translateProject(String srcPath, String desPath) {
+        Config.R_CLASS = "JR";
+        Config.RESOURCES_NAME = "resources";
+        Config.IS_CONTENT_TRANSLATE = false;
+        
     	if (!AndroidDocConverter.init()) {
     		return;
     	}
@@ -113,7 +117,7 @@ public class ProjectConverter {
                 try {
                     LayoutTranslator translator = new LayoutTranslator(f);
                     String content = translator.translate();
-                    content = Utils.buildJavaFile(f, content, translator.getImportList(), layoutRList);
+                    content = Utils.generateJavaClass(f, content, translator.getImportList(), layoutRList);
                     Utils.generateFile(f, content);
                     layoutRList.add(Utils.getClassName(f));
                 } catch (AX2JException e) {
@@ -130,8 +134,8 @@ public class ProjectConverter {
     private static void addCustomWidget() {
         //for now it don't support customize settings
         System.out.println("Adding custom widget...");
-        CustomWidget.addCustomWidget("com.excelsecu.mgrtool.view.ESDropdownList",
-                "com.excelsecu.mgrtool.view.ESDropdownList", FrameLayout.class,
+        CustomWidget.addCustomWidget("com.sickworm.mgrtool.view.ESDropdownList",
+                "com.sickworm.mgrtool.view.ESDropdownList", FrameLayout.class,
                 "context");
         CustomWidget.addCustomWidget("com.safeview.safeEditText",
                 "com.safeview.safeEditText", EditText.class,
@@ -196,7 +200,7 @@ public class ProjectConverter {
 
             //package name can't use '-'
             File outFile = new File(f.getPath().replace('-', '_'));
-            content = Utils.buildJavaFile(outFile, content, translator.getImportList(), drawableRList);
+            content = Utils.generateJavaClass(outFile, content, translator.getImportList(), drawableRList);
             Utils.generateFile(outFile, content);
             String dpi = f.getPath();
             dpi = dpi.substring(0, dpi.lastIndexOf(File.separatorChar));
@@ -211,12 +215,12 @@ public class ProjectConverter {
         content += "package " + Config.PACKAGE_NAME + ";\n\npublic final class " + Config.R_CLASS + " {\n";
         for (int i =0; i < LIST_ORDER.length; i++) {
             List<String> list = LIST_ORDER_LIST.get(i);
-            content += "\tpublic static final class " + LIST_ORDER[i] + "{\n";
+            content += Config.INDENT + "public static final class " + LIST_ORDER[i] + "{\n";
             for (int j = 0; j < list.size(); j++) {
-                content += "\t\tpublic static final int " + list.get(j) +
+                content += Config.INDENT + Config.INDENT + "public static final int " + list.get(j) +
                         " = 0x" + Integer.toHexString(Config.BASE + (i * 0x10000) + j) + ";\n";
             }
-            content += "\t}\n\n";
+            content += Config.INDENT + "}\n\n";
         }
         content += "}";
 
@@ -235,7 +239,7 @@ public class ProjectConverter {
 
     private static void GenerateString() {
         File file = new File("res/values/strings.xml");
-        stringContent = Utils.buildJavaFile(file, stringContent, null, stringRList);
+        stringContent = Utils.generateJavaClass(file, stringContent, null, stringRList);
         Utils.generateFile(file, stringContent);
         System.out.println();
     }
@@ -244,7 +248,7 @@ public class ProjectConverter {
         List<String> importList = new ArrayList<String>();
         importList.add(Color.class.getName());
         File file = new File("res/values/colors.xml");
-        colorContent = Utils.buildJavaFile(file, colorContent, importList, colorRList);
+        colorContent = Utils.generateJavaClass(file, colorContent, importList, colorRList);
         Utils.generateFile(file, colorContent);
         System.out.println();
     }
@@ -274,7 +278,8 @@ public class ProjectConverter {
             for (int i = 0; i < Config.DPI_DPI_FOLDER_LIST.length; i++) {
                 if (dpiLevel.equals(Config.DPI_DPI_FOLDER_LIST[i])) {
                     dpi = dpi.replace('-', '_');
-                    dpiCaseList[i] += "\t\tcase " + Config.R_CLASS + ".drawable." + id + ":\n\t\t\treturn " +
+                    dpiCaseList[i] += Config.INDENT + Config.INDENT + "case " + Config.R_CLASS + ".drawable." + id + ":\n" +
+                    		Config.INDENT + Config.INDENT + Config.INDENT + "return " +
                             Config.PACKAGE_NAME + "." + dpi + ".get(context);\n";
                     break;
                 }
@@ -298,7 +303,7 @@ public class ProjectConverter {
 
         String layoutCaseList = "";
         for(String id : layoutRList) {
-            layoutCaseList += "\t\tcase " + Config.R_CLASS + ".layout." + id + ":\n\t\t\treturn " +
+            layoutCaseList += Config.INDENT + Config.INDENT + "case " + Config.R_CLASS + ".layout." + id + ":\n" + Config.INDENT + Config.INDENT + Config.INDENT + "return " +
                     Config.PACKAGE_NAME + ".layout." + id + ".get(context);\n";
         }
         layouts = layouts.replace(Config.TEMPLET_LAYOUT_BLOCK, layoutCaseList);

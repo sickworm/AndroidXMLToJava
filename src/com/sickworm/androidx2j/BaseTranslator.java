@@ -175,7 +175,7 @@ public class BaseTranslator {
         while (true) {
             AX2JClassTranslator translator = map.get(type);
             if (translator == null) {
-                codeBlock.add("//" + attribute.asXML() + "\t//not support\n", priority);
+                codeBlock.add("//" + attribute.asXML() + Config.INDENT + "//not support\n", priority);
                 break;
             } else {
                 try {
@@ -195,7 +195,7 @@ public class BaseTranslator {
         while (true) {
             AX2JClassTranslator translator = map.get(type);
             if (translator == null) {
-                codeBlock.add("//" + attribute.asXML() + "\t//not support\n");
+                codeBlock.add("//" + attribute.asXML() + Config.INDENT + "//not support\n");
                 break;
             } else {
                 try {

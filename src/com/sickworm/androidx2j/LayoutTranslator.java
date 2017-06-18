@@ -41,7 +41,7 @@ public class LayoutTranslator extends BaseTranslator {
         String newMethod = "";
         if (node.getLabelName().equals("include")) {
         	if (Config.IS_CONTENT_TRANSLATE) {
-                codeBlock.add("//" + node.asXML() + "\t//not support\n", AX2JCode.PRIORITY_DEFAULT);
+                codeBlock.add("//" + node.asXML() + Config.INDENT + "//not support\n", AX2JCode.PRIORITY_DEFAULT);
                 return;
         	}
             String layout = node.attributeValue("layout");
@@ -60,7 +60,7 @@ public class LayoutTranslator extends BaseTranslator {
         String parentName = getParentType(node).getSimpleName();
         String params = parentName + ".LayoutParams.WRAP_CONTENT";
         String paramsMethod = parentName + ".LayoutParams " +
-        		getLayoutParamsName(node.getObjectName()) + " =\n\t\tnew " + parentName +
+        		getLayoutParamsName(node.getObjectName()) + " =\n" + Config.INDENT + Config.INDENT + "new " + parentName +
         		".LayoutParams(" + params + ", " + params + ");\n";
         codeBlock.add(paramsMethod, AX2JCode.PRIORITY_SECOND);
         addImport(getParentType(node));

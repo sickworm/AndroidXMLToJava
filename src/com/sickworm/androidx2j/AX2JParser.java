@@ -100,13 +100,13 @@ public class AX2JParser {
         String tab = "";
         int i = layer;
         while(i > 0) {
-            tab += "\t";
+            tab += Config.INDENT;
             i--;
         }
         System.out.println(tab + "<" + rootNode.getLabelName() + ">");
         List<Attribute> attrList = rootNode.getAttributes();
         for (Attribute a : attrList) {
-            System.out.println(tab + "\t" + a.getQualifiedName() + " = " + a.getValue());
+            System.out.println(tab + Config.INDENT + a.getQualifiedName() + " = " + a.getValue());
         }
 
         List<AX2JNode> children = rootNode.getChildren();

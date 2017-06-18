@@ -8,7 +8,8 @@ public class Config {
     public static final String PROJECT_PATH = "project/";
     public static final String PROJECT_RES_PATH = PROJECT_PATH + "res/";
     public static final String PROJECT_OUT_ROOT = "project_out/";
-    public static final String PACKAGE_NAME = "com.excelsecu.ax2j.test";
+    // TODO configurable
+    public static String PACKAGE_NAME = "com.sickworm.ax2j.test";
     public static final String JAVA_OUT_PATH = PROJECT_OUT_ROOT + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
     public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.sickworm.androidx2j.dbbuilder.Config.CLASSES_LIST;
@@ -16,17 +17,16 @@ public class Config {
 
     public static final String RESOURCES_CLASS = "JResources";
     public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
-    public static final String RESOURCES_NAME = "resources";
     public static final String UTILS_CLASS = "Utils";
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
     public static final String MAP_OBJECT_NAME = com.sickworm.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
-    public static final String INDENT = "    ";
     public static final int API_LEVEL = 8;
 
     public static final String DEFAULT_THEME = "@android:Theme";
-    
     public static String R_CLASS = "JR";
+    public static String RESOURCES_NAME = "resources";
     public static boolean IS_CONTENT_TRANSLATE = false;
+    public static final String INDENT = "    ";
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;
