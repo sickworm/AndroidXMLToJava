@@ -42,10 +42,10 @@ public class ProjectConverter {
     private static String colorContent = "";
 
     public static void main(String[] argv) {
-    	translateProject(Config.PROJECT_RES_PATH, Config.PROJECT_OUT_ROOT);
+    	translateProject();
     }
     
-    public static void translateProject(String srcPath, String desPath) {
+    public static void translateProject() {
         Config.R_CLASS = "JR";
         Config.RESOURCES_NAME = "resources";
         Config.IS_CONTENT_TRANSLATE = false;
@@ -57,11 +57,11 @@ public class ProjectConverter {
         AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
         addCustomWidget();
 
-        File res = new File(srcPath);
+        File res = new File(Config.getProjectResPath());
         if (!res.isDirectory()) {
             throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
         }
-        File resOut = new File(desPath);
+        File resOut = new File(Config.PROJECT_OUT_PATH);
         if (resOut.exists()) {
             Utils.deleteDir(resOut);
         }
@@ -103,7 +103,7 @@ public class ProjectConverter {
         GenerateColor();
         GenerateManager();
         GenerateUtils();
-        System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_ROOT).getAbsolutePath());
+        System.out.println("Done! Output path: " + new File(Config.PROJECT_OUT_PATH).getAbsolutePath());
     }
 
     private static void LayoutOutput(File dir) {
@@ -224,7 +224,7 @@ public class ProjectConverter {
         }
         content += "}";
 
-        String rPath = Config.JAVA_OUT_PATH + Config.R_CLASS + ".java";
+        String rPath = Config.getJavaOutPath() + Config.R_CLASS + ".java";
         System.out.println("Generating " + new File(rPath).getPath() + "...");
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(rPath));
@@ -255,16 +255,16 @@ public class ProjectConverter {
 
     private static void GenerateManager() {
         //Resources.java
-        File resourcesFile = new File(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java");
+        File resourcesFile = new File(Config.getJavaOutPath() + Config.RESOURCES_CLASS + ".java");
         System.out.println("Generating " + resourcesFile.getPath() + "...");
         String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_CLASS + ".java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         resources = resources.replace(Config.TEMPLAT_RESOURCES_CLASS, Config.RESOURCES_CLASS);
-        Utils.writeFile(Config.JAVA_OUT_PATH + Config.RESOURCES_CLASS + ".java", resources);
+        Utils.writeFile(Config.getJavaOutPath() + Config.RESOURCES_CLASS + ".java", resources);
         System.out.println();
 
         //drawables.java
-        File drawablesFile = new File(Config.JAVA_OUT_PATH + "drawables.java");
+        File drawablesFile = new File(Config.getJavaOutPath() + "drawables.java");
         System.out.println("Generating " + drawablesFile.getPath() + "...");
 
         String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
@@ -291,11 +291,11 @@ public class ProjectConverter {
         for (int i = 0; i < Config.TEMPLET_DPI_BLOCK_LIST.length; i++) {
             drawables = drawables.replace(Config.TEMPLET_DPI_BLOCK_LIST[i], dpiCaseList[i]);
         }
-        Utils.writeFile(Config.JAVA_OUT_PATH + "drawables.java", drawables);
+        Utils.writeFile(Config.getJavaOutPath() + "drawables.java", drawables);
         System.out.println();
 
         //layouts.java
-        File layoutsFile = new File(Config.JAVA_OUT_PATH + "layouts.java");
+        File layoutsFile = new File(Config.getJavaOutPath() + "layouts.java");
         System.out.println("Generating " + layoutsFile.getPath() + "...");
 
         String layouts = Utils.readFile("templet/layouts.java");
@@ -312,7 +312,7 @@ public class ProjectConverter {
     }
 
     private static void GenerateUtils() {
-        File utilsFile = new File(Config.JAVA_OUT_PATH + Config.UTILS_CLASS + ".java");
+        File utilsFile = new File(Config.getJavaOutPath() + Config.UTILS_CLASS + ".java");
         String content = Utils.readFile("templet/" + Config.TEMPLAT_UTILS_CLASS + ".java");
         content = content.replace(Config.TEMPLAT_UTILS_CLASS, Config.UTILS_CLASS);
         content = content.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);

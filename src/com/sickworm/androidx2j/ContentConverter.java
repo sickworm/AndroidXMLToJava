@@ -20,7 +20,7 @@ public class ContentConverter {
 	 * @param xmlString
 	 * @return
 	 */
-	public String convertXMLToJavaCode(String xmlString) {
+	public static String convertXMLToJavaCode(String xmlString) {
 		Config.IS_CONTENT_TRANSLATE = true;
 		Config.R_CLASS = "R";
 		Config.RESOURCES_NAME = "getResources()";

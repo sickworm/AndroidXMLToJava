@@ -5,13 +5,6 @@ import java.util.HashMap;
 import org.dom4j.Namespace;
 
 public class Config {
-    public static final String PROJECT_PATH = "project/";
-    public static final String PROJECT_RES_PATH = PROJECT_PATH + "res/";
-    public static final String PROJECT_OUT_ROOT = "project_out/";
-    // TODO configurable
-    public static String PACKAGE_NAME = "com.sickworm.ax2j.test";
-    public static final String JAVA_OUT_PATH = PROJECT_OUT_ROOT + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
-    public static final String ASSETS_OUT_PATH = PROJECT_OUT_ROOT + "assets/";
     public static final Class<?>[] CLASSES_LIST = com.sickworm.androidx2j.dbbuilder.Config.CLASSES_LIST;
     public static final String ENCODE = com.sickworm.androidx2j.dbbuilder.Config.ENCODE;
 
@@ -23,10 +16,23 @@ public class Config {
     public static final int API_LEVEL = 8;
 
     public static final String DEFAULT_THEME = "@android:Theme";
-    public static String R_CLASS = "JR";
-    public static String RESOURCES_NAME = "resources";
+    public static String R_CLASS = "unset";
+    public static String RESOURCES_NAME = "unset";
     public static boolean IS_CONTENT_TRANSLATE = false;
-    public static final String INDENT = "    ";
+    public static String INDENT = "    ";
+    public static String PACKAGE_NAME = "com.sickworm.ax2j";
+    public static String PROJECT_OUT_PATH = "project_out/";
+    public static String PROJECT_PATH = "project/";
+    
+    public static String getJavaOutPath() {
+    	return PROJECT_OUT_PATH + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
+    }
+    public static String getAssetsOutPath() {
+    	return PROJECT_OUT_PATH + "assets/";
+    }
+    public static String getProjectResPath() {
+        return PROJECT_PATH + "res/";
+    }
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

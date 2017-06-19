@@ -17,8 +17,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
+import com.sickworm.androidx2j.Config;
 import com.sickworm.androidx2j.ContentConverter;
+import com.sickworm.androidx2j.ProjectConverter;
 
 public class MainEntry {
 	
@@ -57,10 +61,9 @@ public class MainEntry {
                     srcPanel.setLayout(gbl_srcPanel);
                     
                     JButton srcPathBrowseButton = new JButton("Browse");
-                    srcPathBrowseButton.setToolTipText("Hi");
                     
                     final JTextField srcPathTextField = new JTextField();
-                    srcPathTextField.setToolTipText("Hey");
+                    srcPathTextField.setToolTipText("Project path to be translated");
                     srcPathTextField.setColumns(30);
                     GridBagConstraints gbc_srcPathTextField = new GridBagConstraints();
                     gbc_srcPathTextField.fill = GridBagConstraints.BOTH;
@@ -88,6 +91,7 @@ public class MainEntry {
                     srcPanel.add(srcScrollPane, gbc_srcScrollPane);
                     
                     final JTextArea srcTextArea = new JTextArea();
+                    srcTextArea.setToolTipText("XML block to be translated");
                     srcScrollPane.setViewportView(srcTextArea);
                     
                     
@@ -108,14 +112,9 @@ public class MainEntry {
                     
                     
                     JButton destPathBrowseButton = new JButton("Browse");
-                    destPathBrowseButton.setToolTipText("Hi");
-                    destPathBrowseButton.addActionListener(new ActionListener() {
-                    	public void actionPerformed(ActionEvent e) {
-                    	}
-                    });
                     
                     final JTextField destPathTextField = new JTextField();
-                    destPathTextField.setToolTipText("Hey");
+                    destPathTextField.setToolTipText("Project translation output path");
                     destPathTextField.setColumns(30);
                     GridBagConstraints gbc_destPathTextField = new GridBagConstraints();
                     gbc_destPathTextField.fill = GridBagConstraints.BOTH;
@@ -143,6 +142,7 @@ public class MainEntry {
                     destPanel.add(destScrollPane, gbc_destScrollPane);
                     
                     final JTextArea destTextArea = new JTextArea();
+                    destTextArea.setToolTipText("JAVA code translated from XML block");
                     destScrollPane.setViewportView(destTextArea);
                     
                     JPanel actionPanel = new JPanel();
@@ -174,6 +174,8 @@ public class MainEntry {
             				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             				if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
             					srcPathTextField.setText(chooser.getSelectedFile().toString());
+    							// current workspace is project translate
+            					Config.IS_CONTENT_TRANSLATE = false;
             				}
             			}
             		});
@@ -185,16 +187,43 @@ public class MainEntry {
             				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             				if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
             					destPathTextField.setText(chooser.getSelectedFile().toString());
+    							// current workspace is project translate
+            					Config.IS_CONTENT_TRANSLATE = false;
             				}
             			}
             		});
             		
             		btnTranslateButton.addActionListener(new ActionListener() {
             			public void actionPerformed(ActionEvent e) {
-            				String result = new ContentConverter().convertXMLToJavaCode(srcTextArea.getText());
-            				destTextArea.setText(result);
+            				if (Config.IS_CONTENT_TRANSLATE = false) {
+                				String srcText = srcTextArea.getText();
+                				if (srcText.isEmpty()) {
+                					return;
+                				}
+                				String result = ContentConverter.convertXMLToJavaCode(srcTextArea.getText());
+                				destTextArea.setText(result);
+            				} else {
+            					Config.PROJECT_PATH = srcPathTextField.getText();
+            					if (!Config.PROJECT_PATH.endsWith("/")) {
+            						Config.PROJECT_PATH += "/";
+            					}
+            					Config.PROJECT_OUT_PATH = destPathTextField.getText();
+            					if (!Config.PROJECT_OUT_PATH.endsWith("/")) {
+            						Config.PROJECT_OUT_PATH += "/";
+            					}
+            					ProjectConverter.translateProject();
+            				}
             			}
             		});
+            		
+            		srcTextArea.addCaretListener(new CaretListener() {
+						
+						@Override
+						public void caretUpdate(CaretEvent arg0) {
+							// current workspace is content translate
+							Config.IS_CONTENT_TRANSLATE = true;
+						}
+					});
             		
                     window.setVisible(true);
                 } catch (Exception e) {

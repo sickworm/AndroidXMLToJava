@@ -105,7 +105,7 @@ public class Utils {
         subPath = subPath.substring(subPath.indexOf("res/") + "res/".length());
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.indexOf('.')) + ".java";
-        String path = Config.JAVA_OUT_PATH + subPath;
+        String path = Config.getJavaOutPath() + subPath;
         int index = path.lastIndexOf('/');
         if (index == -1) {
             throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
