@@ -10,10 +10,6 @@ import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
  *
  */
 public class ContentConverter {
-	static {
-		AndroidDocConverter.init();
-        AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
-	}
 
 	/**
 	 * text mode
@@ -24,6 +20,12 @@ public class ContentConverter {
 		Config.IS_CONTENT_TRANSLATE = true;
 		Config.R_CLASS = "R";
 		Config.RESOURCES_NAME = "getResources()";
+		
+    	if (!AndroidDocConverter.init()) {
+    		return "Android translate resources initialize failed";
+    	}
+
+        AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
 		
 		try {
 			LayoutTranslator translator = new LayoutTranslator(xmlString);
@@ -37,11 +39,11 @@ public class ContentConverter {
 			return importListBuilder.toString() + "\n\n" + buildJavaMethod(content);
 		} catch (Exception e) {
 			e.printStackTrace();
-			String errorString = "Parse XML segment failed. Exception:\n\n" + e.getLocalizedMessage() + "\n";
-			StackTraceElement[] elements = e.getStackTrace();
-			for (StackTraceElement element : elements) {
-				errorString += element.toString() + "\n";
-			}
+			String errorString = "Parse XML segment failed. Exception:\n" + e.getLocalizedMessage() + "\n";
+//			StackTraceElement[] elements = e.getStackTrace();
+//			for (StackTraceElement element : elements) {
+//				errorString += element.toString() + "\n";
+//			}
 			return errorString;
 		}
 	}

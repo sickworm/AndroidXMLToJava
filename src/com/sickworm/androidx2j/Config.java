@@ -21,8 +21,8 @@ public class Config {
     public static boolean IS_CONTENT_TRANSLATE = false;
     public static String INDENT = "    ";
     public static String PACKAGE_NAME = "com.sickworm.ax2j";
-    public static String PROJECT_OUT_PATH = "project_out/";
-    public static String PROJECT_PATH = "project/";
+    public static String PROJECT_OUT_PATH = "unset";
+    public static String PROJECT_PATH = "unset";
     
     public static String getJavaOutPath() {
     	return PROJECT_OUT_PATH + "src/" + PACKAGE_NAME.replace('.', '/') + "/";

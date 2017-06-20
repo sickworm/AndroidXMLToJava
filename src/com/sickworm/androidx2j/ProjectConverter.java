@@ -41,9 +41,6 @@ public class ProjectConverter {
     private static String stringContent = "";
     private static String colorContent = "";
 
-    public static void main(String[] argv) {
-    	translateProject();
-    }
     
     public static void translateProject() {
         Config.R_CLASS = "JR";

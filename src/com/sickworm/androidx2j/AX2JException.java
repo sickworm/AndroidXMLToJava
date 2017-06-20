@@ -52,7 +52,7 @@ public class AX2JException extends RuntimeException {
     
     public static String getDetails(int errorCode) {
     	switch(errorCode) {case NO_ERROR: return "succeed";
-    	case AXML_PARSE_ERROR: return "xml format error";
+    	case AXML_PARSE_ERROR: return "XML format invalid";
     	case METHOD_NOT_FOUND: return "no such method";
     	case CLASS_NOT_FOUND: return "no such class";
     	case ATTRIBUTE_NOT_FOUND: return "no such attribute";
@@ -63,8 +63,8 @@ public class AX2JException extends RuntimeException {
     	case PARAMETER_NOT_INITIALIZED: return "parameter not initialized";
     	case FILE_BUILD_ERROR: return "file build error";
     	case ATTRIBUTE_VALUE_ERROR: return "attribute value error";
-    	case DAT_SYSTEM_STYLE_ERROR: return "style data file format error";
-    	case DAT_SYSTEM_THEME_ERROR: return "theme data file format error";
+    	case DAT_SYSTEM_STYLE_ERROR: return "style data file format invalid";
+    	case DAT_SYSTEM_THEME_ERROR: return "theme data file format invalid";
     	default: return "unknown error";
     	}
     }

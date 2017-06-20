@@ -40,8 +40,13 @@ public class AndroidDocConverter {
     private static AX2JTranslatorMap attrToMethodMap = AX2JTranslatorMap.getInstance();
     private static HashMap<String, AX2JStyle> systemStylesMap = new LinkedHashMap<String, AX2JStyle>();
     private static HashMap<String, AX2JStyle> systemThemesMap = new LinkedHashMap<String, AX2JStyle>();
+    private static boolean hasInitialize = false;
 
     public static void main(String[] argv) throws DocumentException {
+    	generateTranslateData();
+    }
+    
+    private static void generateTranslateData() throws DocumentException {
         System.out.println("Prasering Android documents...\n");
 
         String[] listPage = listPage();
@@ -76,7 +81,7 @@ public class AndroidDocConverter {
         buildSystem(Config.SYSTEM_THEMES_PATH, systemThemesMap);
 
         System.out.println("Generating data.dat...\n");
-        generateDat();
+        generateDataFile();
         System.out.println("Done!");
     }
 
@@ -111,7 +116,7 @@ public class AndroidDocConverter {
         }
     }
 
-    private static void generateDat() {
+    private static void generateDataFile() {
         File dat = new File(Config.DAT_PATH);
         if (dat.isFile()) {
             dat.delete();
@@ -286,15 +291,19 @@ public class AndroidDocConverter {
      * initialize the translate resources. Need to be called before translating start.
      */
     public static boolean init() {
+    	if (hasInitialize) {
+    		System.out.print("Translate resources has initialized.");
+    		return true;
+    	}
         System.out.println("Initializing resources...\n");
         try {
             AndroidDocConverter.getMap();
             AndroidDocConverter.getSystemStyles();
             AndroidDocConverter.getSystemThemes();
+            hasInitialize = true;
             return true;
         } catch (AX2JException e) {
-            System.out.println("Error code: " + e.getErrorCode() + ", " +
-            		": " + e.getLocalizedMessage());
+            System.out.println("Error code: " + e.getErrorCode() + ", " + ": " + e.getLocalizedMessage());
             System.out.println("Failed to parse translate table, please check data.dat. Redownload it if nessesary.");
             return false;
         }

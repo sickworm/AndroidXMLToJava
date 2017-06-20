@@ -195,7 +195,7 @@ public class MainEntry {
             		
             		btnTranslateButton.addActionListener(new ActionListener() {
             			public void actionPerformed(ActionEvent e) {
-            				if (Config.IS_CONTENT_TRANSLATE = false) {
+            				if (Config.IS_CONTENT_TRANSLATE) {
                 				String srcText = srcTextArea.getText();
                 				if (srcText.isEmpty()) {
                 					return;
