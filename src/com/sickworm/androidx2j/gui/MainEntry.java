@@ -25,7 +25,7 @@ import com.sickworm.androidx2j.ContentConverter;
 import com.sickworm.androidx2j.ProjectConverter;
 
 public class MainEntry {
-	
+    
     /**
      * Launch the application.
      */
@@ -169,62 +169,62 @@ public class MainEntry {
                     
 
                     srcPathBrowseButton.addActionListener(new ActionListener() {
-            			public void actionPerformed(ActionEvent e) {
-            				JFileChooser chooser=new JFileChooser();
-            				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            				if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
-            					srcPathTextField.setText(chooser.getSelectedFile().toString());
-    							// current workspace is project translate
-            					Config.IS_CONTENT_TRANSLATE = false;
-            				}
-            			}
-            		});
+                        public void actionPerformed(ActionEvent e) {
+                            JFileChooser chooser=new JFileChooser();
+                            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                            if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                                srcPathTextField.setText(chooser.getSelectedFile().toString());
+                                // current workspace is project translate
+                                Config.IS_CONTENT_TRANSLATE = false;
+                            }
+                        }
+                    });
 
-            		destPathBrowseButton.addActionListener(new ActionListener() {
-            			public void actionPerformed(ActionEvent e) {
-            				JFileChooser chooser=new JFileChooser();
-            				
-            				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            				if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
-            					destPathTextField.setText(chooser.getSelectedFile().toString());
-    							// current workspace is project translate
-            					Config.IS_CONTENT_TRANSLATE = false;
-            				}
-            			}
-            		});
-            		
-            		btnTranslateButton.addActionListener(new ActionListener() {
-            			public void actionPerformed(ActionEvent e) {
-            				if (Config.IS_CONTENT_TRANSLATE) {
-                				String srcText = srcTextArea.getText();
-                				if (srcText.isEmpty()) {
-                					return;
-                				}
-                				String result = ContentConverter.convertXMLToJavaCode(srcTextArea.getText());
-                				destTextArea.setText(result);
-            				} else {
-            					Config.PROJECT_PATH = srcPathTextField.getText();
-            					if (!Config.PROJECT_PATH.endsWith("/")) {
-            						Config.PROJECT_PATH += "/";
-            					}
-            					Config.PROJECT_OUT_PATH = destPathTextField.getText();
-            					if (!Config.PROJECT_OUT_PATH.endsWith("/")) {
-            						Config.PROJECT_OUT_PATH += "/";
-            					}
-            					ProjectConverter.translateProject();
-            				}
-            			}
-            		});
-            		
-            		srcTextArea.addCaretListener(new CaretListener() {
-						
-						@Override
-						public void caretUpdate(CaretEvent arg0) {
-							// current workspace is content translate
-							Config.IS_CONTENT_TRANSLATE = true;
-						}
-					});
-            		
+                    destPathBrowseButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JFileChooser chooser=new JFileChooser();
+                            
+                            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                            if(chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                                destPathTextField.setText(chooser.getSelectedFile().toString());
+                                // current workspace is project translate
+                                Config.IS_CONTENT_TRANSLATE = false;
+                            }
+                        }
+                    });
+                    
+                    btnTranslateButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            if (Config.IS_CONTENT_TRANSLATE) {
+                                String srcText = srcTextArea.getText();
+                                if (srcText.isEmpty()) {
+                                    return;
+                                }
+                                String result = ContentConverter.convertXMLToJavaCode(srcTextArea.getText());
+                                destTextArea.setText(result);
+                            } else {
+                                Config.PROJECT_PATH = srcPathTextField.getText();
+                                if (!Config.PROJECT_PATH.endsWith("/")) {
+                                    Config.PROJECT_PATH += "/";
+                                }
+                                Config.PROJECT_OUT_PATH = destPathTextField.getText();
+                                if (!Config.PROJECT_OUT_PATH.endsWith("/")) {
+                                    Config.PROJECT_OUT_PATH += "/";
+                                }
+                                ProjectConverter.translateProject();
+                            }
+                        }
+                    });
+                    
+                    srcTextArea.addCaretListener(new CaretListener() {
+                        
+                        @Override
+                        public void caretUpdate(CaretEvent arg0) {
+                            // current workspace is content translate
+                            Config.IS_CONTENT_TRANSLATE = true;
+                        }
+                    });
+                    
                     window.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();

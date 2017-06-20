@@ -16,7 +16,7 @@ public class DrawableTranslator extends BaseTranslator {
     public String translate() {
         File file = getFile();
         String content = "";
-        if (file != null && !Utils.getFileExtension(file).equals("xml")) {		// it's a .jpg, .png, etc.
+        if (file != null && !Utils.getFileExtension(file).equals("xml")) {        // it's a .jpg, .png, etc.
             String outPath = file.getPath();
             outPath = Config.getAssetsOutPath() + outPath.substring(Config.getProjectResPath().length()).replace('-', '_'); // file name not support "-"
             System.out.println("Copying " + file.getPath() + " to\n" + Config.INDENT +

@@ -20,7 +20,7 @@ public class AX2JCodeBlock {
         this.name = name;
         this.type = type;
         for (int i = PRIORITY_FIRST; i <= PRIORITY_LAST; i++) {
-        	codeList.add(new ArrayList<AX2JCode>());
+            codeList.add(new ArrayList<AX2JCode>());
         }
     }
 
@@ -30,9 +30,9 @@ public class AX2JCodeBlock {
     }
 
     public void add(String codeString, int priority) {
-    	if (priority < PRIORITY_FIRST || priority > PRIORITY_LAST) {
-    		priority = PRIORITY_DEFAULT;
-    	}
+        if (priority < PRIORITY_FIRST || priority > PRIORITY_LAST) {
+            priority = PRIORITY_DEFAULT;
+        }
         AX2JCode code = new AX2JCode(codeString, priority);
         add(code);
     }
@@ -46,12 +46,12 @@ public class AX2JCodeBlock {
         List<AX2JCode> subCodeList = get(code.priority);
         int j = 0;
         for (j = 0; j < subCodeList.size(); j++) {
-        	AX2JCode originCode = subCodeList.get(j);
+            AX2JCode originCode = subCodeList.get(j);
             if (code.isDuplicateMethod(originCode)) {
-            	if (code.method != null && code.method.getArgsNum() > 1) {
-            		int order = AX2JAttribute.getTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
-            		originCode.setArg(order, code.getArg(order));
-            	}
+                if (code.method != null && code.method.getArgsNum() > 1) {
+                    int order = AX2JAttribute.getTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+                    originCode.setArg(order, code.getArg(order));
+                }
                 break;
             }
         }
@@ -120,11 +120,11 @@ public class AX2JCodeBlock {
             for (AX2JCode code : get(i)) {
                 if (code.isSpecial()) {
                     codeBlock.append(code);
-            	} else if (code.isLayoutParam()){
-            		codeBlock.append(LayoutTranslator.getLayoutParamsName(name) + "." + code);
-            	} else {
+                } else if (code.isLayoutParam()){
+                    codeBlock.append(LayoutTranslator.getLayoutParamsName(name) + "." + code);
+                } else {
                     codeBlock.append(name + "." + code);
-            	}
+                }
             }
         }
 
@@ -177,11 +177,11 @@ public class AX2JCodeBlock {
 
             int order = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             if (order == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
-            	for (int i = 1; i <= method.getArgsNum(); i++) {
-            		setArg(i, value);
-            	}
+                for (int i = 1; i <= method.getArgsNum(); i++) {
+                    setArg(i, value);
+                }
             } else {
-            	setArg(order, value);
+                setArg(order, value);
             }
         }
 
@@ -221,9 +221,9 @@ public class AX2JCodeBlock {
         }
 
         public String getArg(int order) {
-        	if (order > method.getArgsNum() || order <= 0) {
-        	    return "";
-        	}
+            if (order > method.getArgsNum() || order <= 0) {
+                return "";
+            }
             String value = args[order - 1];
             if (value == null) {
                 value = method.getArg(AX2JCodeBlock.this, order);

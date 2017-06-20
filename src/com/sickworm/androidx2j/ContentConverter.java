@@ -11,42 +11,42 @@ import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
  */
 public class ContentConverter {
 
-	/**
-	 * text mode
-	 * @param xmlString
-	 * @return
-	 */
-	public static String convertXMLToJavaCode(String xmlString) {
-		Config.IS_CONTENT_TRANSLATE = true;
-		Config.R_CLASS = "R";
-		Config.RESOURCES_NAME = "getResources()";
-		
-    	if (!AndroidDocConverter.init()) {
-    		return "Android translate resources initialize failed";
-    	}
+    /**
+     * text mode
+     * @param xmlString
+     * @return
+     */
+    public static String convertXMLToJavaCode(String xmlString) {
+        Config.IS_CONTENT_TRANSLATE = true;
+        Config.R_CLASS = "R";
+        Config.RESOURCES_NAME = "getResources()";
+        
+        if (!AndroidDocConverter.init()) {
+            return "Android translate resources initialize failed";
+        }
 
         AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
-		
-		try {
-			LayoutTranslator translator = new LayoutTranslator(xmlString);
-			String content = translator.translate();
-			StringBuilder importListBuilder = new StringBuilder();
-			for (String s : translator.getImportList()) {
-				importListBuilder.append("import ");
-				importListBuilder.append(s);
-				importListBuilder.append(";\n");
-			}
-			return importListBuilder.toString() + "\n\n" + buildJavaMethod(content);
-		} catch (Exception e) {
-			e.printStackTrace();
-			String errorString = "Parse XML segment failed. Exception:\n" + e.getLocalizedMessage() + "\n";
-//			StackTraceElement[] elements = e.getStackTrace();
-//			for (StackTraceElement element : elements) {
-//				errorString += element.toString() + "\n";
-//			}
-			return errorString;
-		}
-	}
+        
+        try {
+            LayoutTranslator translator = new LayoutTranslator(xmlString);
+            String content = translator.translate();
+            StringBuilder importListBuilder = new StringBuilder();
+            for (String s : translator.getImportList()) {
+                importListBuilder.append("import ");
+                importListBuilder.append(s);
+                importListBuilder.append(";\n");
+            }
+            return importListBuilder.toString() + "\n\n" + buildJavaMethod(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+            String errorString = "Parse XML segment failed. Exception:\n" + e.getLocalizedMessage() + "\n";
+//            StackTraceElement[] elements = e.getStackTrace();
+//            for (StackTraceElement element : elements) {
+//                errorString += element.toString() + "\n";
+//            }
+            return errorString;
+        }
+    }
 
     public static String buildJavaMethod(String content) {
         //find the main object to return
@@ -70,23 +70,23 @@ public class ContentConverter {
         }
         scan.close();
         if (returnObject.equals("")) {
-        	System.out.println(content);
+            System.out.println(content);
             throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
         }
 
         content += "return " + returnObject + ";";
-		return "public " + returnClass + " initLayout(Context context) {\n"
-				+ indent(content) 
-				+ "}";
+        return "public " + returnClass + " initLayout(Context context) {\n"
+                + indent(content) 
+                + "}";
     }
-	
-	private static String indent(String content) {
-		StringBuilder intentContent = new StringBuilder();
-		for(String s : content.split("\n")) {
-			intentContent.append(Config.INDENT);
-			intentContent.append(s);
-			intentContent.append("\n");
-		}
-		return intentContent.toString();
-	}
+    
+    private static String indent(String content) {
+        StringBuilder intentContent = new StringBuilder();
+        for(String s : content.split("\n")) {
+            intentContent.append(Config.INDENT);
+            intentContent.append(s);
+            intentContent.append("\n");
+        }
+        return intentContent.toString();
+    }
 }

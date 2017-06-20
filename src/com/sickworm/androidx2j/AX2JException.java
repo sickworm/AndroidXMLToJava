@@ -37,7 +37,7 @@ public class AX2JException extends RuntimeException {
     private int errorCode = NO_ERROR;
 
     public AX2JException(int errorCode) {
-    	super(getDetails(errorCode));
+        super(getDetails(errorCode));
         this.errorCode = errorCode;
     }
 
@@ -51,21 +51,21 @@ public class AX2JException extends RuntimeException {
     }
     
     public static String getDetails(int errorCode) {
-    	switch(errorCode) {case NO_ERROR: return "succeed";
-    	case AXML_PARSE_ERROR: return "XML format invalid";
-    	case METHOD_NOT_FOUND: return "no such method";
-    	case CLASS_NOT_FOUND: return "no such class";
-    	case ATTRIBUTE_NOT_FOUND: return "no such attribute";
-    	case PROJECT_DIR_NOT_FOUND: return "project not found";
-    	case THEME_NOT_FOUND: return "theme not found";
-    	case STYLE_NOT_FOUND: return "style not found";
-    	case ARRAY_OUT_OF_RANGE: return "array out of range";
-    	case PARAMETER_NOT_INITIALIZED: return "parameter not initialized";
-    	case FILE_BUILD_ERROR: return "file build error";
-    	case ATTRIBUTE_VALUE_ERROR: return "attribute value error";
-    	case DAT_SYSTEM_STYLE_ERROR: return "style data file format invalid";
-    	case DAT_SYSTEM_THEME_ERROR: return "theme data file format invalid";
-    	default: return "unknown error";
-    	}
+        switch(errorCode) {case NO_ERROR: return "succeed";
+        case AXML_PARSE_ERROR: return "XML format invalid";
+        case METHOD_NOT_FOUND: return "no such method";
+        case CLASS_NOT_FOUND: return "no such class";
+        case ATTRIBUTE_NOT_FOUND: return "no such attribute";
+        case PROJECT_DIR_NOT_FOUND: return "project not found";
+        case THEME_NOT_FOUND: return "theme not found";
+        case STYLE_NOT_FOUND: return "style not found";
+        case ARRAY_OUT_OF_RANGE: return "array out of range";
+        case PARAMETER_NOT_INITIALIZED: return "parameter not initialized";
+        case FILE_BUILD_ERROR: return "file build error";
+        case ATTRIBUTE_VALUE_ERROR: return "attribute value error";
+        case DAT_SYSTEM_STYLE_ERROR: return "style data file format invalid";
+        case DAT_SYSTEM_THEME_ERROR: return "theme data file format invalid";
+        default: return "unknown error";
+        }
     }
 }

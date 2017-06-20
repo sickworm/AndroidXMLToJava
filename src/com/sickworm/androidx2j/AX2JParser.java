@@ -26,7 +26,7 @@ public class AX2JParser {
     }
 
     public AX2JParser(String content) {
-    	this.content = content;
+        this.content = content;
     }
 
     public AX2JParser(Element rootElement) {
@@ -46,7 +46,7 @@ public class AX2JParser {
                 rootElement = document.getRootElement();
             } else if (content != null) {
                 Document document;
-				document = new SAXReader().read(new ByteArrayInputStream(content.getBytes("UTF-8")));		//TODO GBK?
+                document = new SAXReader().read(new ByteArrayInputStream(content.getBytes("UTF-8")));        //TODO GBK?
                 rootElement = document.getRootElement();
             }
             rootNode = parseElements(null, rootElement);
@@ -54,7 +54,7 @@ public class AX2JParser {
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR, e.getLocalizedMessage());
         } catch (UnsupportedEncodingException e) {
             throw new AX2JException(AX2JException.AXML_PARSE_ERROR, e.getLocalizedMessage());
-		}
+        }
         return rootNode;
     }
 

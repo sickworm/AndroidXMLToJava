@@ -72,7 +72,7 @@ public class AX2JStyle {
             styleName = styleValue.substring(styleValue.indexOf(':') + 1);
         // e.g. style="?mystyle"
         } else {
-        	// TODO support custom style
+            // TODO support custom style
         }
 
         AX2JStyle style = null;

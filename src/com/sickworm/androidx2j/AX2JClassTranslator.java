@@ -156,7 +156,7 @@ public class AX2JClassTranslator {
         }
 
         if (method.findAttribute(attribute) == null) {
-        	method.addRelativeAttribute(attribute);
+            method.addRelativeAttribute(attribute);
         }
         if (attribute.findMethod(method) == null) {
             attribute.addRelativeMethod(method, methodType);
@@ -170,7 +170,7 @@ public class AX2JClassTranslator {
             String nameString = qNameString.substring(qNameString.indexOf(':') + 1);
             if (prefixString.equals("android")) {
                 name = new QName(nameString, Config.ANDROID_NAMESPACE);
-            } else {		//only support android name space
+            } else {        //only support android name space
                 name = new QName(nameString);
             }
         } else {
@@ -184,7 +184,7 @@ public class AX2JClassTranslator {
     }
 
     public void translate(AX2JCodeBlock codeBlock, Attribute attr) {
-    	translate(codeBlock, attr, 0);
+        translate(codeBlock, attr, 0);
     }
 
     public void translate(AX2JCodeBlock codeBlock, Attribute attr, int priority) {
@@ -213,7 +213,7 @@ public class AX2JClassTranslator {
     private String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
         int argOrder = attribute.getTypeValue(method, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
         if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
-        	argOrder = 1;
+            argOrder = 1;
         }
         Class<?> argType = method.getArgType(argOrder);
 
@@ -286,11 +286,11 @@ public class AX2JClassTranslator {
             }
 
             // dimen
-	        else if (value.matches("@dimen/.+")) {
-	            newValue = value.substring(value.indexOf('/') + 1);
-	            newValue = Config.R_CLASS + ".dimen." + newValue;
-	            newValue = "(int) " + Config.RESOURCES_NAME + ".getDimension(" + newValue + ")";
-	        }
+            else if (value.matches("@dimen/.+")) {
+                newValue = value.substring(value.indexOf('/') + 1);
+                newValue = Config.R_CLASS + ".dimen." + newValue;
+                newValue = "(int) " + Config.RESOURCES_NAME + ".getDimension(" + newValue + ")";
+            }
 
             // visibility
             else if (value.equals("gone") || value.equals("visibile") ||
@@ -320,10 +320,10 @@ public class AX2JClassTranslator {
 
             // text
             else if (name.equals("android:textAppearance")) {
-            	String style = AX2JStyle.getStyle(value).name;
-            	style = style.replace('.', '_');
-            	style = "android.R.style." + style;
-            	newValue =style;
+                String style = AX2JStyle.getStyle(value).name;
+                style = style.replace('.', '_');
+                style = "android.R.style." + style;
+                newValue =style;
             }
 
             else if (name.equals("android:inputType")) {
@@ -352,11 +352,11 @@ public class AX2JClassTranslator {
             /** independent part **/
             // RelativeLayout rule
             if (Utils.findRule(name) != null) {
-            	if (value.equals("true")) {
-                	newValue = "RelativeLayout.TRUE";
-            	} else if (value.equals("false")) {
-                	newValue = "RelativeLayout.FALSE";
-            	}
+                if (value.equals("true")) {
+                    newValue = "RelativeLayout.TRUE";
+                } else if (value.equals("false")) {
+                    newValue = "RelativeLayout.FALSE";
+                }
                 codeBlock.addImport(RelativeLayout.class);
             }
         }
@@ -450,9 +450,9 @@ public class AX2JClassTranslator {
         }
         
         else if (argType.equals(ScaleType.class)) {
-        	newValue = value.toUpperCase();
-        	newValue = "ScaleType." + (newValue.matches("CENTER.+")? newValue.replace("CENTER", "CENTER_") : newValue);
-        	codeBlock.addImport(ScaleType.class);
+            newValue = value.toUpperCase();
+            newValue = "ScaleType." + (newValue.matches("CENTER.+")? newValue.replace("CENTER", "CENTER_") : newValue);
+            codeBlock.addImport(ScaleType.class);
         }
 
         /** independent part **/

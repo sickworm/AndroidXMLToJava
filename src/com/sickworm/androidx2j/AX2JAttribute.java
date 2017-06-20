@@ -190,7 +190,7 @@ public class AX2JAttribute implements Cloneable {
             case TYPE_NORMAL:
                 break;
             case TYPE_API_LIMIT:
-            	value = value >> TYPE_API_LIMIT_INDEX;
+                value = value >> TYPE_API_LIMIT_INDEX;
                 if (value == 0) {
                     value = 1;
                 }

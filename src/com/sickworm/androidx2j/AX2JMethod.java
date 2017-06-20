@@ -38,10 +38,10 @@ public class AX2JMethod implements Cloneable {
                 argsNum = argTypesString.length;
                 for (int i = 0; i < defaultArgs.length; i++) {
                     argTypes[i] = AX2JClassTranslator.getType(argTypesString[i]);
-                    if (argTypes[i] == null) {		//this means it already has a constant value in this position.
-                    								//e.g. addRule(RelativeLayout.START_OF,Integer)
-                    	argTypes[i] = Void.class;
-                    	this.defaultArgs[i] = argTypesString[i];
+                    if (argTypes[i] == null) {        //this means it already has a constant value in this position.
+                                                    //e.g. addRule(RelativeLayout.START_OF,Integer)
+                        argTypes[i] = Void.class;
+                        this.defaultArgs[i] = argTypesString[i];
                     }
                 }
             } else {
@@ -66,16 +66,16 @@ public class AX2JMethod implements Cloneable {
     }
 
     public String getArg(AX2JCodeBlock codeBlock, int order) {
-    	if (order > defaultArgs.length || order <= 0) {
-    		return "";
-    	}
+        if (order > defaultArgs.length || order <= 0) {
+            return "";
+        }
 
-    	String value = defaultArgs[order - 1];
-    	if (value != null && value.startsWith(Config.MAP_OBJECT_NAME) && codeBlock != null) {
-    	    value = value.replaceFirst(Config.MAP_OBJECT_NAME, codeBlock.getName());
-    	}
+        String value = defaultArgs[order - 1];
+        if (value != null && value.startsWith(Config.MAP_OBJECT_NAME) && codeBlock != null) {
+            value = value.replaceFirst(Config.MAP_OBJECT_NAME, codeBlock.getName());
+        }
         if (value == null) {
-        	value = getDefaultValue(order);
+            value = getDefaultValue(order);
         }
 
         return value;
@@ -86,7 +86,7 @@ public class AX2JMethod implements Cloneable {
     }
 
     public int getArgsNum() {
-    	return argsNum;
+        return argsNum;
     }
 
     private String getDefaultValue(int order) {
@@ -99,7 +99,7 @@ public class AX2JMethod implements Cloneable {
         if (type.equals(Context.class)) {
             value = "context";
         } else if (methodName.equals("setGradientCenter")) {
-        	value = "0.5f";
+            value = "0.5f";
         } else if (!(type.equals(Integer.class) || type.equals(Float.class) ||
                 type.equals(Boolean.class) || type.equals(Long.class))) {
             value = "null";
@@ -115,9 +115,9 @@ public class AX2JMethod implements Cloneable {
     }
 
     public Class<?> getArgType(int order) {
-    	if (order > defaultArgs.length || order <= 0) {
-    		throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
-    	}
+        if (order > defaultArgs.length || order <= 0) {
+            throw new AX2JException(AX2JException.ARRAY_OUT_OF_RANGE, this + ", order: " + order);
+        }
         return argTypes[order - 1];
     }
 
@@ -142,21 +142,21 @@ public class AX2JMethod implements Cloneable {
         String argsString = "";
 
         for (int i = 0; i < argTypes.length; i++) {
-        	Class<?> type = argTypes[i];
-        	if (type == Void.class) {		//this means it already has a constant value in this position.
-        									//e.g. addRule(RelativeLayout.START_OF,Integer)
+            Class<?> type = argTypes[i];
+            if (type == Void.class) {        //this means it already has a constant value in this position.
+                                            //e.g. addRule(RelativeLayout.START_OF,Integer)
                 argsString += defaultArgs[i];
-        	} else {
-        		try {
+            } else {
+                try {
                     argsString += Utils.getValueType(type);
-        		} catch (AX2JException e) {
+                } catch (AX2JException e) {
                     argsString += type.getSimpleName();
-        		}
-        	}
+                }
+            }
 
-        	if (i < argTypes.length - 1) {
-        		argsString += ",";
-        	}
+            if (i < argTypes.length - 1) {
+                argsString += ",";
+            }
         }
 
         String methodString = this.getMethodName() + (argsString.equals("")? "" : ("(" + argsString +")"));
@@ -176,15 +176,15 @@ public class AX2JMethod implements Cloneable {
                 }
 
                 for (int i = 0; i < argTypes.length; i++) {
-                	if (argTypes[i].equals(Void.class)) {
+                    if (argTypes[i].equals(Void.class)) {
                         if (!defaultArgs[i].equals(args2[i])) {
-                        	return false;
+                            return false;
                         }
-                	} else {
+                    } else {
                         if (!argTypes[i].equals(argTypes2[i])) {
-                        	return false;
+                            return false;
                         }
-                	}
+                    }
                 }
                 return true;
             }

@@ -25,10 +25,10 @@ public class Config {
     public static String PROJECT_PATH = "unset";
     
     public static String getJavaOutPath() {
-    	return PROJECT_OUT_PATH + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
+        return PROJECT_OUT_PATH + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
     }
     public static String getAssetsOutPath() {
-    	return PROJECT_OUT_PATH + "assets/";
+        return PROJECT_OUT_PATH + "assets/";
     }
     public static String getProjectResPath() {
         return PROJECT_PATH + "res/";

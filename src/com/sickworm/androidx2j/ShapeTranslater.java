@@ -22,16 +22,16 @@ public class ShapeTranslater extends BaseTranslator {
     public String translate() {
         AX2JCodeBlock codeBlock = new AX2JCodeBlock(GradientDrawable.class, getRoot().getObjectName());
         for (AX2JNode node : getRoot().getChildren()) {
-        	if (node.getLabelName().equals("gradient")) {
-        	    String orientation;
-        		Attribute attribute = node.findAttrByName("android:angle");
-        		orientation = (attribute == null)? "Orientation.TOP_BOTTOM" : translateValue(codeBlock, attribute, Integer.class);
+            if (node.getLabelName().equals("gradient")) {
+                String orientation;
+                Attribute attribute = node.findAttrByName("android:angle");
+                orientation = (attribute == null)? "Orientation.TOP_BOTTOM" : translateValue(codeBlock, attribute, Integer.class);
                 addImport(Orientation.class);
-        		codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
-        		        orientation + ", null);\n", AX2JCode.PRIORITY_SECOND);
-        	} else if(node.getLabelName().equals("solid")) {
-        		codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n", AX2JCode.PRIORITY_SECOND);
-        	}
+                codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable(" +
+                        orientation + ", null);\n", AX2JCode.PRIORITY_SECOND);
+            } else if(node.getLabelName().equals("solid")) {
+                codeBlock.add("GradientDrawable " + getRoot().getObjectName() + " = new GradientDrawable();\n", AX2JCode.PRIORITY_SECOND);
+            }
         }
         addCodeBlock(codeBlock);
 
@@ -39,15 +39,15 @@ public class ShapeTranslater extends BaseTranslator {
     }
 
     @Override
-	protected void translateAttribute(AX2JCodeBlock codeBlock,
-			Attribute attribute) {
+    protected void translateAttribute(AX2JCodeBlock codeBlock,
+            Attribute attribute) {
         String name = attribute.getQualifiedName();
-    	if (name.equals("android:centerX") || name.equals("android:centerY")) {
+        if (name.equals("android:centerX") || name.equals("android:centerY")) {
             codeBlock.add("//Attention: GradientDrawable.setGradientCenter doesn't support setting center when the type is linear, but XML does. Weird\n");
-    	} else if (name.equals("android:angle")) {
+        } else if (name.equals("android:angle")) {
             return;
         }
 
-		super.translateAttribute(codeBlock, attribute);
-	}
+        super.translateAttribute(codeBlock, attribute);
+    }
 }

@@ -43,7 +43,7 @@ public class AndroidDocConverter {
     private static boolean hasInitialize = false;
 
     public static void main(String[] argv) throws DocumentException {
-    	generateTranslateData();
+        generateTranslateData();
     }
     
     private static void generateTranslateData() throws DocumentException {
@@ -158,13 +158,13 @@ public class AndroidDocConverter {
             String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split("\n");
             for (String s : list) {
-            	if (s.startsWith("//")) {
-            		String typeString = s.replace("//", "");
-            		Class<?> type = Utils.matchClass(typeString);
-            		if (!type.equals(Void.class)) {
-            			attrToMethodMap.add(new AX2JClassTranslator(type));
-            		}
-            	} else if (!s.equals("")) {
+                if (s.startsWith("//")) {
+                    String typeString = s.replace("//", "");
+                    Class<?> type = Utils.matchClass(typeString);
+                    if (!type.equals(Void.class)) {
+                        attrToMethodMap.add(new AX2JClassTranslator(type));
+                    }
+                } else if (!s.equals("")) {
                     attrToMethodMap.add(s);
                 }
             }
@@ -291,10 +291,10 @@ public class AndroidDocConverter {
      * initialize the translate resources. Need to be called before translating start.
      */
     public static boolean init() {
-    	if (hasInitialize) {
-    		System.out.print("Translate resources has initialized.");
-    		return true;
-    	}
+        if (hasInitialize) {
+            System.out.print("Translate resources has initialized.");
+            return true;
+        }
         System.out.println("Initializing resources...\n");
         try {
             AndroidDocConverter.getMap();

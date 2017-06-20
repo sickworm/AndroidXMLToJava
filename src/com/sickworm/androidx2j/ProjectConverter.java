@@ -47,9 +47,9 @@ public class ProjectConverter {
         Config.RESOURCES_NAME = "resources";
         Config.IS_CONTENT_TRANSLATE = false;
         
-    	if (!AndroidDocConverter.init()) {
-    		return;
-    	}
+        if (!AndroidDocConverter.init()) {
+            return;
+        }
 
         AX2JStyle.setProjectTheme(Config.DEFAULT_THEME);
         addCustomWidget();
@@ -87,11 +87,11 @@ public class ProjectConverter {
             if (path.matches(".+layout")) {
                 LayoutOutput(f);
             } else if (path.matches(".+anim")) {
-            	// TODO
+                // TODO
             } else if (path.matches(".+drawable.*")) {
                 DrawableOutput(f);
             } else if (path.matches(".+menu.*")) {
-            	// TODO
+                // TODO
             }
         }
 
@@ -276,7 +276,7 @@ public class ProjectConverter {
                 if (dpiLevel.equals(Config.DPI_DPI_FOLDER_LIST[i])) {
                     dpi = dpi.replace('-', '_');
                     dpiCaseList[i] += Config.INDENT + Config.INDENT + "case " + Config.R_CLASS + ".drawable." + id + ":\n" +
-                    		Config.INDENT + Config.INDENT + Config.INDENT + "return " +
+                            Config.INDENT + Config.INDENT + Config.INDENT + "return " +
                             Config.PACKAGE_NAME + "." + dpi + ".get(context);\n";
                     break;
                 }

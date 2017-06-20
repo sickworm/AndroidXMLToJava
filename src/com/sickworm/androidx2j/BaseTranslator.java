@@ -167,7 +167,7 @@ public class BaseTranslator {
     }
 
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute) {
-    	translateAttribute(codeBlock, attribute, 0);
+        translateAttribute(codeBlock, attribute, 0);
     }
 
     protected void translateAttribute(AX2JCodeBlock codeBlock, Attribute attribute, int priority) {

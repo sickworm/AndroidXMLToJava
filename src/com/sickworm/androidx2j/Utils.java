@@ -135,9 +135,9 @@ public class Utils {
      * @return extension of the file
      */
     public static String getFileExtension(File file) {
-    	if (file == null) {
-    		return "";
-    	}
+        if (file == null) {
+            return "";
+        }
         String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -216,7 +216,7 @@ public class Utils {
             }
             scan.close();
             if (returnObject.equals("")) {
-            	System.out.println(content);
+                System.out.println(content);
                 throw new AX2JException(AX2JException.FILE_BUILD_ERROR, "can not find main object");
             }
 
@@ -371,17 +371,17 @@ public class Utils {
      */
     @Deprecated
     public static String xmlNameToJavaName(String xmlName) {
-    	StringBuffer javaNameBuffer = new StringBuffer(xmlName);
-    	while (javaNameBuffer.indexOf("_") != -1) {
-    		int index = javaNameBuffer.indexOf("_");
-    		if (index != javaNameBuffer.length()) {
-        		String upperCase = Character.toString(javaNameBuffer.charAt(index + 1)).toUpperCase();
-        		javaNameBuffer.replace(index + 1, index + 2, upperCase);
-    		}
-    		javaNameBuffer.deleteCharAt(index);
-    	}
+        StringBuffer javaNameBuffer = new StringBuffer(xmlName);
+        while (javaNameBuffer.indexOf("_") != -1) {
+            int index = javaNameBuffer.indexOf("_");
+            if (index != javaNameBuffer.length()) {
+                String upperCase = Character.toString(javaNameBuffer.charAt(index + 1)).toUpperCase();
+                javaNameBuffer.replace(index + 1, index + 2, upperCase);
+            }
+            javaNameBuffer.deleteCharAt(index);
+        }
 
-    	return javaNameBuffer.toString();
+        return javaNameBuffer.toString();
 
     }
 
