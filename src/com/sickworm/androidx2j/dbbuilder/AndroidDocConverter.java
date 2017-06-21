@@ -40,7 +40,7 @@ public class AndroidDocConverter {
     private static AX2JTranslatorMap attrToMethodMap = AX2JTranslatorMap.getInstance();
     private static HashMap<String, AX2JStyle> systemStylesMap = new LinkedHashMap<String, AX2JStyle>();
     private static HashMap<String, AX2JStyle> systemThemesMap = new LinkedHashMap<String, AX2JStyle>();
-    private static boolean hasInitialize = false;
+    private static boolean hasInitialized = false;
 
     public static void main(String[] argv) throws DocumentException {
         generateTranslateData();
@@ -291,7 +291,7 @@ public class AndroidDocConverter {
      * initialize the translate resources. Need to be called before translating start.
      */
     public static boolean init() {
-        if (hasInitialize) {
+        if (hasInitialized) {
             System.out.print("Translate resources has initialized.");
             return true;
         }
@@ -300,7 +300,8 @@ public class AndroidDocConverter {
             AndroidDocConverter.getMap();
             AndroidDocConverter.getSystemStyles();
             AndroidDocConverter.getSystemThemes();
-            hasInitialize = true;
+            hasInitialized = true;
+            System.out.println("Initializing resources done.\n");
             return true;
         } catch (AX2JException e) {
             System.out.println("Error code: " + e.getErrorCode() + ", " + ": " + e.getLocalizedMessage());

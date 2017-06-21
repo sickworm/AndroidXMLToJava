@@ -17,7 +17,6 @@ public class Config {
     public static final String THEME_BLOCK = "<THEME_BLOCK>";
     public static final String MAP_OBJECT_NAME = "<AX2J_OBJECT_NAME>";
 
-    @SuppressWarnings("deprecation")
     public static final Class<?>[] CLASSES_LIST = {
         /** Super **/
         android.view.View.class,
@@ -47,8 +46,7 @@ public class Config {
 
         /** Layouts **/
         //<include> not a class
-        // translator only detect the class simple name instead of full name, so it has the same usage as android.widget.GridLayout.class
-//        android.support.v7.widget.GridLayout.class,
+        android.support.v7.widget.GridLayout.class,
         android.widget.GridLayout.class,
         android.widget.RelativeLayout.class,
         android.widget.LinearLayout.class,
