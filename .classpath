@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar" sourcepath="H:/BaiduYunDownload/dom4j-1.6.1.zip"/>
+	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/filterbuilder.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/htmllexer.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/htmlparser.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/sitecapturer.jar"/>
 	<classpathentry kind="lib" path="libs/htmlparser/thumbelina.jar"/>
-	<classpathentry kind="lib" path="F:/workspace/AndroidXMLToJava/libs/mock_android.jar"/>
+	<classpathentry kind="lib" path="libs/mock_android.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

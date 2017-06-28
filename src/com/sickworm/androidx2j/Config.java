@@ -9,9 +9,11 @@ public class Config {
     public static final String ENCODE = com.sickworm.androidx2j.dbbuilder.Config.ENCODE;
 
     public static final String RESOURCES_CLASS = "JResources";
+    public static final String TEMPLAT_DRAWABLES_CLASS = "drawables.java";
+    public static final String TEMPLAT_LAYOUTS_CLASS = "layouts";
     public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
-    public static final String UTILS_CLASS = "Utils";
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
+    public static final String UTILS_CLASS = "Utils";
     public static final String MAP_OBJECT_NAME = com.sickworm.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
     public static final int API_LEVEL = 8;
 
@@ -33,6 +35,11 @@ public class Config {
     public static String getProjectResPath() {
         return PROJECT_PATH + "res/";
     }
+    
+    public static String getTempletPath() {
+    	return "templet/";
+    }
+    
 
     /**base of R resources id**/
     public static final int BASE = 0x7f040000;

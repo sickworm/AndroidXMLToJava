@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,19 +37,42 @@ public class Utils {
      * @param fileName
      * @return content of file, return "" if error occurs
      */
+    @SuppressWarnings("resource")
     public static String readFile(String filePath) {
+    	InputStream inputStream = null;
+    	// from project
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
+	        inputStream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+        }
+        // from jar
+        if (inputStream == null) {
+        	inputStream = Utils.class.getResourceAsStream("/" + filePath);
+        }
+        if (inputStream == null) {
+        	System.out.println("can not find file " + filePath);
+            return "";
+        }
+        
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Config.ENCODE));
             String content = "";
             String buf;
             while ((buf = reader.readLine())!= null) {
                 content += buf + "\n";
             }
             reader.close();
+            inputStream.close();
             return content;
         }
-        catch( Exception e ) {
+        catch(Exception e) {
+        	System.out.println("got an error while reading the file " + filePath);
             e.printStackTrace();
+            try {
+	            inputStream.close();
+            } catch (IOException e1) {
+	            e1.printStackTrace();
+            }
             return "";
         }
     }

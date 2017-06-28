@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
@@ -150,12 +153,10 @@ public class AndroidDocConverter {
 
     public static AX2JTranslatorMap getMap() {
         if (attrToMethodMap.getMap().size() == 0) {
-            File dat = new File(Config.DAT_PATH);
-            if (!dat.isFile()) {
+            String content = readFile(Config.DAT_PATH, Config.DAT_BLOCK);
+            if (content.isEmpty()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
-
-            String content = readFile(dat.getPath(), Config.DAT_BLOCK);
             String[] list = content.split("\n");
             for (String s : list) {
                 if (s.startsWith("//")) {
@@ -183,13 +184,11 @@ public class AndroidDocConverter {
 
     public static HashMap<String, AX2JStyle> getSystem(HashMap<String, AX2JStyle> map, String block) {
         if (map.size() == 0) {
-            File dat = new File(Config.DAT_PATH);
-            if (!dat.isFile()) {
+            String content = readFile(Config.DAT_PATH, block);
+            if (content.isEmpty()) {
                 throw new AndroidDocException(AndroidDocException.DAT_READ_ERROR);
             }
-
             Document document = DocumentHelper.createDocument();
-            String content = readFile(dat.getPath(), block);
             String[] stylesString = content.split("\n");
             for (String styleString : stylesString) {
                 int index1 = styleString.indexOf(',');
@@ -258,9 +257,24 @@ public class AndroidDocConverter {
      * @param block
      * @return content of file between the block, return "" if error occurs
      */
+    @SuppressWarnings("resource")
     public static String readFile(String filePath, String block) {
+    	InputStream inputStream = null;
+    	// from project
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath)), Config.ENCODE));
+	        inputStream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+        }
+        // from jar
+        if (inputStream == null) {
+        	inputStream = Utils.class.getResourceAsStream("/" + filePath);
+        }
+        if (inputStream == null) {
+        	System.out.println("can not find file " + filePath);
+            return "";
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Config.ENCODE));
             String content = "";
             String buf;
 
@@ -279,10 +293,16 @@ public class AndroidDocConverter {
                 }
             }
             reader.close();
+            inputStream.close();
             return content;
         }
-        catch( Exception e ) {
+        catch(Exception e) {
             e.printStackTrace();
+            try {
+	            inputStream.close();
+            } catch (IOException e1) {
+	            e1.printStackTrace();
+            }
             return "";
         }
     }

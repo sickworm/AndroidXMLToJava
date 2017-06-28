@@ -254,14 +254,14 @@ public class ProjectConverter {
         //Resources.java
         File resourcesFile = new File(Config.getJavaOutPath() + Config.RESOURCES_CLASS + ".java");
         System.out.println("Generating " + resourcesFile.getPath() + "...");
-        String resources = Utils.readFile("templet/" + Config.TEMPLAT_RESOURCES_CLASS + ".java");
+        String resources = Utils.readFile(Config.getTempletPath() + Config.TEMPLAT_RESOURCES_CLASS + ".java");
         resources = resources.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         resources = resources.replace(Config.TEMPLAT_RESOURCES_CLASS, Config.RESOURCES_CLASS);
         Utils.writeFile(Config.getJavaOutPath() + Config.RESOURCES_CLASS + ".java", resources);
         System.out.println();
 
         //drawables.java
-        File drawablesFile = new File(Config.getJavaOutPath() + "drawables.java");
+        File drawablesFile = new File(Config.getJavaOutPath() + Config.TEMPLAT_DRAWABLES_CLASS + ".java");
         System.out.println("Generating " + drawablesFile.getPath() + "...");
 
         String[] dpiCaseList = new String[Config.TEMPLET_DPI_BLOCK_LIST.length];
@@ -283,19 +283,19 @@ public class ProjectConverter {
             }
         }
 
-        String drawables = Utils.readFile("templet/drawables.java");
+        String drawables = Utils.readFile(Config.getTempletPath() + Config.TEMPLAT_DRAWABLES_CLASS + ".java");
         drawables = drawables.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         for (int i = 0; i < Config.TEMPLET_DPI_BLOCK_LIST.length; i++) {
             drawables = drawables.replace(Config.TEMPLET_DPI_BLOCK_LIST[i], dpiCaseList[i]);
         }
-        Utils.writeFile(Config.getJavaOutPath() + "drawables.java", drawables);
+        Utils.writeFile(Config.getJavaOutPath() + Config.TEMPLAT_DRAWABLES_CLASS + ".java", drawables);
         System.out.println();
 
         //layouts.java
         File layoutsFile = new File(Config.getJavaOutPath() + "layouts.java");
         System.out.println("Generating " + layoutsFile.getPath() + "...");
 
-        String layouts = Utils.readFile("templet/layouts.java");
+        String layouts = Utils.readFile(Config.getTempletPath() + Config.TEMPLAT_LAYOUTS_CLASS + ".java");
         layouts = layouts.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
 
         String layoutCaseList = "";
@@ -310,7 +310,7 @@ public class ProjectConverter {
 
     private static void GenerateUtils() {
         File utilsFile = new File(Config.getJavaOutPath() + Config.UTILS_CLASS + ".java");
-        String content = Utils.readFile("templet/" + Config.TEMPLAT_UTILS_CLASS + ".java");
+        String content = Utils.readFile(Config.getTempletPath() + Config.TEMPLAT_UTILS_CLASS + ".java");
         content = content.replace(Config.TEMPLAT_UTILS_CLASS, Config.UTILS_CLASS);
         content = content.replace(Config.TEMPLET_PACKAGE_NAME, Config.PACKAGE_NAME);
         Utils.writeFile(utilsFile.getPath(), content);
