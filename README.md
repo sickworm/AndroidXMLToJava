@@ -1,7 +1,7 @@
 Android XML to Java code. Still on Development.
 
 2017/7/24
-Web version online!Only content translate available. [http://ax2j.sickworm.com/](http://ax2j.sickworm.com/)
+Web version online! Only content translate available. [http://ax2j.sickworm.com/](http://ax2j.sickworm.com/)
 
 2017/6/20
 Now GUI support project translate function.
