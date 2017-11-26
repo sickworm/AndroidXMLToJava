@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
+import com.sickworm.ax2j.dbbuilder.AndroidDocConverter;
 
 public class AX2JStyle {
     private static HashMap<String, AX2JStyle> styleMap = new HashMap<String, AX2JStyle>();

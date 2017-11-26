@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j.dbbuilder;
+package com.sickworm.ax2j.dbbuilder;
 
 public class AndroidDocException extends RuntimeException{
     private static final long serialVersionUID = -611799962850239497L;

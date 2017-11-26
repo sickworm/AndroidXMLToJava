@@ -1,8 +1,8 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.Scanner;
 
-import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
+import com.sickworm.ax2j.dbbuilder.AndroidDocConverter;
 
 /**
  * Use to convert a XML block. To convert a whole project, see ProjectConverter

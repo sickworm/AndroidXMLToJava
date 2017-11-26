@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.HashMap;
 import java.util.Iterator;

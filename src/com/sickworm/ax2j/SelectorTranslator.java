@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 import org.dom4j.Attribute;
 
 import android.content.Context;

@@ -1,12 +1,12 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.HashMap;
 
 import org.dom4j.Namespace;
 
 public class Config {
-    public static final Class<?>[] CLASSES_LIST = com.sickworm.androidx2j.dbbuilder.Config.CLASSES_LIST;
-    public static final String ENCODE = com.sickworm.androidx2j.dbbuilder.Config.ENCODE;
+    public static final Class<?>[] CLASSES_LIST = com.sickworm.ax2j.dbbuilder.Config.CLASSES_LIST;
+    public static final String ENCODE = com.sickworm.ax2j.dbbuilder.Config.ENCODE;
 
     public static final String RESOURCES_CLASS = "JResources";
     public static final String TEMPLAT_DRAWABLES_CLASS = "drawables.java";
@@ -14,7 +14,7 @@ public class Config {
     public static final String TEMPLAT_RESOURCES_CLASS = "Resources";
     public static final String TEMPLAT_UTILS_CLASS = "Utils";
     public static final String UTILS_CLASS = "Utils";
-    public static final String MAP_OBJECT_NAME = com.sickworm.androidx2j.dbbuilder.Config.MAP_OBJECT_NAME;
+    public static final String MAP_OBJECT_NAME = com.sickworm.ax2j.dbbuilder.Config.MAP_OBJECT_NAME;
     public static final int API_LEVEL = 8;
 
     public static final String DEFAULT_THEME = "@android:Theme";
@@ -25,15 +25,16 @@ public class Config {
     public static String PACKAGE_NAME = "com.sickworm.ax2j";
     public static String PROJECT_OUT_PATH = "unset";
     public static String PROJECT_PATH = "unset";
+    public static String PROJECT_OUT = "output";
     
     public static String getJavaOutPath() {
-        return PROJECT_OUT_PATH + "src/" + PACKAGE_NAME.replace('.', '/') + "/";
+        return PROJECT_OUT_PATH + "/src/" + PACKAGE_NAME.replace('.', '/') + "/";
     }
     public static String getAssetsOutPath() {
-        return PROJECT_OUT_PATH + "assets/";
+        return PROJECT_OUT_PATH + "/assets/";
     }
     public static String getProjectResPath() {
-        return PROJECT_PATH + "res/";
+        return PROJECT_PATH + "/res/";
     }
     
     public static String getTempletPath() {
@@ -128,5 +129,5 @@ public class Config {
     public static final String[] DPI_DPI_FOLDER_LIST = {"drawable", "drawable-ldpi", "drawable-mdpi",
         "drawable-hdpi", "drawable-xhdpi", "drawable-xxhdpi"};
 
-    public static final Namespace ANDROID_NAMESPACE = com.sickworm.androidx2j.dbbuilder.Config.ANDROID_NAMESPACE;
+    public static final Namespace ANDROID_NAMESPACE = com.sickworm.ax2j.dbbuilder.Config.ANDROID_NAMESPACE;
 }

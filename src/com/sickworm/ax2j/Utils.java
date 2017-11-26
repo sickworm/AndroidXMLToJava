@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import com.sickworm.androidx2j.Config;
+import com.sickworm.ax2j.Config;
 
 public class Utils {
 
@@ -130,20 +130,19 @@ public class Utils {
         //subPath = subPath.replace(".xml", ".java") is not safety
         subPath = subPath.substring(0, subPath.indexOf('.')) + ".java";
         String path = Config.getJavaOutPath() + subPath;
-        int index = path.lastIndexOf('/');
-        if (index == -1) {
-            throw new AX2JException(AX2JException.FILE_BUILD_ERROR, path);
-        }
-        String dir = path.substring(0, index);
-        File dirFile = new File(dir);
-        if (!dirFile.exists() || !dirFile.isDirectory()) {
-            dirFile.mkdirs();
-        }
-
+        
         File javaFile = new File(path);
-        System.out.println("Generating " + new File(path).getPath() + "...");
+        System.out.println("Generating " + javaFile.getPath() + "...");
+        File dirFile = javaFile.getParentFile();
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            if (!dirFile.mkdirs()) {
+                System.out.println("Generate dir failed: " + dirFile);
+                throw new AX2JException(AX2JException.FILE_BUILD_ERROR, dirFile.getPath());
+            }
+        }
 
         try {
+            javaFile.createNewFile();
             BufferedWriter out = new BufferedWriter(new FileWriter(javaFile));
             out.write(content);
             out.close();
@@ -344,7 +343,7 @@ public class Utils {
         try {
             int byteread = 0;
             File newFile = new File(newPath);
-            File newFilePath = new File(newPath.substring(0, newPath.lastIndexOf(File.separatorChar)));
+            File newFilePath = newFile.getParentFile();
             File oldFile = new File(oldPath);
             if (!newFilePath.isDirectory()) {
                 newFilePath.mkdirs();

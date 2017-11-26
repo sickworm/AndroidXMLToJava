@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 public class AX2JException extends RuntimeException {
     private static final long serialVersionUID = 4451465808378003847L;

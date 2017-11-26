@@ -1,9 +1,9 @@
-package com.sickworm.androidx2j.dbbuilder;
+package com.sickworm.ax2j.dbbuilder;
 
 import org.dom4j.Namespace;
 
-import static com.sickworm.androidx2j.AX2JCodeBlock.AX2JCode.*;
-import static com.sickworm.androidx2j.AX2JAttribute.*;
+import static com.sickworm.ax2j.AX2JCodeBlock.AX2JCode.*;
+import static com.sickworm.ax2j.AX2JAttribute.*;
 
 public class Config {
     public static final String ANDROID_URI = "http://schemas.android.com/apk/res/android";
@@ -16,6 +16,15 @@ public class Config {
     public static final String STYLE_BLOCK = "<STYLE_BLOCK>";
     public static final String THEME_BLOCK = "<THEME_BLOCK>";
     public static final String MAP_OBJECT_NAME = "<AX2J_OBJECT_NAME>";
+
+    /** the local Android doc path **/
+    public static final String ANDROID_DOCS_PATH = "D:/adt-bundle-windows-x86_64/sdk/docs/reference/";
+    /** the local style.xml based on Android 4.4W **/
+     public static final String SYSTEM_STYLES_PATH = "D:/adt-bundle-windows-x86_64/sdk/platforms/android-20/data/res/values/styles.xml";
+    /** the local themes.xml based on Android 4.4W **/
+     public static final String SYSTEM_THEMES_PATH = "D:/adt-bundle-windows-x86_64/sdk/platforms/android-20/data/res/values/themes.xml";
+
+    public static String ENCODE = "UTF-8";
 
     public static final Class<?>[] CLASSES_LIST = {
         /** Super **/
@@ -45,8 +54,7 @@ public class Config {
         android.widget.EditText.class,
 
         /** Layouts **/
-        //<include> not a class
-        android.support.v7.widget.GridLayout.class,
+        // <include> not a class
         android.widget.GridLayout.class,
         android.widget.RelativeLayout.class,
         android.widget.LinearLayout.class,
@@ -211,7 +219,7 @@ public class Config {
         "GradientDrawable,android:useLevel,setUseLevel(boolean),",
         "GradientDrawable,android:centerX,setGradientCenter(float,float)," + (1 << TYPE_ARGUMENTS_ORDER_INDEX),
         "GradientDrawable,android:centerY,setGradientCenter(float,float)," + (2 << TYPE_ARGUMENTS_ORDER_INDEX),
-        //"GradientDrawable,android:angle,setOrientation(int)",    //use in API 16 or higher
+        "GradientDrawable,android:angle,setOrientation(int)," + (16 << TYPE_API_LIMIT),
         //stroke
         "GradientDrawable,android:startColor,setColors(int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (1 << TYPE_ARGUMENTS_ORDER_INDEX)),
         "GradientDrawable,android:centerColor,setColors(int,int,int)," + (TYPE_ARGUMENTS_ARRAY + (2 << TYPE_ARGUMENTS_ORDER_INDEX)),
@@ -238,13 +246,4 @@ public class Config {
         "TextView,android:text,setText(CharSequence,TextView.BufferType),",
         "TextView,android:bufferType,setText(CharSequence,BufferType),",
     };
-
-    /**the local Android doc path from SDK Manager**/
-    public static final String ANDROID_DOCS_PATH = "C:/adt-bundle-windows-x86_64-20140702/sdk/docs/reference/";
-    /**the local style.xml path from AOSP code**/
-    public static final String SYSTEM_STYLES_PATH = "F:/SDK4.4.4/frameworks/base/core/res/res/values/styles.xml";
-    /**the local themes.xml path from AOSP code**/
-    public static final String SYSTEM_THEMES_PATH = "F:/SDK4.4.4/frameworks/base/core/res/res/values/themes.xml";
-
-    public static String ENCODE = "UTF8";
 }

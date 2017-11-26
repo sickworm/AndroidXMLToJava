@@ -1,4 +1,11 @@
-AX2j -- Android XML to Java code. Still on Development.
+# AX2J -- Android XML to Java code
+
+### A tool converting your Android XML resource to native Java code.
+
+## Update Log
+
+2017/11/26
+Update supported attributes from documents of Android Developers. Supported attribute list: [http://ax2j.sickworm.com/attribute-list.html](http://ax2j.sickworm.com/attribute-list.html)
 
 2017/11/16
 Website building finished. [http://ax2j.sickworm.com/](http://ax2j.sickworm.com/)

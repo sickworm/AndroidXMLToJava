@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.io.File;
 import java.io.InputStream;

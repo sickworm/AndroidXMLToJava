@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j.gui;
+package com.sickworm.ax2j.gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -20,9 +20,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import com.sickworm.androidx2j.Config;
-import com.sickworm.androidx2j.ContentConverter;
-import com.sickworm.androidx2j.ProjectConverter;
+import com.sickworm.ax2j.Config;
+import com.sickworm.ax2j.ContentConverter;
+import com.sickworm.ax2j.ProjectConverter;
+import com.sickworm.ax2j.dbbuilder.AndroidDocConverter;
 
 public class MainEntry {
     
@@ -204,13 +205,7 @@ public class MainEntry {
                                 destTextArea.setText(result);
                             } else {
                                 Config.PROJECT_PATH = srcPathTextField.getText();
-                                if (!Config.PROJECT_PATH.endsWith("/")) {
-                                    Config.PROJECT_PATH += "/";
-                                }
                                 Config.PROJECT_OUT_PATH = destPathTextField.getText();
-                                if (!Config.PROJECT_OUT_PATH.endsWith("/")) {
-                                    Config.PROJECT_OUT_PATH += "/";
-                                }
                                 ProjectConverter.translateProject();
                             }
                         }
@@ -224,6 +219,13 @@ public class MainEntry {
                             Config.IS_CONTENT_TRANSLATE = true;
                         }
                     });
+                    
+                    new Thread() {
+                    	@Override
+                    	public void run() {
+                    		AndroidDocConverter.init();
+                    	}
+                    }.start();
                     
                     window.setVisible(true);
                 } catch (Exception e) {

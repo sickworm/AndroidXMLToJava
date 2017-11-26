@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j.dbbuilder;
+package com.sickworm.ax2j.dbbuilder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,13 +23,13 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.sickworm.androidx2j.AX2JClassTranslator;
-import com.sickworm.androidx2j.AX2JException;
-import com.sickworm.androidx2j.AX2JNode;
-import com.sickworm.androidx2j.AX2JParser;
-import com.sickworm.androidx2j.AX2JStyle;
-import com.sickworm.androidx2j.AX2JTranslatorMap;
-import com.sickworm.androidx2j.Utils;
+import com.sickworm.ax2j.AX2JClassTranslator;
+import com.sickworm.ax2j.AX2JException;
+import com.sickworm.ax2j.AX2JNode;
+import com.sickworm.ax2j.AX2JParser;
+import com.sickworm.ax2j.AX2JStyle;
+import com.sickworm.ax2j.AX2JTranslatorMap;
+import com.sickworm.ax2j.Utils;
 
 /**
  * Convert off-line Android Doc in SDK manager to the conversion table(HashMap<String, String>).
@@ -310,9 +310,9 @@ public class AndroidDocConverter {
     /**
      * initialize the translate resources. Need to be called before translating start.
      */
-    public static boolean init() {
+    public synchronized static boolean init() {
         if (hasInitialized) {
-            System.out.print("Translate resources has initialized.");
+            System.out.println("Translate resources has initialized.");
             return true;
         }
         System.out.println("Initializing resources...\n");

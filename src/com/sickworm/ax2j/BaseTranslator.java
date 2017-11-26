@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.dom4j.Attribute;
 
-import com.sickworm.androidx2j.AX2JCodeBlock.AX2JCode;
+import com.sickworm.ax2j.AX2JCodeBlock.AX2JCode;
 import com.sun.istack.internal.Nullable;
 
 import android.graphics.drawable.GradientDrawable;

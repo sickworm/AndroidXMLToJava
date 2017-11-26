@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sickworm.androidx2j.dbbuilder.AndroidDocConverter;
+import com.sickworm.ax2j.dbbuilder.AndroidDocConverter;
 
 import android.graphics.Color;
 import android.widget.EditText;
@@ -57,6 +57,11 @@ public class ProjectConverter {
         File res = new File(Config.getProjectResPath());
         if (!res.isDirectory()) {
             throw new AX2JException(AX2JException.PROJECT_DIR_NOT_FOUND);
+        }
+        
+        if (!Config.PROJECT_OUT_PATH.endsWith(File.separator + Config.PROJECT_OUT) &&
+        		!Config.PROJECT_OUT_PATH.endsWith(File.separator + Config.PROJECT_OUT + File.separator)) {
+        	Config.PROJECT_OUT_PATH += File.separator  + Config.PROJECT_OUT + File.separator;
         }
         File resOut = new File(Config.PROJECT_OUT_PATH);
         if (resOut.exists()) {

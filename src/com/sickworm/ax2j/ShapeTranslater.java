@@ -1,8 +1,8 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import org.dom4j.Attribute;
 
-import com.sickworm.androidx2j.AX2JCodeBlock.AX2JCode;
+import com.sickworm.ax2j.AX2JCodeBlock.AX2JCode;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;

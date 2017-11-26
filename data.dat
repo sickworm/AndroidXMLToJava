@@ -1,62 +1,71 @@
 /** TRANSLATION TABLE. DO NOT EDIT **/
 <DAT_BLOCK>
 //View
-View,android:accessibilityLiveRegion,setAccessibilityLiveRegion(int),
-View,android:alpha,setAlpha(float),
+View,android:accessibilityLiveRegion,setAccessibilityLiveRegion(int),0x00000013
+View,android:accessibilityTraversalAfter,setAccessibilityTraversalAfter(int),0x00000016
+View,android:accessibilityTraversalBefore,setAccessibilityTraversalBefore(int),0x00000016
+View,android:alpha,setAlpha(float),0x0000000b
 View,android:background,setBackgroundDrawable(Drawable),
 View,android:background,setBackgroundColor(int),
-View,android:backgroundTint,setBackgroundTintList(ColorStateList),
-View,android:backgroundTintMode,setBackgroundTintMode(Mode),
+View,android:backgroundTint,setBackgroundTintList(ColorStateList),0x00000015
+View,android:backgroundTintMode,setBackgroundTintMode(Mode),0x00000015
 View,android:clickable,setClickable(boolean),
-View,android:contentDescription,setContentDescription(CharSequence),
+View,android:contentDescription,setContentDescription(CharSequence),0x00000004
+View,android:contextClickable,setContextClickable(boolean),0x00000017
 View,android:drawingCacheQuality,setDrawingCacheQuality(int),
 View,android:duplicateParentState,setDuplicateParentStateEnabled(boolean),
-View,android:elevation,setElevation(float),
-View,android:fadeScrollbars,setScrollbarFadingEnabled(boolean),
+View,android:elevation,setElevation(float),0x00000015
+View,android:fadeScrollbars,setScrollbarFadingEnabled(boolean),0x00000005
 View,android:fadingEdgeLength,getVerticalFadingEdgeLength,
-View,android:filterTouchesWhenObscured,setFilterTouchesWhenObscured(boolean),
-View,android:fitsSystemWindows,setFitsSystemWindows(boolean),
+View,android:filterTouchesWhenObscured,setFilterTouchesWhenObscured(boolean),0x00000009
+View,android:fitsSystemWindows,setFitsSystemWindows(boolean),0x0000000e
 View,android:focusable,setFocusable(boolean),
 View,android:focusableInTouchMode,setFocusableInTouchMode(boolean),
-View,android:hapticFeedbackEnabled,setHapticFeedbackEnabled(boolean),
+View,android:forceHasOverlappingRendering,forceHasOverlappingRendering(boolean),0x00000018
+View,android:foreground,setForeground(Drawable),
+View,android:foregroundGravity,setForegroundGravity(int),0x00000017
+View,android:foregroundTint,setForegroundTintList(ColorStateList),0x00000015
+View,android:foregroundTintMode,setForegroundTintMode(Mode),0x00000015
+View,android:hapticFeedbackEnabled,setHapticFeedbackEnabled(boolean),0x00000003
 View,android:id,setId(int),
-View,android:importantForAccessibility,setImportantForAccessibility(int),
-View,android:isScrollContainer,setScrollContainer(boolean),
+View,android:importantForAccessibility,setImportantForAccessibility(int),0x00000010
+View,android:isScrollContainer,setScrollContainer(boolean),0x00000003
 View,android:keepScreenOn,setKeepScreenOn(boolean),
-View,android:layerType,setLayerType(int,Paint),
-View,android:layoutDirection,setLayoutDirection(int),
+View,android:layerType,setLayerType(int,Paint),0x0000000b
+View,android:layoutDirection,setLayoutDirection(int),0x00000011
 View,android:longClickable,setLongClickable(boolean),
 View,android:minHeight,setMinimumHeight(int),
 View,android:minWidth,setMinimumWidth(int),
 View,android:nextFocusDown,setNextFocusDownId(int),
-View,android:nextFocusForward,setNextFocusForwardId(int),
+View,android:nextFocusForward,setNextFocusForwardId(int),0x0000000b
 View,android:nextFocusLeft,setNextFocusLeftId(int),
 View,android:nextFocusRight,setNextFocusRightId(int),
 View,android:nextFocusUp,setNextFocusUpId(int),
 View,android:onClick,,
-View,android:padding,setPaddingRelative(int,int,int,int),
-View,android:paddingBottom,setPaddingRelative(int,int,int,int),
+View,android:padding,setPaddingRelative(int,int,int,int),0x00000011
+View,android:paddingBottom,setPaddingRelative(int,int,int,int),0x00000011
 View,android:paddingBottom,setPadding(int,int,int,int),0x00004000
-View,android:paddingEnd,setPaddingRelative(int,int,int,int),
+View,android:paddingEnd,setPaddingRelative(int,int,int,int),0x00000011
 View,android:paddingLeft,setPadding(int,int,int,int),
 View,android:paddingRight,setPadding(int,int,int,int),
-View,android:paddingStart,setPaddingRelative(int,int,int,int),
-View,android:paddingTop,setPaddingRelative(int,int,int,int),
+View,android:paddingStart,setPaddingRelative(int,int,int,int),0x00000011
+View,android:paddingTop,setPaddingRelative(int,int,int,int),0x00000011
 View,android:paddingTop,setPadding(int,int,int,int),0x00002000
 View,android:requiresFadingEdge,setVerticalFadingEdgeEnabled(boolean),
-View,android:rotation,setRotation(float),
-View,android:rotationX,setRotationX(float),
-View,android:rotationY,setRotationY(float),
+View,android:rotation,setRotation(float),0x0000000b
+View,android:rotationX,setRotationX(float),0x0000000b
+View,android:rotationY,setRotationY(float),0x0000000b
 View,android:saveEnabled,setSaveEnabled(boolean),
-View,android:scaleX,setScaleX(float),
-View,android:scaleY,setScaleY(float),
+View,android:scaleX,setScaleX(float),0x0000000b
+View,android:scaleY,setScaleY(float),0x0000000b
+View,android:scrollIndicators,setScrollIndicators(int),0x00000017
 View,android:scrollX,,
 View,android:scrollY,,
 View,android:scrollbarAlwaysDrawHorizontalTrack,,
 View,android:scrollbarAlwaysDrawVerticalTrack,,
-View,android:scrollbarDefaultDelayBeforeFade,setScrollBarDefaultDelayBeforeFade(int),
-View,android:scrollbarFadeDuration,setScrollBarFadeDuration(int),
-View,android:scrollbarSize,setScrollBarSize(int),
+View,android:scrollbarDefaultDelayBeforeFade,setScrollBarDefaultDelayBeforeFade(int),0x00000010
+View,android:scrollbarFadeDuration,setScrollBarFadeDuration(int),0x00000010
+View,android:scrollbarSize,setScrollBarSize(int),0x00000010
 View,android:scrollbarStyle,setScrollBarStyle(int),
 View,android:scrollbarThumbHorizontal,,
 View,android:scrollbarThumbVertical,,
@@ -66,14 +75,15 @@ View,android:scrollbars,,
 View,android:soundEffectsEnabled,setSoundEffectsEnabled(boolean),
 View,android:stateListAnimator,,
 View,android:tag,,
-View,android:textAlignment,setTextAlignment(int),
-View,android:textDirection,setTextDirection(int),
-View,android:transformPivotX,setPivotX(float),
-View,android:transformPivotY,setPivotY(float),
+View,android:textAlignment,setTextAlignment(int),0x00000011
+View,android:textDirection,setTextDirection(int),0x00000011
+View,android:theme,,
+View,android:transformPivotX,setPivotX(float),0x0000000b
+View,android:transformPivotY,setPivotY(float),0x0000000b
 View,android:transitionName,,
-View,android:translationX,setTranslationX(float),
-View,android:translationY,setTranslationY(float),
-View,android:translationZ,setTranslationZ(float),
+View,android:translationX,setTranslationX(float),0x0000000b
+View,android:translationY,setTranslationY(float),0x0000000b
+View,android:translationZ,setTranslationZ(float),0x00000015
 View,android:visibility,setVisibility(int),
 View,android:enabled,setEnabled(boolean),
 View,android:layout_width,width(int),0x00410000
@@ -112,15 +122,15 @@ View,android:layout_toStartOf,addRule(RelativeLayout.START_OF,int),0x00012000
 //ViewGroup
 ViewGroup,android:addStatesFromChildren,,
 ViewGroup,android:alwaysDrawnWithCache,,
-ViewGroup,android:animateLayoutChanges,setLayoutTransition(LayoutTransition),
+ViewGroup,android:animateLayoutChanges,setLayoutTransition(LayoutTransition),0x0000000b
 ViewGroup,android:animationCache,,
 ViewGroup,android:clipChildren,setClipChildren(boolean),
 ViewGroup,android:clipToPadding,setClipToPadding(boolean),
 ViewGroup,android:descendantFocusability,,
 ViewGroup,android:layoutAnimation,,
-ViewGroup,android:layoutMode,setLayoutMode(int),
+ViewGroup,android:layoutMode,setLayoutMode(int),0x00000012
 ViewGroup,android:persistentDrawingCache,,
-ViewGroup,android:splitMotionEvents,setMotionEventSplittingEnabled(boolean),
+ViewGroup,android:splitMotionEvents,setMotionEventSplittingEnabled(boolean),0x0000000b
 
 //AdapterView
 
@@ -133,21 +143,20 @@ AbsListView,android:drawSelectorOnTop,setDrawSelectorOnTop(boolean),
 AbsListView,android:fastScrollEnabled,,
 AbsListView,android:listSelector,setSelector(int),
 AbsListView,android:scrollingCache,,
-AbsListView,android:smoothScrollbar,setSmoothScrollbarEnabled(boolean),
+AbsListView,android:smoothScrollbar,setSmoothScrollbarEnabled(boolean),0x00000003
 AbsListView,android:stackFromBottom,,
 AbsListView,android:textFilterEnabled,,
-AbsListView,android:transcriptMode,,
 
 //CompoundButton
-CompoundButton,android:buttonTint,setButtonTintList(ColorStateList),
-CompoundButton,android:buttonTintMode,setButtonTintMode(Mode),
+CompoundButton,android:button,setButtonDrawable(Drawable),
+CompoundButton,android:buttonTint,setButtonTintList(ColorStateList),0x00000015
+CompoundButton,android:buttonTintMode,setButtonTintMode(Mode),0x00000015
 
 //Button
 
 //ToggleButton
 ToggleButton,android:disabledAlpha,,
 ToggleButton,android:textOff,,
-ToggleButton,android:textOn,,
 
 //CheckBox
 
@@ -155,17 +164,15 @@ ToggleButton,android:textOn,,
 RadioButton,android:checked,setChecked(boolean),
 
 //Spinner
-Spinner,android:dropDownHorizontalOffset,setDropDownHorizontalOffset(int),
+Spinner,android:dropDownHorizontalOffset,setDropDownHorizontalOffset(int),0x00000010
 Spinner,android:dropDownSelector,,
-Spinner,android:dropDownVerticalOffset,setDropDownVerticalOffset(int),
-Spinner,android:dropDownWidth,setDropDownWidth(int),
-Spinner,android:gravity,setGravity(int),
-Spinner,android:popupBackground,setPopupBackgroundResource(int),
+Spinner,android:dropDownVerticalOffset,setDropDownVerticalOffset(int),0x00000010
+Spinner,android:dropDownWidth,setDropDownWidth(int),0x00000010
+Spinner,android:gravity,setGravity(int),0x0000000b
+Spinner,android:popupBackground,setPopupBackgroundResource(int),0x00000010
 Spinner,android:prompt,,
-Spinner,android:spinnerMode,,
 
 //SeekBar
-SeekBar,android:thumb,,
 
 //QuickContactBadge
 
@@ -176,21 +183,24 @@ RadioGroup,android:checkedButton,getCheckedRadioButtonId,
 RatingBar,android:isIndicator,setIsIndicator(boolean),
 RatingBar,android:numStars,,
 RatingBar,android:rating,,
-RatingBar,android:stepSize,,
 
 //Switch
-Switch,android:showText,setShowText(boolean),
-Switch,android:splitTrack,setSplitTrack(boolean),
-Switch,android:switchMinWidth,setSwitchMinWidth(int),
-Switch,android:switchPadding,setSwitchPadding(int),
-Switch,android:switchTextAppearance,setSwitchTextAppearance(Context,int),
-Switch,android:textOff,setTextOff(CharSequence),
-Switch,android:textOn,setTextOn(CharSequence),
-Switch,android:textStyle,setSwitchTypeface(Typeface),
-Switch,android:thumb,setThumbResource(int),
-Switch,android:thumbTextPadding,setThumbTextPadding(int),
-Switch,android:track,setTrackResource(int),
-Switch,android:typeface,setSwitchTypeface(Typeface),
+Switch,android:showText,setShowText(boolean),0x00000015
+Switch,android:splitTrack,setSplitTrack(boolean),0x00000015
+Switch,android:switchMinWidth,setSwitchMinWidth(int),0x00000010
+Switch,android:switchPadding,setSwitchPadding(int),0x00000010
+Switch,android:switchTextAppearance,setSwitchTextAppearance(Context,int),0x0000000e
+Switch,android:textOff,setTextOff(CharSequence),0x0000000e
+Switch,android:textOn,setTextOn(CharSequence),0x0000000e
+Switch,android:textStyle,setSwitchTypeface(Typeface),0x0000000e
+Switch,android:thumb,setThumbResource(int),0x00000010
+Switch,android:thumbTextPadding,setThumbTextPadding(int),0x00000010
+Switch,android:thumbTint,setThumbTintList(ColorStateList),0x00000017
+Switch,android:thumbTintMode,setThumbTintMode(Mode),0x00000017
+Switch,android:track,setTrackResource(int),0x00000010
+Switch,android:trackTint,setTrackTintList(ColorStateList),0x00000017
+Switch,android:trackTintMode,setTrackTintMode(Mode),0x00000017
+Switch,android:typeface,setSwitchTypeface(Typeface),0x0000000e
 
 //ProgressBar
 ProgressBar,android:animationResolution,,
@@ -199,8 +209,8 @@ ProgressBar,android:indeterminateBehavior,,
 ProgressBar,android:indeterminateDrawable,,
 ProgressBar,android:indeterminateDuration,,
 ProgressBar,android:indeterminateOnly,,
-ProgressBar,android:indeterminateTint,setIndeterminateTintList(ColorStateList),
-ProgressBar,android:indeterminateTintMode,setIndeterminateTintMode(Mode),
+ProgressBar,android:indeterminateTint,setIndeterminateTintList(ColorStateList),0x00000015
+ProgressBar,android:indeterminateTintMode,setIndeterminateTintMode(Mode),0x00000015
 ProgressBar,android:interpolator,,
 ProgressBar,android:max,,
 ProgressBar,android:maxHeight,,
@@ -209,62 +219,66 @@ ProgressBar,android:minHeight,,
 ProgressBar,android:minWidth,,
 ProgressBar,android:mirrorForRtl,,
 ProgressBar,android:progress,,
-ProgressBar,android:progressBackgroundTint,setProgressBackgroundTintList(ColorStateList),
-ProgressBar,android:progressBackgroundTintMode,setProgressBackgroundTintMode(Mode),
+ProgressBar,android:progressBackgroundTint,setProgressBackgroundTintList(ColorStateList),0x00000015
+ProgressBar,android:progressBackgroundTintMode,setProgressBackgroundTintMode(Mode),0x00000015
 ProgressBar,android:progressDrawable,,
-ProgressBar,android:progressTint,setProgressTintList(ColorStateList),
-ProgressBar,android:progressTintMode,setProgressTintMode(Mode),
+ProgressBar,android:progressTint,setProgressTintList(ColorStateList),0x00000015
+ProgressBar,android:progressTintMode,setProgressTintMode(Mode),0x00000015
 ProgressBar,android:secondaryProgress,,
-ProgressBar,android:secondaryProgressTint,setSecondaryProgressTintList(ColorStateList),
-ProgressBar,android:secondaryProgressTintMode,setSecondaryProgressTintMode(Mode),
+ProgressBar,android:secondaryProgressTint,setSecondaryProgressTintList(ColorStateList),0x00000015
+ProgressBar,android:secondaryProgressTintMode,setSecondaryProgressTintMode(Mode),0x00000015
 
 //TextView
 TextView,android:autoLink,setAutoLinkMask(int),
 TextView,android:autoText,setKeyListener(KeyListener),
+TextView,android:breakStrategy,setBreakStrategy(int),0x00000017
 TextView,android:bufferType,setText(<AX2J_OBJECT_NAME>.getText(),BufferType),0x00002000
 TextView,android:capitalize,setKeyListener(KeyListener),
 TextView,android:cursorVisible,setCursorVisible(boolean),
 TextView,android:digits,setKeyListener(KeyListener),
-TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),0x00000003
 TextView,android:drawableBottom,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00004000
 TextView,android:drawableBottom,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00004000
 TextView,android:drawableBottom,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00004000
-TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00000011
 TextView,android:drawableEnd,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00003000
-TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),0x00000003
 TextView,android:drawableLeft,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00001000
 TextView,android:drawablePadding,setCompoundDrawablePadding(int),
-TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),0x00000003
 TextView,android:drawableRight,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00003000
-TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00000011
 TextView,android:drawableStart,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00001000
-TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),
+TextView,android:drawableTint,setCompoundDrawableTintList(ColorStateList),0x00000017
+TextView,android:drawableTintMode,setCompoundDrawableTintMode(Mode),0x00000017
+TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(int,int,int,int),0x00000003
 TextView,android:drawableTop,setCompoundDrawablesRelativeWithIntrinsicBounds(int,int,int,int),0x00002000
 TextView,android:drawableTop,setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00002000
 TextView,android:drawableTop,setCompoundDrawablesWithIntrinsicBounds(Drawable,Drawable,Drawable,Drawable),0x00002000
 TextView,android:editable,,
-TextView,android:editorExtras,setInputExtras(int),
-TextView,android:elegantTextHeight,setElegantTextHeight(boolean),
+TextView,android:editorExtras,setInputExtras(int),0x00000003
+TextView,android:elegantTextHeight,setElegantTextHeight(boolean),0x00000015
 TextView,android:ellipsize,setEllipsize(TruncateAt),
 TextView,android:ems,setEms(int),
 TextView,android:fontFamily,setTypeface(Typeface),
-TextView,android:fontFeatureSettings,setFontFeatureSettings(String),
+TextView,android:fontFeatureSettings,setFontFeatureSettings(String),0x00000015
 TextView,android:freezesText,setFreezesText(boolean),
 TextView,android:gravity,setGravity(int),
 TextView,android:height,setHeight(int),
 TextView,android:hint,setHint(int),
-TextView,android:imeActionId,setImeActionLabel(CharSequence,int),
-TextView,android:imeActionLabel,setImeActionLabel(CharSequence,int),
-TextView,android:imeOptions,setImeOptions(int),
+TextView,android:hyphenationFrequency,setHyphenationFrequency(int),0x00000017
+TextView,android:imeActionId,setImeActionLabel(CharSequence,int),0x00000003
+TextView,android:imeActionLabel,setImeActionLabel(CharSequence,int),0x00000003
+TextView,android:imeOptions,setImeOptions(int),0x00000003
 TextView,android:includeFontPadding,setIncludeFontPadding(boolean),
 TextView,android:inputMethod,setKeyListener(KeyListener),
-TextView,android:inputType,setRawInputType(int),
-TextView,android:letterSpacing,setLetterSpacing(float),
+TextView,android:inputType,setRawInputType(int),0x00000003
+TextView,android:letterSpacing,setLetterSpacing(float),0x00000015
 TextView,android:lineSpacingExtra,setLineSpacing(float,float),
 TextView,android:lineSpacingMultiplier,setLineSpacing(float,float),
 TextView,android:lines,setLines(int),
 TextView,android:linksClickable,setLinksClickable(boolean),
-TextView,android:marqueeRepeatLimit,setMarqueeRepeatLimit(int),
+TextView,android:marqueeRepeatLimit,setMarqueeRepeatLimit(int),0x00000002
 TextView,android:maxEms,setMaxEms(int),
 TextView,android:maxHeight,setMaxHeight(int),
 TextView,android:maxLength,setFilters(InputFilter),
@@ -277,7 +291,7 @@ TextView,android:minWidth,setMinWidth(int),
 TextView,android:numeric,setKeyListener(KeyListener),
 TextView,android:password,setTransformationMethod(TransformationMethod),
 TextView,android:phoneNumber,setKeyListener(KeyListener),
-TextView,android:privateImeOptions,setPrivateImeOptions(String),
+TextView,android:privateImeOptions,setPrivateImeOptions(String),0x00000003
 TextView,android:scrollHorizontally,setHorizontallyScrolling(boolean),
 TextView,android:selectAllOnFocus,setSelectAllOnFocus(boolean),
 TextView,android:shadowColor,setShadowLayer(float,float,float,int),
@@ -286,30 +300,30 @@ TextView,android:shadowDy,setShadowLayer(float,float,float,int),
 TextView,android:shadowRadius,setShadowLayer(float,float,float,int),
 TextView,android:singleLine,setTransformationMethod(TransformationMethod),
 TextView,android:text,setText(CharSequence),
-TextView,android:textAllCaps,setAllCaps(boolean),
+TextView,android:textAllCaps,setAllCaps(boolean),0x0000000e
+TextView,android:textAppearance,setTextAppearance(int),0x00000017
 TextView,android:textAppearance,setTextAppearance(context,int),0x00002000
-TextView,android:textColor,setTextColor(int),
 TextView,android:textColor,setTextColor(ColorStateList),
 TextView,android:textColorHighlight,setHighlightColor(int),
 TextView,android:textColorHint,setHintTextColor(int),
 TextView,android:textColorLink,setLinkTextColor(int),
-TextView,android:textIsSelectable,isTextSelectable,
+TextView,android:textIsSelectable,isTextSelectable,0x0000000b
 TextView,android:textScaleX,setTextScaleX(float),
-TextView,android:textSize,setTextSize(int,float),
-TextView,android:textStyle,setTypeface(Typeface),
-TextView,android:typeface,setTypeface(Typeface),
+TextView,android:textSize,setTextSize(float),
+TextView,android:textStyle,setTypeface(Typeface,int),
+TextView,android:typeface,setTypeface(Typeface,int),
 TextView,android:width,setWidth(int),
 
 //EditText
 
 //GridLayout
-GridLayout,android:alignmentMode,setAlignmentMode(int),
-GridLayout,android:columnCount,setColumnCount(int),
-GridLayout,android:columnOrderPreserved,setColumnOrderPreserved(boolean),
-GridLayout,android:orientation,setOrientation(int),
-GridLayout,android:rowCount,setRowCount(int),
-GridLayout,android:rowOrderPreserved,setRowOrderPreserved(boolean),
-GridLayout,android:useDefaultMargins,setUseDefaultMargins(boolean),
+GridLayout,android:alignmentMode,setAlignmentMode(int),0x0000000e
+GridLayout,android:columnCount,setColumnCount(int),0x0000000e
+GridLayout,android:columnOrderPreserved,setColumnOrderPreserved(boolean),0x0000000e
+GridLayout,android:orientation,setOrientation(int),0x0000000e
+GridLayout,android:rowCount,setRowCount(int),0x0000000e
+GridLayout,android:rowOrderPreserved,setRowOrderPreserved(boolean),0x0000000e
+GridLayout,android:useDefaultMargins,setUseDefaultMargins(boolean),0x0000000e
 
 //RelativeLayout
 RelativeLayout,android:gravity,setGravity(int),
@@ -318,17 +332,14 @@ RelativeLayout,android:ignoreGravity,setIgnoreGravity(int),
 //LinearLayout
 LinearLayout,android:baselineAligned,setBaselineAligned(boolean),
 LinearLayout,android:baselineAlignedChildIndex,setBaselineAlignedChildIndex(int),
-LinearLayout,android:divider,setDividerDrawable(Drawable),
+LinearLayout,android:divider,setDividerDrawable(Drawable),0x0000000b
 LinearLayout,android:gravity,setGravity(int),
-LinearLayout,android:measureWithLargestChild,setMeasureWithLargestChildEnabled(boolean),
+LinearLayout,android:measureWithLargestChild,setMeasureWithLargestChildEnabled(boolean),0x0000000b
 LinearLayout,android:orientation,setOrientation(int),
 LinearLayout,android:weightSum,setWeightSum(float),
 
 //FrameLayout
-FrameLayout,android:foreground,setForeground(Drawable),
 FrameLayout,android:foregroundGravity,setForegroundGravity(int),
-FrameLayout,android:foregroundTint,setForegroundTintList(ColorStateList),
-FrameLayout,android:foregroundTintMode,setForegroundTintMode(Mode),
 FrameLayout,android:measureAllChildren,setMeasureAllChildren(boolean),
 
 //TableLayout
@@ -343,16 +354,16 @@ TableLayout,android:stretchColumns,setStretchAllColumns(boolean),
 //Space
 
 //Fragment
-Fragment,android:fragmentAllowEnterTransitionOverlap,setAllowEnterTransitionOverlap(boolean),
-Fragment,android:fragmentAllowReturnTransitionOverlap,setAllowReturnTransitionOverlap(boolean),
-Fragment,android:fragmentEnterTransition,setEnterTransition(Transition),
-Fragment,android:fragmentExitTransition,setReturnTransition(Transition),
-Fragment,android:fragmentReenterTransition,setReenterTransition(Transition),
-Fragment,android:fragmentSharedElementEnterTransition,setSharedElementEnterTransition(Transition),
-Fragment,android:fragmentSharedElementReturnTransition,setSharedElementReturnTransition(Transition),
+Fragment,android:fragmentAllowEnterTransitionOverlap,setAllowEnterTransitionOverlap(boolean),0x00000015
+Fragment,android:fragmentAllowReturnTransitionOverlap,setAllowReturnTransitionOverlap(boolean),0x00000015
+Fragment,android:fragmentEnterTransition,setEnterTransition(Transition),0x00000015
+Fragment,android:fragmentExitTransition,setReturnTransition(Transition),0x00000015
+Fragment,android:fragmentReenterTransition,setReenterTransition(Transition),0x00000015
+Fragment,android:fragmentSharedElementEnterTransition,setSharedElementEnterTransition(Transition),0x00000015
+Fragment,android:fragmentSharedElementReturnTransition,setSharedElementReturnTransition(Transition),0x00000015
 
 //ListView
-ListView,android:divider,setDivider(Drawable),0x00000300
+ListView,android:divider,setDivider(Drawable),
 ListView,android:dividerHeight,setDividerHeight(int),
 ListView,android:entries,,
 ListView,android:footerDividersEnabled,,
@@ -369,7 +380,6 @@ ExpandableListView,android:groupIndicator,,
 ExpandableListView,android:indicatorEnd,,
 ExpandableListView,android:indicatorLeft,,
 ExpandableListView,android:indicatorRight,,
-ExpandableListView,android:indicatorStart,,
 
 //GridView
 GridView,android:columnWidth,setColumnWidth(int),
@@ -383,29 +393,29 @@ GridView,android:verticalSpacing,setVerticalSpacing(int),
 ScrollView,android:fillViewport,setFillViewport(boolean),
 
 //HorizontalScrollView
-HorizontalScrollView,android:fillViewport,setFillViewport(boolean),
+HorizontalScrollView,android:fillViewport,setFillViewport(boolean),0x00000003
 
 //TabHost
 
 //TabWidget
-TabWidget,android:divider,,
+TabWidget,android:divider,setDividerDrawable(Drawable),0x00000004
 TabWidget,android:tabStripEnabled,,
-TabWidget,android:tabStripLeft,,
-TabWidget,android:tabStripRight,,
+TabWidget,android:tabStripLeft,setLeftStripDrawable(int),0x00000008
+TabWidget,android:tabStripRight,setRightStripDrawable(Drawable),0x00000008
 
 //WebView
 
 //ImageView
 ImageView,android:adjustViewBounds,setAdjustViewBounds(boolean),
-ImageView,android:baseline,setBaseline(int),
-ImageView,android:baselineAlignBottom,setBaselineAlignBottom(boolean),
-ImageView,android:cropToPadding,setCropToPadding(boolean),
+ImageView,android:baseline,setBaseline(int),0x0000000b
+ImageView,android:baselineAlignBottom,setBaselineAlignBottom(boolean),0x0000000b
+ImageView,android:cropToPadding,setCropToPadding(boolean),0x00000010
 ImageView,android:maxHeight,setMaxHeight(int),
 ImageView,android:maxWidth,setMaxWidth(int),
 ImageView,android:scaleType,setScaleType(ScaleType),
 ImageView,android:src,setImageResource(int),
-ImageView,android:tint,setImageTintList(ColorStateList),
-ImageView,android:tintMode,setImageTintMode(Mode),
+ImageView,android:tint,setImageTintList(ColorStateList),0x00000015
+ImageView,android:tintMode,setImageTintMode(Mode),0x00000015
 
 //ImageButton
 
@@ -424,10 +434,11 @@ Gallery,android:unselectedAlpha,setUnselectedAlpha(float),
 //DatePicker
 DatePicker,android:calendarTextColor,,
 DatePicker,android:calendarViewShown,,
+DatePicker,android:datePickerMode,,
 DatePicker,android:dayOfWeekBackground,,
 DatePicker,android:dayOfWeekTextAppearance,,
 DatePicker,android:endYear,,
-DatePicker,android:firstDayOfWeek,setFirstDayOfWeek(int),
+DatePicker,android:firstDayOfWeek,setFirstDayOfWeek(int),0x00000015
 DatePicker,android:headerBackground,,
 DatePicker,android:headerDayOfMonthTextAppearance,,
 DatePicker,android:headerMonthTextAppearance,,
@@ -437,25 +448,24 @@ DatePicker,android:minDate,,
 DatePicker,android:spinnersShown,,
 DatePicker,android:startYear,,
 DatePicker,android:yearListItemTextAppearance,,
-DatePicker,android:yearListSelectorColor,,
 
 //CalendarView
-CalendarView,android:dateTextAppearance,setDateTextAppearance(int),
-CalendarView,android:firstDayOfWeek,setFirstDayOfWeek(int),
-CalendarView,android:focusedMonthDateColor,setFocusedMonthDateColor(int),
-CalendarView,android:maxDate,setMaxDate(long),
-CalendarView,android:minDate,setMinDate(long),
-CalendarView,android:selectedDateVerticalBar,setSelectedDateVerticalBar(int),
-CalendarView,android:selectedWeekBackgroundColor,setSelectedWeekBackgroundColor(int),
-CalendarView,android:showWeekNumber,setShowWeekNumber(boolean),
-CalendarView,android:shownWeekCount,setShownWeekCount(int),
-CalendarView,android:unfocusedMonthDateColor,setUnfocusedMonthDateColor(int),
-CalendarView,android:weekDayTextAppearance,setWeekDayTextAppearance(int),
-CalendarView,android:weekNumberColor,setWeekNumberColor(int),
-CalendarView,android:weekSeparatorLineColor,setWeekSeparatorLineColor(int),
+CalendarView,android:dateTextAppearance,setDateTextAppearance(int),0x00000010
+CalendarView,android:firstDayOfWeek,setFirstDayOfWeek(int),0x0000000b
+CalendarView,android:focusedMonthDateColor,setFocusedMonthDateColor(int),0x00000010
+CalendarView,android:maxDate,setMaxDate(long),0x0000000b
+CalendarView,android:minDate,setMinDate(long),0x0000000b
+CalendarView,android:selectedDateVerticalBar,setSelectedDateVerticalBar(Drawable),0x00000010
+CalendarView,android:selectedWeekBackgroundColor,setSelectedWeekBackgroundColor(int),0x00000010
+CalendarView,android:showWeekNumber,setShowWeekNumber(boolean),0x0000000b
+CalendarView,android:shownWeekCount,setShownWeekCount(int),0x00000010
+CalendarView,android:unfocusedMonthDateColor,setUnfocusedMonthDateColor(int),0x00000010
+CalendarView,android:weekDayTextAppearance,setWeekDayTextAppearance(int),0x00000010
+CalendarView,android:weekNumberColor,setWeekNumberColor(int),0x00000010
+CalendarView,android:weekSeparatorLineColor,setWeekSeparatorLineColor(int),0x00000010
 
 //Chronometer
-Chronometer,android:format,,
+Chronometer,android:countDown,,
 
 //DigitalClock
 
@@ -463,7 +473,7 @@ Chronometer,android:format,,
 
 //AdapterViewFlipper
 AdapterViewFlipper,android:autoStart,,
-AdapterViewFlipper,android:flipInterval,setFlipInterval(int),
+AdapterViewFlipper,android:flipInterval,setFlipInterval(int),0x0000000b
 
 //StackView
 
@@ -472,11 +482,9 @@ AdapterViewFlipper,android:flipInterval,setFlipInterval(int),
 //ViewAnimator
 ViewAnimator,android:animateFirstView,,
 ViewAnimator,android:inAnimation,,
-ViewAnimator,android:outAnimation,,
 
 //ViewFlipper
 ViewFlipper,android:autoStart,,
-ViewFlipper,android:flipInterval,,
 
 //ViewSwitcher
 
@@ -500,7 +508,6 @@ GestureOverlayView,android:gestureStrokeSquarenessThreshold,,
 GestureOverlayView,android:gestureStrokeType,,
 GestureOverlayView,android:gestureStrokeWidth,,
 GestureOverlayView,android:orientation,,
-GestureOverlayView,android:uncertainGestureColor,,
 
 //NumberPicker
 
@@ -511,27 +518,50 @@ GestureOverlayView,android:uncertainGestureColor,,
 //DialerFilter
 
 //TwoLineListItem
-TwoLineListItem,android:mode,,
 
 //AbsoluteLayout
 
 //ActionMenuView
 
 //TextClock
-TextClock,android:format12Hour,setFormat12Hour(CharSequence),
-TextClock,android:format24Hour,setFormat24Hour(CharSequence),
-TextClock,android:timeZone,setTimeZone(String),
+TextClock,android:format12Hour,setFormat12Hour(CharSequence),0x00000011
+TextClock,android:format24Hour,setFormat24Hour(CharSequence),0x00000011
+TextClock,android:timeZone,setTimeZone(String),0x00000011
 
 //Toolbar
-Toolbar,android:navigationContentDescription,setNavigationContentDescription(CharSequence),
-Toolbar,android:navigationIcon,setNavigationIcon(int),
+Toolbar,android:buttonGravity,,
+Toolbar,android:collapseContentDescription,,
+Toolbar,android:collapseIcon,,
+Toolbar,android:contentInsetEnd,setContentInsetsRelative(int,int),0x00000015
+Toolbar,android:contentInsetEndWithActions,setContentInsetEndWithActions(int),0x00000018
+Toolbar,android:contentInsetLeft,setContentInsetsAbsolute(int,int),0x00000015
+Toolbar,android:contentInsetRight,setContentInsetsAbsolute(int,int),0x00000015
+Toolbar,android:contentInsetStart,setContentInsetsRelative(int,int),0x00000015
+Toolbar,android:contentInsetStartWithNavigation,setContentInsetStartWithNavigation(int),0x00000018
+Toolbar,android:gravity,,
+Toolbar,android:logo,,
+Toolbar,android:logoDescription,,
+Toolbar,android:maxButtonHeight,,
+Toolbar,android:navigationContentDescription,setNavigationContentDescription(int),0x00000015
+Toolbar,android:navigationIcon,setNavigationIcon(int),0x00000015
+Toolbar,android:popupTheme,,
+Toolbar,android:subtitle,,
+Toolbar,android:subtitleTextAppearance,,
+Toolbar,android:subtitleTextColor,,
+Toolbar,android:title,,
+Toolbar,android:titleMargin,setTitleMargin(int,int,int,int),0x00000018
+Toolbar,android:titleMarginBottom,setTitleMarginBottom(int),0x00000018
+Toolbar,android:titleMarginEnd,setTitleMarginEnd(int),0x00000018
+Toolbar,android:titleMarginStart,setTitleMarginStart(int),0x00000018
+Toolbar,android:titleMarginTop,setTitleMarginTop(int),0x00000018
+Toolbar,android:titleTextAppearance,,
 
 //Drawable
 
 //DrawableContainer
 
 //GradientDrawable
-GradientDrawable,android:angle,,
+GradientDrawable,android:angle,setOrientation(int),
 GradientDrawable,android:bottom,,
 GradientDrawable,android:centerColor,setColors(int,int,int),0x02002000
 GradientDrawable,android:centerX,setGradientCenter(float,float),0x00001000
@@ -565,6 +595,7 @@ GradientDrawable,android:bottomRightRadius,setCornerRadii(float,float,float,floa
 GradientDrawable,android:bottomLeftRadius,setCornerRadii(float,float,float,float),0x02004000
 
 //ColorStateList
+ColorStateList,android:alpha,,
 
 //StateListDrawable
 StateListDrawable,android:constantSize,,
@@ -582,7 +613,6 @@ StateListDrawable,android:state_selected,,
 StateListDrawable,android:state_single,,
 StateListDrawable,android:state_window_focused,,
 StateListDrawable,android:variablePadding,,
-StateListDrawable,android:visible,,
 
 
 <DAT_BLOCK>

@@ -1,9 +1,9 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sickworm.androidx2j.AX2JCodeBlock.AX2JCode.*;
+import static com.sickworm.ax2j.AX2JCodeBlock.AX2JCode.*;
 
 /**
  * Manage the Java code block of an AX2JNode
@@ -49,7 +49,7 @@ public class AX2JCodeBlock {
             AX2JCode originCode = subCodeList.get(j);
             if (code.isDuplicateMethod(originCode)) {
                 if (code.method != null && code.method.getArgsNum() > 1) {
-                    int order = AX2JAttribute.getTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+                    int order = AX2JAttribute.getAssignmentTypeValue(code.type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
                     originCode.setArg(order, code.getArg(order));
                 }
                 break;
@@ -173,9 +173,9 @@ public class AX2JCodeBlock {
             this.methodString = method.getMethodName();
 
             this.type = type;
-            this.priority = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_PRIORITY);
+            this.priority = AX2JAttribute.getAssignmentTypeValue(type, AX2JAttribute.TYPE_PRIORITY);
 
-            int order = AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+            int order = AX2JAttribute.getAssignmentTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
             if (order == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
                 for (int i = 1; i <= method.getArgsNum(); i++) {
                     setArg(i, value);
@@ -202,15 +202,15 @@ public class AX2JCodeBlock {
         }
 
         public boolean isLayoutParam() {
-            return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_LAYOUT_PARAMETER) != 0;
+            return AX2JAttribute.getAssignmentTypeValue(type, AX2JAttribute.TYPE_LAYOUT_PARAMETER) != 0;
         }
 
         public boolean isArray() {
-            return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ARRAY) != 0;
+            return AX2JAttribute.getAssignmentTypeValue(type, AX2JAttribute.TYPE_ARGUMENTS_ARRAY) != 0;
         }
 
         public boolean isVariableAssignment() {
-            return AX2JAttribute.getTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0;
+            return AX2JAttribute.getAssignmentTypeValue(type, AX2JAttribute.TYPE_VARIABLE_ASSIGNMENT) != 0;
         }
 
         public void setArg(int order, String value) {

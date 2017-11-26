@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j;
+package com.sickworm.ax2j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.QName;
 
-import com.sickworm.androidx2j.AX2JCodeBlock.AX2JCode;
+import com.sickworm.ax2j.AX2JCodeBlock.AX2JCode;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
 public class AX2JClassTranslator {
-    public static AX2JAttribute attribute123;
     public static HashMap<String, Class<?>> typeMap = new HashMap<String, Class<?>>() {
         private static final long serialVersionUID = -4934808097054114253L;
 
@@ -202,7 +201,7 @@ public class AX2JClassTranslator {
 
         String value = translateValue(codeBlock, attribute, method);
 
-        codeBlock.add(method, value, attribute.getType(method) + (priority << AX2JAttribute.TYPE_PRIORITY_INDEX));
+        codeBlock.add(method, value, attribute.getAssignmentType(method) + (priority << AX2JAttribute.TYPE_PRIORITY_INDEX));
     }
 
     /**
@@ -211,7 +210,7 @@ public class AX2JClassTranslator {
      * @return the value after translating
      */
     private String translateValue(AX2JCodeBlock codeBlock, AX2JAttribute attribute, AX2JMethod method) {
-        int argOrder = attribute.getTypeValue(method, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
+        int argOrder = attribute.getAssignmentTypeValue(method, AX2JAttribute.TYPE_ARGUMENTS_ORDER);
         if (argOrder == AX2JAttribute.TYPE_ARGUMENTS_ALL_THE_SAME) {
             argOrder = 1;
         }
@@ -472,6 +471,7 @@ public class AX2JClassTranslator {
 
     /**
      * find the best method that suits the attribute value
+     * TODO automatic choose by argument type
      * @param attribute
      * @return the best method or the first relative method in relative list
      */
@@ -546,7 +546,7 @@ public class AX2JClassTranslator {
     }
 
     public String toString() {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         for (AX2JAttribute attribute : attributeList) {
             content.append(attribute.toString());
         }

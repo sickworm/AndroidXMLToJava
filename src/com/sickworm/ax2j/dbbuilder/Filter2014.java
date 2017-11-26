@@ -1,4 +1,4 @@
-package com.sickworm.androidx2j.dbbuilder;
+package com.sickworm.ax2j.dbbuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,12 +15,18 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import com.sickworm.androidx2j.AX2JClassTranslator;
+import com.sickworm.ax2j.AX2JClassTranslator;
 
-public class Filter {
+/**
+ * Filter XML attributes and related methods in Android documents in 2014. Unavailable in 2017
+ * @author sickworm
+ *
+ */
+@Deprecated
+public class Filter2014 {
     private Class<?> type;
 
-    public Filter(Class<?> type) {
+    public Filter2014(Class<?> type) {
         this.type = type;
     }
 
