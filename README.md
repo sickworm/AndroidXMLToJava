@@ -4,6 +4,9 @@
 
 ## Update Log
 
+2020/3/10
+This repo is deprecated. See [X2C](https://github.com/iReaderAndroid/X2C) for better solution.
+
 2017/11/26
 Update supported attributes from documents of Android Developers. Supported attribute list: [http://ax2j.sickworm.com/attribute-list.html](http://ax2j.sickworm.com/attribute-list.html)
 
